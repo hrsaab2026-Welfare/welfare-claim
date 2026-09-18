@@ -379,6 +379,40 @@
   .modal{ background:var(--surface); border-radius:var(--radius-m); padding:24px; width:100%; max-width:380px; }
   .modal h4{ font-size:16px; margin-bottom:5px; }
   .modal-sub{ font-size:13px; color:var(--ink-soft); display:block; margin-bottom:14px; }
+  /* ---------- rules engine: สิทธิ์ / เอกสาร / คำเตือน ---------- */
+  .elig-box{
+    border:1px solid var(--line); border-left:3px solid var(--steel); border-radius:var(--radius-s);
+    background:#F7F9FA; padding:12px 14px; margin-bottom:16px; font-size:13.5px;
+  }
+  .elig-row{ display:flex; justify-content:space-between; gap:12px; padding:3px 0; }
+  .elig-row span:first-child{ color:var(--ink-soft); }
+  .elig-row b{ font-weight:600; }
+  .elig-notes{ margin-top:8px; padding-top:8px; border-top:1px dashed var(--line); color:var(--ink-soft); font-size:12.5px; }
+  .elig-notes li{ margin-left:16px; }
+
+  .doc-checklist{ display:flex; flex-direction:column; gap:8px; }
+  .doc-item{ border:1px solid var(--line); border-radius:var(--radius-s); padding:10px 12px; background:var(--surface); }
+  .doc-item.done{ border-color:var(--success); background:var(--success-bg); }
+  .doc-item-head{ display:flex; align-items:center; gap:8px; font-size:14px; font-weight:600; margin-bottom:7px; }
+  .doc-req{ font-size:11.5px; font-weight:600; color:var(--danger); background:var(--danger-bg); padding:1px 7px; border-radius:20px; }
+  .doc-item input[type=file]{ font-size:13px; padding:7px 8px; }
+  .doc-files{ font-size:12.5px; color:var(--success); margin-top:5px; }
+
+  .exclusion-box{
+    border:1px solid #E9D9B4; background:var(--warning-bg); border-radius:var(--radius-s);
+    padding:12px 14px; margin-bottom:16px; font-size:13px; color:var(--warning);
+  }
+  .exclusion-box ul{ margin:6px 0 10px; padding-left:18px; }
+  .exclusion-box label{ display:flex; gap:8px; align-items:flex-start; font-size:13.5px; color:var(--ink); font-weight:600; }
+  .exclusion-box input{ width:auto; margin:2px 0 0; accent-color:var(--steel); }
+
+  .block-box{
+    border:1px solid #EFC9C4; background:var(--danger-bg); color:var(--danger);
+    border-radius:var(--radius-s); padding:12px 14px; margin-bottom:14px; font-size:13.5px;
+  }
+  .block-box ul{ margin:5px 0 0; padding-left:18px; }
+  .block-box li{ margin-bottom:3px; }
+
   .modal-actions{ display:flex; justify-content:flex-end; gap:10px; margin-top:16px; }
   .modal-wide{ max-width:560px; }
 
@@ -542,33 +576,47 @@
             <select id="categorySelect" onchange="onCategoryChange()"></select>
           </div>
 
-          <div id="relationField" class="field hidden">
-            <label>ระบุความสัมพันธ์ (เช่น บิดา / มารดา / คู่สมรส / บุตร)</label>
-            <input type="text" id="relationDetail">
-          </div>
+          <div id="eligBox" class="elig-box hidden"></div>
 
-          <div class="field">
-            <label>จำนวนเงินที่เบิก</label>
-            <div class="amount-wrap">
-              <input type="number" id="amountInput" min="0" step="1">
-              <span class="amount-suffix">บาท</span>
+          <div class="form-grid">
+            <div id="relationField" class="field hidden">
+              <label>ความสัมพันธ์</label>
+              <select id="relationSelect" onchange="refreshEligibility()"></select>
+            </div>
+
+            <div id="countField" class="field hidden">
+              <label>จำนวนผู้เสียชีวิต (คน)</label>
+              <input type="number" id="relationCount" min="1" max="10" value="1" onchange="refreshEligibility()">
+            </div>
+
+            <div class="field">
+              <label id="eventDateLabel">วันที่เกิดเหตุ</label>
+              <input type="date" id="eventDateInput" onchange="refreshEligibility()">
+            </div>
+
+            <div class="field">
+              <label>จำนวนเงินที่เบิก</label>
+              <div class="amount-wrap">
+                <input type="number" id="amountInput" min="0" step="1" oninput="onAmountInput()">
+                <span class="amount-suffix">บาท</span>
+              </div>
+              <div class="lookup-hint" id="amountNote"></div>
             </div>
           </div>
 
           <div class="field">
-            <label>รายละเอียดเพิ่มเติม</label>
-            <textarea id="descInput" placeholder="เช่น ชื่อโรค, วันที่เข้ารับการรักษา"></textarea>
+            <label>รายละเอียดเพิ่มเติม / เหตุผลกรณีส่งล่าช้า</label>
+            <textarea id="descInput" placeholder="เช่น ชื่อโรคที่รับการรักษา, ชื่อโรงพยาบาล"></textarea>
           </div>
 
           <div class="field">
-            <label>แนบไฟล์ (ใบเสร็จ / ใบรับรองแพทย์ / เอกสารประกอบ)</label>
-            <div class="file-input-row">
-              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="color:var(--ink-faint); flex-shrink:0;"><path d="M21 11.5 12.5 20a4.5 4.5 0 0 1-6.36-6.36l8.49-8.49a3 3 0 0 1 4.24 4.24l-8.49 8.49a1.5 1.5 0 0 1-2.12-2.12l7.78-7.78"/></svg>
-              <input type="file" id="fileInput" multiple accept="image/*,.pdf">
-            </div>
-            <div id="fileList" class="file-list"></div>
+            <label>เอกสารที่ต้องแนบ</label>
+            <div id="docChecklist" class="doc-checklist"></div>
           </div>
 
+          <div id="exclusionBox" class="exclusion-box hidden"></div>
+
+          <div id="blockBox" class="block-box hidden"></div>
           <div id="submitWarning" class="warning-box hidden"></div>
           <div id="submitError" class="error-msg"></div>
           <button class="btn-primary" onclick="doSubmitClaim()" id="submitBtn" style="width:auto; padding-left:26px; padding-right:26px;">ส่งคำขอเบิก</button>
@@ -767,7 +815,7 @@
 
   <!-- ==================== ADMIN: USER FORM MODAL ==================== -->
   <div id="userModalOverlay" class="modal-overlay hidden" onclick="closeUserModal()">
-    <div class="modal" onclick="event.stopPropagation()">
+    <div class="modal modal-wide" onclick="event.stopPropagation()">
       <h4 id="userModalTitle">เพิ่มพนักงานใหม่</h4>
       <span class="modal-sub">ข้อมูลนี้จะใช้สำหรับเข้าสู่ระบบและกำหนดสิทธิ์การอนุมัติ</span>
       <div class="field">
@@ -781,6 +829,39 @@
       <div class="field">
         <label for="userFormDepartment">แผนก</label>
         <input type="text" id="userFormDepartment" placeholder="เช่น Production">
+      </div>
+      <div class="form-grid">
+        <div class="field">
+          <label for="userFormPosition">ตำแหน่ง</label>
+          <input type="text" id="userFormPosition" placeholder="เช่น ช่างเทคนิค">
+        </div>
+        <div class="field">
+          <label for="userFormDivision">ฝ่าย</label>
+          <input type="text" id="userFormDivision" placeholder="เช่น ฝ่ายผลิต">
+        </div>
+        <div class="field">
+          <label for="userFormCostCenter">Cost Center</label>
+          <input type="text" id="userFormCostCenter">
+        </div>
+        <div class="field">
+          <label for="userFormDeptPhone">เบอร์โทรแผนก</label>
+          <input type="text" id="userFormDeptPhone">
+        </div>
+        <div class="field">
+          <label for="userFormMobile">เบอร์มือถือ</label>
+          <input type="text" id="userFormMobile">
+        </div>
+        <div class="field">
+          <label for="userFormGender">เพศ (ใช้ตัดสินเอกสารแนบ)</label>
+          <select id="userFormGender">
+            <option value="หญิง">หญิง</option>
+            <option value="ชาย">ชาย</option>
+          </select>
+        </div>
+        <div class="field full">
+          <label for="userFormStartDate">วันที่เริ่มงาน (จำเป็นต่อการเช็คอายุงาน)</label>
+          <input type="date" id="userFormStartDate">
+        </div>
       </div>
       <div class="field">
         <label for="userFormRole">บทบาท</label>
@@ -921,7 +1002,6 @@
 
   let CURRENT_USER = null;
   let CATEGORIES = [];
-  let PENDING_FILES = []; // {base64Data, mimeType, filename}
   let PENDING_REJECT_ID = null;
 
   // ---------- TOAST ----------
@@ -1054,20 +1134,183 @@
     }
   }
 
-  // ---------- CATEGORIES & LIMIT ----------
+  // ---------- CATEGORIES, RULES & ELIGIBILITY ----------
+  let RULES = null;            // ผลลัพธ์จาก getWelfareRules
+  let CURRENT_RULE = null;     // กฎของหมวดที่เลือกอยู่
+  let ELIG = null;             // ผลตรวจสิทธิ์ล่าสุดจาก server
+  let DOC_FILES = {};          // { docId: [{base64Data, mimeType, filename}] }
+
   function loadCategories() {
-    callApi('getCategories', {}).then(cats => {
-      CATEGORIES = cats;
+    callApi('getWelfareRules', {}).then(res => {
+      if (!res.success) { showToast('โหลดกฎสวัสดิการไม่สำเร็จ: ' + res.error, 'danger'); return; }
+      RULES = res;
+      CATEGORIES = res.categories;
       const sel = document.getElementById('categorySelect');
-      sel.innerHTML = cats.map(c => `<option value="${c.id}">${c.label}</option>`).join('');
+      sel.innerHTML = res.categories.map(c => `<option value="${c.id}">${c.label}</option>`).join('');
       onCategoryChange();
     });
   }
 
   function onCategoryChange() {
+    if (!RULES) return;
     const catId = document.getElementById('categorySelect').value;
-    const isFamily = catId === 'medical_family' || catId === 'childbirth' || catId === 'bereavement';
-    document.getElementById('relationField').classList.toggle('hidden', !isFamily);
+    CURRENT_RULE = RULES.categories.find(c => c.id === catId);
+    DOC_FILES = {};
+
+    // ความสัมพันธ์
+    const relField = document.getElementById('relationField');
+    relField.classList.toggle('hidden', !CURRENT_RULE.needRelation);
+    if (CURRENT_RULE.needRelation) {
+      document.getElementById('relationSelect').innerHTML =
+        CURRENT_RULE.relations.map(r => `<option value="${r.id}">${r.label}</option>`).join('');
+    }
+
+    // จำนวนคน (กรณีเสียชีวิต)
+    document.getElementById('countField').classList.toggle('hidden', !CURRENT_RULE.needCount);
+
+    // วันที่เกิดเหตุ
+    document.getElementById('eventDateLabel').innerText = CURRENT_RULE.eventDateLabel +
+      ' (ส่งเอกสารภายใน ' + CURRENT_RULE.deadlineDays + ' วัน)';
+
+    // ยอดเงิน
+    const amountInput = document.getElementById('amountInput');
+    const locked = CURRENT_RULE.amountMode !== 'receipt';
+    amountInput.readOnly = locked;
+    amountInput.style.background = locked ? 'var(--line-soft)' : 'var(--surface)';
+    if (CURRENT_RULE.amountMode === 'fixed') amountInput.value = CURRENT_RULE.fixedAmount;
+    if (CURRENT_RULE.amountMode === 'receipt') amountInput.value = '';
+
+    // ข้อยกเว้นที่เบิกไม่ได้
+    const exBox = document.getElementById('exclusionBox');
+    if (CURRENT_RULE.countsMedicalLimit) {
+      exBox.innerHTML = `
+        <b>รายการที่เบิกไม่ได้ (ตามระเบียบบริษัท หน้า 21)</b>
+        <ul>${RULES.medicalExclusions.map(e => `<li>${e}</li>`).join('')}</ul>
+        <label><input type="checkbox" id="exclusionAck" onchange="refreshEligibility()">
+          <span>ข้าพเจ้ารับทราบและยืนยันว่ารายการที่เบิกนี้ไม่ใช่รายการข้างต้น</span></label>`;
+      exBox.classList.remove('hidden');
+    } else {
+      exBox.innerHTML = '';
+      exBox.classList.add('hidden');
+    }
+
+    refreshEligibility();
+  }
+
+  function onAmountInput() {
+    clearTimeout(window._amtTimer);
+    window._amtTimer = setTimeout(refreshEligibility, 500);
+  }
+
+  function collectClaimRequest(validateDocs) {
+    const docsMap = {};
+    Object.keys(DOC_FILES).forEach(k => {
+      if (DOC_FILES[k] && DOC_FILES[k].length) docsMap[k] = DOC_FILES[k].map(f => f.filename);
+    });
+    const ackEl = document.getElementById('exclusionAck');
+    return {
+      categoryId: document.getElementById('categorySelect').value,
+      relationType: CURRENT_RULE && CURRENT_RULE.needRelation ? document.getElementById('relationSelect').value : '',
+      relationCount: CURRENT_RULE && CURRENT_RULE.needCount ? document.getElementById('relationCount').value : '',
+      eventDate: document.getElementById('eventDateInput').value,
+      amount: document.getElementById('amountInput').value,
+      description: document.getElementById('descInput').value,
+      docs: docsMap,
+      exclusionAck: ackEl ? ackEl.checked : false,
+      validateDocs: !!validateDocs
+    };
+  }
+
+  /** ถามสิทธิ์จาก server ทุกครั้งที่ผู้ใช้เปลี่ยนค่า — ไม่คำนวณเองที่ฝั่ง client */
+  function refreshEligibility() {
+    if (!CURRENT_RULE) return;
+    callApi('checkEligibility', {
+      employeeId: CURRENT_USER.employeeId,
+      request: collectClaimRequest(false)
+    }).then(res => {
+      if (!res.success) { showToast(res.error, 'danger'); return; }
+      ELIG = res;
+      renderEligibility(res);
+      renderDocChecklist(res.requiredDocs);
+      if (res.amountLocked) document.getElementById('amountInput').value = res.amount;
+      document.getElementById('amountNote').innerText = res.amountBreakdown || '';
+    }).catch(err => showToast('ตรวจสิทธิ์ไม่สำเร็จ: ' + err.message, 'danger'));
+  }
+
+  function renderEligibility(e) {
+    const box = document.getElementById('eligBox');
+    const rows = [];
+    rows.push(`<div class="elig-row"><span>อายุงาน</span><b>${e.service.text}</b></div>`);
+    if (e.maxTimesLifetime) {
+      const left = Math.max(0, e.maxTimesLifetime - (e.timesUsed || 0));
+      rows.push(`<div class="elig-row"><span>สิทธิ์ตลอดการทำงาน</span><b>ใช้ไป ${e.timesUsed || 0} / ${e.maxTimesLifetime} ครั้ง (เหลือ ${left})</b></div>`);
+    }
+    if (CURRENT_RULE.countsMedicalLimit) {
+      rows.push(`<div class="elig-row"><span>วงเงินรักษาพยาบาลปีนี้</span><b>คงเหลือ ${Number(e.medicalUsage.remaining).toLocaleString()} บาท</b></div>`);
+    }
+    rows.push(`<div class="elig-row"><span>กำหนดส่งเอกสาร</span><b>ภายใน ${e.deadlineDays} วัน นับจาก${e.eventDateLabel}</b></div>`);
+    const notes = (e.notes || []).length
+      ? `<div class="elig-notes"><ul>${e.notes.map(n => `<li>${n}</li>`).join('')}</ul></div>` : '';
+    box.innerHTML = rows.join('') + notes;
+    box.classList.remove('hidden');
+
+    // ข้อห้าม (block) — ปิดปุ่มส่งไว้เลย
+    const blockBox = document.getElementById('blockBox');
+    const hardBlocks = (e.blocks || []).filter(b => b.indexOf('กรุณา') !== 0 && b.indexOf('ยังไม่ได้แนบ') !== 0);
+    if (hardBlocks.length) {
+      blockBox.innerHTML = `<b>ยังไม่สามารถยื่นคำขอนี้ได้</b><ul>${hardBlocks.map(b => `<li>${b}</li>`).join('')}</ul>`;
+      blockBox.classList.remove('hidden');
+    } else {
+      blockBox.innerHTML = '';
+      blockBox.classList.add('hidden');
+    }
+    document.getElementById('submitBtn').disabled = hardBlocks.length > 0;
+
+    const warnDiv = document.getElementById('submitWarning');
+    if ((e.warnings || []).length) {
+      warnDiv.innerHTML = ICONS.warning + `<span>${e.warnings.join('<br>')}</span>`;
+      warnDiv.classList.remove('hidden');
+    } else {
+      warnDiv.classList.add('hidden');
+    }
+  }
+
+  function renderDocChecklist(docs) {
+    const wrap = document.getElementById('docChecklist');
+    if (!docs || !docs.length) { wrap.innerHTML = '<div class="lookup-hint">ไม่มีเอกสารบังคับสำหรับกรณีนี้</div>'; return; }
+    wrap.innerHTML = docs.map(d => {
+      const files = DOC_FILES[d.id] || [];
+      return `
+      <div class="doc-item ${files.length ? 'done' : ''}" id="docItem-${d.id}">
+        <div class="doc-item-head">
+          ${files.length ? ICONS.check : ICONS.paperclip}
+          <span>${d.label}</span>
+          ${d.required ? '<span class="doc-req">ต้องแนบ</span>' : ''}
+        </div>
+        <input type="file" multiple accept="image/*,.pdf" onchange="onDocFileChange('${d.id}', this)">
+        ${files.length ? `<div class="doc-files">แนบแล้ว ${files.length} ไฟล์: ${files.map(f => f.filename).join(', ')}</div>` : ''}
+      </div>`;
+    }).join('');
+  }
+
+  function onDocFileChange(docId, input) {
+    const files = Array.from(input.files);
+    if (!files.length) { DOC_FILES[docId] = []; renderDocChecklist(ELIG.requiredDocs); return; }
+    DOC_FILES[docId] = [];
+    let loaded = 0;
+    files.forEach(file => {
+      const reader = new FileReader();
+      reader.onload = function(evt) {
+        DOC_FILES[docId].push({
+          base64Data: evt.target.result.split(',')[1],
+          mimeType: file.type,
+          filename: file.name
+        });
+        loaded++;
+        if (loaded === files.length) renderDocChecklist(ELIG.requiredDocs);
+      };
+      reader.readAsDataURL(file);
+    });
   }
 
   function loadLimitBox() {
@@ -1087,81 +1330,75 @@
     });
   }
 
-  // ---------- FILE HANDLING ----------
-  document.getElementById('fileInput').addEventListener('change', function(e) {
-    PENDING_FILES = [];
-    const files = Array.from(e.target.files);
-    const listDiv = document.getElementById('fileList');
-    listDiv.innerText = 'กำลังอ่านไฟล์...';
-    let loaded = 0;
-    if (files.length === 0) { listDiv.innerHTML = ''; return; }
-    files.forEach(file => {
-      const reader = new FileReader();
-      reader.onload = function(evt) {
-        const base64 = evt.target.result.split(',')[1];
-        PENDING_FILES.push({ base64Data: base64, mimeType: file.type, filename: file.name });
-        loaded++;
-        if (loaded === files.length) {
-          listDiv.innerHTML = PENDING_FILES.map(f => `<span class="file-chip">${ICONS.paperclip}${f.filename}</span>`).join('');
-        }
-      };
-      reader.readAsDataURL(file);
-    });
-  });
-
   // ---------- SUBMIT CLAIM ----------
   function doSubmitClaim() {
-    const categoryId = document.getElementById('categorySelect').value;
-    const relationDetail = document.getElementById('relationField').classList.contains('hidden')
-      ? '' : document.getElementById('relationDetail').value;
-    const amount = document.getElementById('amountInput').value;
-    const description = document.getElementById('descInput').value;
     const errDiv = document.getElementById('submitError');
-    const warnDiv = document.getElementById('submitWarning');
+    const btn = document.getElementById('submitBtn');
     errDiv.innerText = '';
-    warnDiv.classList.add('hidden');
 
-    if (!amount || Number(amount) <= 0) {
-      errDiv.innerText = 'กรุณากรอกจำนวนเงินให้ถูกต้อง';
-      return;
-    }
-
-    document.getElementById('submitBtn').disabled = true;
-    document.getElementById('submitBtn').innerText = 'กำลังอัปโหลดไฟล์...';
-
-    uploadAllFiles(PENDING_FILES, 0, [], (attachmentLinks) => {
-      document.getElementById('submitBtn').innerText = 'กำลังส่งคำขอ...';
-      const claimData = {
-        employeeId: CURRENT_USER.employeeId,
-        name: CURRENT_USER.name,
-        department: CURRENT_USER.department,
-        categoryId, relationDetail, amount, description, attachmentLinks
-      };
-      callApi('submitClaim', { claimData })
-        .then(res => {
-          document.getElementById('submitBtn').disabled = false;
-          document.getElementById('submitBtn').innerText = 'ส่งคำขอเบิก';
-          if (!res.success) {
-            errDiv.innerText = res.error;
-            return;
+    // ตรวจครั้งสุดท้ายรวมเอกสารแนบ (server จะตรวจซ้ำอีกรอบอยู่ดี)
+    btn.disabled = true;
+    btn.innerText = 'กำลังตรวจสิทธิ์...';
+    callApi('checkEligibility', {
+      employeeId: CURRENT_USER.employeeId,
+      request: collectClaimRequest(true)
+    }).then(check => {
+      if (!check.success) { throw new Error(check.error); }
+      if (!check.eligible) {
+        btn.disabled = false;
+        btn.innerText = 'ส่งคำขอเบิก';
+        const box = document.getElementById('blockBox');
+        box.innerHTML = `<b>ยังส่งไม่ได้</b><ul>${check.blocks.map(b => `<li>${b}</li>`).join('')}</ul>`;
+        box.classList.remove('hidden');
+        return;
+      }
+      btn.innerText = 'กำลังอัปโหลดเอกสาร...';
+      uploadDocs(Object.keys(DOC_FILES), 0, {}, (docLinks) => {
+        btn.innerText = 'กำลังส่งคำขอ...';
+        callApi('submitClaim', {
+          claimData: {
+            employeeId: CURRENT_USER.employeeId,
+            name: CURRENT_USER.name,
+            department: CURRENT_USER.department,
+            categoryId: document.getElementById('categorySelect').value,
+            relationType: CURRENT_RULE.needRelation ? document.getElementById('relationSelect').value : '',
+            relationCount: CURRENT_RULE.needCount ? document.getElementById('relationCount').value : '',
+            eventDate: document.getElementById('eventDateInput').value,
+            amount: document.getElementById('amountInput').value,
+            description: document.getElementById('descInput').value,
+            docs: docLinks,
+            exclusionAck: document.getElementById('exclusionAck')
+              ? document.getElementById('exclusionAck').checked : false
           }
+        }).then(res => {
+          btn.disabled = false;
+          btn.innerText = 'ส่งคำขอเบิก';
+          if (!res.success) { errDiv.innerText = res.error; return; }
           if (res.warning) {
-            warnDiv.innerHTML = ICONS.warning + `<span>${res.warning}</span>`;
-            warnDiv.classList.remove('hidden');
+            const w = document.getElementById('submitWarning');
+            w.innerHTML = ICONS.warning + `<span>${res.warning.replace(/\n/g, '<br>')}</span>`;
+            w.classList.remove('hidden');
           }
-          showToast('ส่งคำขอเบิกเรียบร้อยแล้ว · รหัส ' + res.claimId, 'success');
-          document.getElementById('amountInput').value = '';
-          document.getElementById('descInput').value = '';
-          document.getElementById('fileInput').value = '';
-          document.getElementById('fileList').innerHTML = '';
-          PENDING_FILES = [];
+          showToast('ส่งคำขอเบิก ' + Number(res.amount).toLocaleString() + ' บาท เรียบร้อย · ' + res.claimId, 'success');
+          resetClaimForm();
           loadLimitBox();
-        })
-        .catch(err => {
-          document.getElementById('submitBtn').disabled = false;
-          document.getElementById('submitBtn').innerText = 'ส่งคำขอเบิก';
-          errDiv.innerText = 'เกิดข้อผิดพลาด: ' + err.message;
         });
+      });
+    }).catch(err => {
+      btn.disabled = false;
+      btn.innerText = 'ส่งคำขอเบิก';
+      errDiv.innerText = 'เกิดข้อผิดพลาด: ' + err.message;
+    });
+  }
+
+  /** อัปโหลดไฟล์แยกตามชนิดเอกสาร แล้วคืน { docId: [url, ...] } */
+  function uploadDocs(docIds, idx, acc, callback) {
+    if (idx >= docIds.length) { callback(acc); return; }
+    const docId = docIds[idx];
+    const files = DOC_FILES[docId] || [];
+    uploadAllFiles(files, 0, [], (urls) => {
+      if (urls.length) acc[docId] = urls;
+      uploadDocs(docIds, idx + 1, acc, callback);
     });
   }
 
@@ -1173,6 +1410,16 @@
         uploadAllFiles(files, idx + 1, results, callback);
       })
       .catch(() => uploadAllFiles(files, idx + 1, results, callback));
+  }
+
+  function resetClaimForm() {
+    DOC_FILES = {};
+    document.getElementById('descInput').value = '';
+    document.getElementById('eventDateInput').value = '';
+    if (CURRENT_RULE.amountMode === 'receipt') document.getElementById('amountInput').value = '';
+    const ack = document.getElementById('exclusionAck');
+    if (ack) ack.checked = false;
+    refreshEligibility();
   }
 
   // ---------- HISTORY ----------
@@ -1234,10 +1481,15 @@
           </div>
           <div class="claim-meta">
             <span class="claim-meta-item">${c.CategoryLabel}</span>
-            <span class="claim-meta-item">${ICONS.calendar}${formatDate(c.Timestamp)}</span>
+            <span class="claim-meta-item">${ICONS.calendar}ยื่น ${formatDate(c.Timestamp)}</span>
+            ${c.EventDate ? `<span class="claim-meta-item">${ICONS.pulse}วันที่เกิดเหตุ ${formatDate(c.EventDate)}</span>` : ''}
+            ${c.ServiceYears ? `<span class="claim-meta-item">อายุงาน ${c.ServiceYears}</span>` : ''}
+            ${c.RelationCount ? `<span class="claim-meta-item">${c.RelationCount} คน</span>` : ''}
           </div>
           ${c.Description || c.RelationDetail ? `<div class="claim-desc">${c.Description || ''}${c.RelationDetail ? ' · ความสัมพันธ์: ' + c.RelationDetail : ''}</div>` : ''}
           ${c.AttachmentLinks ? `<div class="claim-attachments">${c.AttachmentLinks.split(',').map(l => `<a href="${l.trim()}" target="_blank">${ICONS.paperclip}ไฟล์แนบ</a>`).join('')}</div>` : ''}
+          ${docChips(c.DocsProvided)}
+          ${c.RulesWarnings ? `<div class="warning-box">${ICONS.warning}<span>${String(c.RulesWarnings).split(' | ').join('<br>')}</span></div>` : ''}
           ${showLimitWarn ? `<div class="warning-box">${ICONS.warning}<span>พนักงานคนนี้เบิกค่ารักษาพยาบาลรวมเกินวงเงิน 15,000/ปี แล้ว (ใช้ไป ${usage.used.toLocaleString()} บาท)</span></div>` : ''}
           <div class="claim-actions">
             <button class="btn-approve" onclick="doDecide('${c.ClaimID}','approve')">${ICONS.check}อนุมัติ</button>
@@ -1246,6 +1498,21 @@
         </div>
       `}).join('');
     });
+  }
+
+  /** แสดงเอกสารแนบแยกตามชนิด ให้ผู้อนุมัติเห็นว่าแนบอะไรมาบ้าง */
+  function docChips(docsJson) {
+    if (!docsJson) return '';
+    let map;
+    try { map = JSON.parse(docsJson); } catch (e) { return ''; }
+    const labels = (RULES && RULES.docTypes) || {};
+    const keys = Object.keys(map).filter(k => (map[k] || []).length);
+    if (!keys.length) return '';
+    return '<div class="claim-attachments">' + keys.map(k =>
+      (map[k] || []).map((url, i) =>
+        `<a href="${url}" target="_blank">${ICONS.paperclip}${labels[k] || k}${(map[k].length > 1 ? ' (' + (i + 1) + ')' : '')}</a>`
+      ).join('')
+    ).join('') + '</div>';
   }
 
   function doDecide(claimId, decision) {
@@ -1312,13 +1579,15 @@
         return;
       }
       wrap.innerHTML = `<div class="admin-table-scroll"><table class="admin-table">
-        <thead><tr><th>รหัสพนักงาน</th><th>ชื่อ</th><th>แผนก</th><th>บทบาท</th><th>สถานะ</th><th></th></tr></thead>
+        <thead><tr><th>รหัสพนักงาน</th><th>ชื่อ</th><th>แผนก</th><th>ตำแหน่ง</th><th>วันที่เริ่มงาน</th><th>บทบาท</th><th>สถานะ</th><th></th></tr></thead>
         <tbody>${ADMIN_USERS.map(u => {
           const isActive = !(u.Active === false || String(u.Active).toUpperCase() === 'FALSE');
           return `<tr>
             <td class="mono">${u.EmployeeID}</td>
             <td>${u.Name}</td>
             <td>${u.Department}</td>
+            <td>${u.Position || '-'}</td>
+            <td>${u.StartDate || '<span style="color:var(--danger)">ยังไม่กรอก</span>'}</td>
             <td>${roleLabel(u.Role)}</td>
             <td>${isActive ? '<span class="status-badge status-approved">ใช้งาน</span>' : '<span class="status-badge status-rejected">ระงับ</span>'}</td>
             <td class="admin-row-actions">
@@ -1339,6 +1608,13 @@
     document.getElementById('userFormEmployeeId').disabled = !!existing;
     document.getElementById('userFormName').value = existing ? existing.Name : '';
     document.getElementById('userFormDepartment').value = existing ? existing.Department : '';
+    document.getElementById('userFormPosition').value = existing ? (existing.Position || '') : '';
+    document.getElementById('userFormDivision').value = existing ? (existing.Division || '') : '';
+    document.getElementById('userFormCostCenter').value = existing ? (existing.CostCenter || '') : '';
+    document.getElementById('userFormDeptPhone').value = existing ? (existing.DeptPhone || '') : '';
+    document.getElementById('userFormMobile').value = existing ? (existing.Mobile || '') : '';
+    document.getElementById('userFormGender').value = existing && existing.Gender ? existing.Gender : 'หญิง';
+    document.getElementById('userFormStartDate').value = existing ? (existing.StartDate || '') : '';
     document.getElementById('userFormRole').value = existing ? existing.Role : 'employee';
     document.getElementById('userFormPin').value = '';
     document.getElementById('userFormPin').placeholder = existing ? '(เว้นว่างไว้ถ้าไม่เปลี่ยนรหัสผ่าน)' : 'กำหนดรหัสผ่าน';
@@ -1372,7 +1648,16 @@
     callApi('saveUser', {
       role: CURRENT_USER.role,
       isNew: isNew,
-      userData: { employeeId, name, department, role, pin, active }
+      userData: {
+        employeeId, name, department, role, pin, active,
+        position: document.getElementById('userFormPosition').value.trim(),
+        division: document.getElementById('userFormDivision').value.trim(),
+        costCenter: document.getElementById('userFormCostCenter').value.trim(),
+        deptPhone: document.getElementById('userFormDeptPhone').value.trim(),
+        mobile: document.getElementById('userFormMobile').value.trim(),
+        gender: document.getElementById('userFormGender').value,
+        startDate: document.getElementById('userFormStartDate').value
+      }
     }).then(res => {
       if (!res.success) { errDiv.innerText = res.error; return; }
       closeUserModal();
