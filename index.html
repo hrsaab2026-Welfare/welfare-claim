@@ -124,8 +124,27 @@
   .sidebar{
     width:246px; background:var(--steel-dark); color:#fff; flex-shrink:0;
     display:flex; flex-direction:column; position:sticky; top:0; height:100vh;
+    transition:width .2s ease; overflow:hidden;
   }
+  .sidebar.collapsed{ width:76px; }
+  .sidebar-toggle{
+    position:absolute; top:24px; right:-13px; width:26px; height:26px; border-radius:50%;
+    background:var(--surface); border:1px solid var(--line); color:var(--steel-dark);
+    display:flex; align-items:center; justify-content:center; cursor:pointer; z-index:3;
+    box-shadow:0 1px 5px rgba(0,0,0,0.2); padding:0;
+  }
+  .sidebar-toggle:hover{ background:var(--line-soft); }
+  .sidebar-toggle svg{ transition:transform .2s ease; }
+  .sidebar.collapsed .sidebar-toggle svg{ transform:rotate(180deg); }
   .sidebar-brand{ padding:22px 20px; border-bottom:1px solid rgba(255,255,255,0.1); display:flex; gap:12px; align-items:center; }
+  .sidebar.collapsed .sidebar-brand{ padding:22px 0; justify-content:center; }
+  .sidebar.collapsed .sidebar-brand-text,
+  .sidebar.collapsed .sidebar-user,
+  .sidebar.collapsed .nav-item span,
+  .sidebar.collapsed .sidebar-logout span{ display:none; }
+  .sidebar.collapsed .nav-item{ justify-content:center; padding:11px 0; }
+  .sidebar.collapsed .sidebar-logout{ justify-content:center; }
+  @media (max-width:800px){ .sidebar-toggle{ display:none; } }
   .brand-mark-sm{
     width:34px; height:34px; flex-shrink:0; border-radius:4px; background:var(--copper);
     color:#fff; font-family:var(--font-mono); font-weight:600; font-size:11px;
@@ -163,6 +182,7 @@
   .topbar{
     display:none; background:var(--steel-dark); color:#fff; padding:14px 16px;
     align-items:center; gap:12px; position:sticky; top:0; z-index:5;
+    border-bottom:3px solid var(--copper);
   }
   .hamburger-btn{ background:none; border:none; color:#fff; padding:4px; cursor:pointer; display:flex; }
   .topbar-brand{ display:flex; align-items:center; gap:10px; }
@@ -173,18 +193,23 @@
 
   .content-header{
     display:flex; align-items:center; justify-content:space-between; gap:20px;
-    background:var(--surface); border-bottom:1px solid var(--line);
-    padding:21px 32px; position:sticky; top:0; z-index:5;
+    background:var(--surface); border-bottom:1px solid var(--line-soft);
+    box-shadow:0 1px 0 rgba(18,42,62,0.04), 0 6px 16px -10px rgba(18,42,62,0.18);
+    padding:19px 32px; position:sticky; top:0; z-index:5;
   }
-  .content-header-title h2{ font-size:19px; }
-  .content-header-sub{ display:block; font-size:13px; color:var(--ink-soft); margin-top:3px; }
-  .content-header-user{ display:flex; align-items:center; gap:12px; flex-shrink:0; }
+  .content-header-title h2{ font-size:19px; letter-spacing:-0.01em; }
+  .content-header-sub{
+    display:block; font-size:11.5px; color:var(--ink-faint); margin-top:4px;
+    text-transform:uppercase; letter-spacing:0.05em; font-weight:600;
+  }
+  .content-header-user{ display:flex; align-items:center; gap:14px; flex-shrink:0; padding-left:18px; border-left:1px solid var(--line-soft); }
   .chu-name{ font-size:13.5px; font-weight:600; text-align:right; }
   .chu-role{ font-size:12px; color:var(--ink-soft); text-align:right; margin-top:1px; }
   .chu-avatar{
-    width:38px; height:38px; border-radius:50%; background:var(--steel); color:#fff;
+    width:38px; height:38px; border-radius:50%; color:#fff;
+    background:linear-gradient(135deg, var(--steel), var(--steel-dark));
     display:flex; align-items:center; justify-content:center; font-weight:600; font-size:14px;
-    flex-shrink:0; font-family:var(--font-mono);
+    flex-shrink:0; font-family:var(--font-mono); box-shadow:0 0 0 3px var(--copper-soft);
   }
 
   .sidebar-overlay{ display:none; position:fixed; inset:0; background:rgba(12,20,28,0.5); z-index:10; }
@@ -309,6 +334,43 @@
   .toast.success{ border-left-color:var(--success); }
   .toast.danger{ border-left-color:var(--danger); }
 
+  /* ---------- admin panel ---------- */
+  .admin-subtabs{ display:flex; gap:0; margin-bottom:18px; border-bottom:1px solid var(--line); }
+  .admin-subtab-btn{
+    background:none; border:none; padding:10px 4px; margin-right:22px; font-size:14px;
+    font-weight:600; color:var(--ink-soft); cursor:pointer; border-bottom:2px solid transparent;
+    transition:color .15s ease, border-color .15s ease;
+  }
+  .admin-subtab-btn:hover{ color:var(--ink); }
+  .admin-subtab-btn.active{ color:var(--steel); border-bottom-color:var(--steel); }
+
+  .card-head-row{ display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; margin-bottom:20px; }
+  .card-head-row .card-head{ margin-bottom:0; }
+
+  .btn-inline{ width:auto; padding:9px 16px; font-size:13.5px; display:inline-flex; align-items:center; gap:7px; }
+
+  .checkbox-row{ display:flex; align-items:center; gap:9px; }
+  .checkbox-row input[type=checkbox]{ width:auto; accent-color:var(--steel); }
+
+  .admin-table-scroll{ overflow-x:auto; margin:-4px -4px 0; }
+  .admin-table{ width:100%; border-collapse:collapse; font-size:13.5px; min-width:520px; }
+  .admin-table th{
+    text-align:left; padding:9px 12px; font-size:11.5px; text-transform:uppercase;
+    letter-spacing:0.04em; color:var(--ink-faint); border-bottom:1px solid var(--line); font-weight:700;
+  }
+  .admin-table td{ padding:11px 12px; border-bottom:1px solid var(--line-soft); vertical-align:middle; }
+  .admin-table tr:last-child td{ border-bottom:none; }
+  .admin-table .mono{ font-family:var(--font-mono); font-size:12.5px; }
+  .admin-row-actions{ display:flex; gap:6px; justify-content:flex-end; }
+
+  .icon-btn{
+    width:30px; height:30px; border:1px solid var(--line); background:var(--surface);
+    border-radius:var(--radius-s); display:inline-flex; align-items:center; justify-content:center;
+    cursor:pointer; color:var(--ink-soft); transition:background .15s ease, color .15s ease;
+  }
+  .icon-btn:hover{ background:var(--line-soft); color:var(--ink); }
+  .icon-btn-danger:hover{ background:var(--danger-bg); color:var(--danger); border-color:#EFC9C4; }
+
   /* ---------- modal ---------- */
   .modal-overlay{
     position:fixed; inset:0; background:rgba(12,20,28,0.5); z-index:40;
@@ -359,6 +421,9 @@
     <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
 
     <aside class="sidebar" id="sidebar">
+      <button class="sidebar-toggle" id="sidebarToggleBtn" onclick="toggleSidebarCollapse()" aria-label="ย่อ/ขยายเมนู" title="ย่อ/ขยายเมนู">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
       <div class="sidebar-brand">
         <div class="brand-mark-sm">SAB</div>
         <div class="sidebar-brand-text">
@@ -370,7 +435,7 @@
         <div class="name" id="userNameDisplay"></div>
       </div>
       <nav class="sidebar-nav" id="tabBar"></nav>
-      <button class="sidebar-logout" onclick="logout()">
+      <button class="sidebar-logout" onclick="logout()" title="ออกจากระบบ">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
         ออกจากระบบ
       </button>
@@ -458,6 +523,46 @@
             <div id="approvalList"><div class="spinner"><span class="spinner-ring"></span>กำลังโหลด...</div></div>
           </div>
         </div>
+
+        <!-- TAB: จัดการระบบ (admin only) -->
+        <div id="tabAdmin" class="tab-content hidden">
+          <div class="admin-subtabs">
+            <button class="admin-subtab-btn active" id="adminSubBtn-users" onclick="showAdminSubTab('users')">พนักงาน</button>
+            <button class="admin-subtab-btn" id="adminSubBtn-depts" onclick="showAdminSubTab('depts')">แผนก / หัวหน้างาน</button>
+          </div>
+
+          <div id="adminSubUsers" class="admin-subtab-content">
+            <div class="card">
+              <div class="card-head-row">
+                <div class="card-head">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="color:var(--steel)"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                  <h3>รายชื่อพนักงาน</h3>
+                </div>
+                <button class="btn-primary btn-inline" onclick="openUserModal()">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                  เพิ่มพนักงาน
+                </button>
+              </div>
+              <div id="adminUsersTableWrap"><div class="spinner"><span class="spinner-ring"></span>กำลังโหลด...</div></div>
+            </div>
+          </div>
+
+          <div id="adminSubDepts" class="admin-subtab-content hidden">
+            <div class="card">
+              <div class="card-head-row">
+                <div class="card-head">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="color:var(--steel)"><rect x="3" y="4" width="18" height="16" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="8" y1="4" x2="8" y2="10"/></svg>
+                  <h3>แผนกและหัวหน้างาน</h3>
+                </div>
+                <button class="btn-primary btn-inline" onclick="openDeptModal()">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                  เพิ่มแผนก
+                </button>
+              </div>
+              <div id="adminDeptsTableWrap"><div class="spinner"><span class="spinner-ring"></span>กำลังโหลด...</div></div>
+            </div>
+          </div>
+        </div>
       </div> <!-- /.container -->
     </div> <!-- /.main-content -->
   </div> <!-- /.app-layout -->
@@ -471,6 +576,82 @@
       <div class="modal-actions">
         <button class="btn-secondary" onclick="closeModal()">ยกเลิก</button>
         <button class="btn-reject" onclick="confirmReject()">ยืนยันปฏิเสธ</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== ADMIN: USER FORM MODAL ==================== -->
+  <div id="userModalOverlay" class="modal-overlay hidden" onclick="closeUserModal()">
+    <div class="modal" onclick="event.stopPropagation()">
+      <h4 id="userModalTitle">เพิ่มพนักงานใหม่</h4>
+      <span class="modal-sub">ข้อมูลนี้จะใช้สำหรับเข้าสู่ระบบและกำหนดสิทธิ์การอนุมัติ</span>
+      <div class="field">
+        <label for="userFormEmployeeId">รหัสพนักงาน</label>
+        <input type="text" id="userFormEmployeeId" placeholder="เช่น EMP002">
+      </div>
+      <div class="field">
+        <label for="userFormName">ชื่อ-นามสกุล</label>
+        <input type="text" id="userFormName">
+      </div>
+      <div class="field">
+        <label for="userFormDepartment">แผนก</label>
+        <input type="text" id="userFormDepartment" placeholder="เช่น Production">
+      </div>
+      <div class="field">
+        <label for="userFormRole">บทบาท</label>
+        <select id="userFormRole">
+          <option value="employee">พนักงาน</option>
+          <option value="supervisor">หัวหน้างาน</option>
+          <option value="hr">ฝ่ายบุคคล</option>
+          <option value="accounting">ฝ่ายบัญชี</option>
+          <option value="admin">แอดมิน</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="userFormPin">PIN (ตัวเลข 4 หลัก)</label>
+        <input type="password" id="userFormPin" inputmode="numeric" placeholder="ตัวเลข 4 หลัก">
+      </div>
+      <div class="field checkbox-row">
+        <input type="checkbox" id="userFormActive" checked>
+        <label for="userFormActive" style="margin:0;">เปิดใช้งานบัญชีนี้</label>
+      </div>
+      <div id="userFormError" class="error-msg"></div>
+      <div class="modal-actions">
+        <button class="btn-secondary" onclick="closeUserModal()">ยกเลิก</button>
+        <button class="btn-primary btn-inline" onclick="saveUserForm()">บันทึก</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== ADMIN: DEPARTMENT FORM MODAL ==================== -->
+  <div id="deptModalOverlay" class="modal-overlay hidden" onclick="closeDeptModal()">
+    <div class="modal" onclick="event.stopPropagation()">
+      <h4 id="deptModalTitle">เพิ่มแผนกใหม่</h4>
+      <span class="modal-sub">กำหนดชื่อแผนกและรหัสพนักงานของหัวหน้างานที่จะอนุมัติคำขอของแผนกนี้</span>
+      <div class="field">
+        <label for="deptFormName">ชื่อแผนก</label>
+        <input type="text" id="deptFormName" placeholder="เช่น Production">
+      </div>
+      <div class="field">
+        <label for="deptFormSupervisor">รหัสพนักงานหัวหน้างาน</label>
+        <input type="text" id="deptFormSupervisor" placeholder="เช่น EMP010">
+      </div>
+      <div id="deptFormError" class="error-msg"></div>
+      <div class="modal-actions">
+        <button class="btn-secondary" onclick="closeDeptModal()">ยกเลิก</button>
+        <button class="btn-primary btn-inline" onclick="saveDeptForm()">บันทึก</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== ADMIN: DELETE CONFIRM MODAL ==================== -->
+  <div id="confirmDeleteOverlay" class="modal-overlay hidden" onclick="closeConfirmDelete()">
+    <div class="modal" onclick="event.stopPropagation()">
+      <h4>ยืนยันการลบ</h4>
+      <span class="modal-sub" id="confirmDeleteText">การลบไม่สามารถย้อนกลับได้</span>
+      <div class="modal-actions">
+        <button class="btn-secondary" onclick="closeConfirmDelete()">ยกเลิก</button>
+        <button class="btn-reject" onclick="runConfirmedDelete()">ยืนยันลบ</button>
       </div>
     </div>
   </div>
@@ -490,7 +671,10 @@
     tray: '<svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.5 5.5 4h13L21 8.5"/><path d="M3 8.5v9.5a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V8.5"/><path d="M3 8.5h5l1.8 3h4.4l1.8-3h5"/></svg>',
     edit: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>',
     list: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="4.5" cy="6" r="1"/><line x1="8.5" y1="6" x2="20" y2="6"/><circle cx="4.5" cy="12" r="1"/><line x1="8.5" y1="12" x2="20" y2="12"/><circle cx="4.5" cy="18" r="1"/><line x1="8.5" y1="18" x2="20" y2="18"/></svg>',
-    shield: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5 19 6.5v5.6c0 4.6-3 7.7-7 9.1-4-1.4-7-4.5-7-9.1V6.5l7-3z"/><path d="M9 12.3l2 2 4-4.2"/></svg>'
+    shield: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5 19 6.5v5.6c0 4.6-3 7.7-7 9.1-4-1.4-7-4.5-7-9.1V6.5l7-3z"/><path d="M9 12.3l2 2 4-4.2"/></svg>',
+    settings: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.6a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>',
+    plus: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>',
+    trash: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>'
   };
 
   /**
@@ -557,7 +741,8 @@
   const TAB_META = {
     submit: { title: 'ยื่นคำขอเบิกสวัสดิการ', sub: 'กรอกแบบฟอร์มเพื่อยื่นคำขอเบิกสวัสดิการ' },
     history: { title: 'ประวัติการเบิกของฉัน', sub: 'ตรวจสอบสถานะคำขอที่เคยยื่นทั้งหมด' },
-    approve: { title: 'รายการรออนุมัติ', sub: 'ตรวจสอบและอนุมัติคำขอจากพนักงาน' }
+    approve: { title: 'รายการรออนุมัติ', sub: 'ตรวจสอบและอนุมัติคำขอจากพนักงาน' },
+    admin: { title: 'จัดการระบบ', sub: 'เพิ่ม แก้ไข หรือลบข้อมูลพนักงานและแผนก · สำหรับแอดมิน' }
   };
 
   // ---------- APP INIT ----------
@@ -573,6 +758,7 @@
     buildTabs();
     loadCategories();
     loadLimitBox();
+    restoreSidebarCollapseState();
     showTab('submit');
   }
 
@@ -582,16 +768,19 @@
 
   function buildTabs() {
     const bar = document.getElementById('tabBar');
-    let html = `<button class="nav-item" id="tabBtn-submit" onclick="showTab('submit')">${ICONS.edit}<span>ยื่นคำขอ</span></button>
-                <button class="nav-item" id="tabBtn-history" onclick="showTab('history')">${ICONS.list}<span>ประวัติของฉัน</span></button>`;
+    let html = `<button class="nav-item" id="tabBtn-submit" onclick="showTab('submit')" title="ยื่นคำขอ">${ICONS.edit}<span>ยื่นคำขอ</span></button>
+                <button class="nav-item" id="tabBtn-history" onclick="showTab('history')" title="ประวัติของฉัน">${ICONS.list}<span>ประวัติของฉัน</span></button>`;
     if (['supervisor','hr','accounting','admin'].indexOf(CURRENT_USER.role) !== -1) {
-      html += `<button class="nav-item" id="tabBtn-approve" onclick="showTab('approve')">${ICONS.shield}<span>รออนุมัติ</span></button>`;
+      html += `<button class="nav-item" id="tabBtn-approve" onclick="showTab('approve')" title="รออนุมัติ">${ICONS.shield}<span>รออนุมัติ</span></button>`;
+    }
+    if (CURRENT_USER.role === 'admin') {
+      html += `<button class="nav-item" id="tabBtn-admin" onclick="showTab('admin')" title="จัดการระบบ">${ICONS.settings}<span>จัดการระบบ</span></button>`;
     }
     bar.innerHTML = html;
   }
 
   function showTab(name) {
-    ['submit','history','approve'].forEach(t => {
+    ['submit','history','approve','admin'].forEach(t => {
       const content = document.getElementById('tab' + capitalize(t));
       const btn = document.getElementById('tabBtn-' + t);
       if (content) content.classList.toggle('hidden', t !== name);
@@ -604,6 +793,7 @@
     }
     if (name === 'history') loadHistory();
     if (name === 'approve') loadApprovals();
+    if (name === 'admin') showAdminSubTab('users');
     closeSidebar();
   }
   function capitalize(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
@@ -616,6 +806,17 @@
   function closeSidebar() {
     document.getElementById('sidebar').classList.remove('open');
     document.getElementById('sidebarOverlay').classList.remove('show');
+  }
+
+  // ---------- SIDEBAR (desktop collapse) ----------
+  function toggleSidebarCollapse() {
+    const collapsed = document.getElementById('sidebar').classList.toggle('collapsed');
+    localStorage.setItem('welfare_sidebar_collapsed', collapsed ? '1' : '0');
+  }
+  function restoreSidebarCollapseState() {
+    if (window.innerWidth > 800 && localStorage.getItem('welfare_sidebar_collapsed') === '1') {
+      document.getElementById('sidebar').classList.add('collapsed');
+    }
   }
 
   // ---------- CATEGORIES & LIMIT ----------
@@ -846,6 +1047,192 @@
         }
       })
       .catch(err => showToast('เกิดข้อผิดพลาด: ' + err.message, 'danger'));
+  }
+
+  // ---------- ADMIN PANEL ----------
+  let ADMIN_USERS = [];
+  let ADMIN_DEPTS = [];
+  let EDITING_USER_ID = null; // null = adding a new user
+  let EDITING_DEPT_KEY = null; // null = adding a new department
+  let ADMIN_DELETE_TARGET = null; // { type: 'user'|'dept', id }
+
+  function showAdminSubTab(name) {
+    ['users', 'depts'].forEach(t => {
+      document.getElementById('adminSub' + capitalize(t)).classList.toggle('hidden', t !== name);
+      document.getElementById('adminSubBtn-' + t).classList.toggle('active', t === name);
+    });
+    if (name === 'users') loadAdminUsers();
+    if (name === 'depts') loadAdminDepts();
+  }
+
+  // ---- Users ----
+  function loadAdminUsers() {
+    const wrap = document.getElementById('adminUsersTableWrap');
+    wrap.innerHTML = '<div class="spinner"><span class="spinner-ring"></span>กำลังโหลด...</div>';
+    callApi('getAdminUsers', { role: CURRENT_USER.role }).then(res => {
+      if (!res.success) { wrap.innerHTML = `<div class="error-msg">${res.error}</div>`; return; }
+      ADMIN_USERS = res.users;
+      if (ADMIN_USERS.length === 0) {
+        wrap.innerHTML = `<div class="empty-state">${ICONS.tray}<p>ยังไม่มีข้อมูลพนักงาน</p></div>`;
+        return;
+      }
+      wrap.innerHTML = `<div class="admin-table-scroll"><table class="admin-table">
+        <thead><tr><th>รหัสพนักงาน</th><th>ชื่อ</th><th>แผนก</th><th>บทบาท</th><th>สถานะ</th><th></th></tr></thead>
+        <tbody>${ADMIN_USERS.map(u => {
+          const isActive = !(u.Active === false || String(u.Active).toUpperCase() === 'FALSE');
+          return `<tr>
+            <td class="mono">${u.EmployeeID}</td>
+            <td>${u.Name}</td>
+            <td>${u.Department}</td>
+            <td>${roleLabel(u.Role)}</td>
+            <td>${isActive ? '<span class="status-badge status-approved">ใช้งาน</span>' : '<span class="status-badge status-rejected">ระงับ</span>'}</td>
+            <td class="admin-row-actions">
+              <button class="icon-btn" title="แก้ไข" onclick='openUserModal(${JSON.stringify(String(u.EmployeeID))})'>${ICONS.edit}</button>
+              <button class="icon-btn icon-btn-danger" title="ลบ" onclick='confirmDeleteUser(${JSON.stringify(String(u.EmployeeID))})'>${ICONS.trash}</button>
+            </td>
+          </tr>`;
+        }).join('')}</tbody>
+      </table></div>`;
+    });
+  }
+
+  function openUserModal(employeeId) {
+    const existing = employeeId ? ADMIN_USERS.find(u => String(u.EmployeeID) === String(employeeId)) : null;
+    EDITING_USER_ID = existing ? String(existing.EmployeeID) : null;
+    document.getElementById('userModalTitle').innerText = existing ? 'แก้ไขข้อมูลพนักงาน' : 'เพิ่มพนักงานใหม่';
+    document.getElementById('userFormEmployeeId').value = existing ? existing.EmployeeID : '';
+    document.getElementById('userFormEmployeeId').disabled = !!existing;
+    document.getElementById('userFormName').value = existing ? existing.Name : '';
+    document.getElementById('userFormDepartment').value = existing ? existing.Department : '';
+    document.getElementById('userFormRole').value = existing ? existing.Role : 'employee';
+    document.getElementById('userFormPin').value = '';
+    document.getElementById('userFormPin').placeholder = existing ? '(เว้นว่างไว้ถ้าไม่เปลี่ยน PIN)' : 'ตัวเลข 4 หลัก';
+    document.getElementById('userFormActive').checked = existing
+      ? !(existing.Active === false || String(existing.Active).toUpperCase() === 'FALSE')
+      : true;
+    document.getElementById('userFormError').innerText = '';
+    document.getElementById('userModalOverlay').classList.remove('hidden');
+  }
+  function closeUserModal() {
+    document.getElementById('userModalOverlay').classList.add('hidden');
+  }
+  function saveUserForm() {
+    const employeeId = document.getElementById('userFormEmployeeId').value.trim();
+    const name = document.getElementById('userFormName').value.trim();
+    const department = document.getElementById('userFormDepartment').value.trim();
+    const role = document.getElementById('userFormRole').value;
+    const pin = document.getElementById('userFormPin').value.trim();
+    const active = document.getElementById('userFormActive').checked;
+    const errDiv = document.getElementById('userFormError');
+    errDiv.innerText = '';
+    if (!employeeId || !name || !department) {
+      errDiv.innerText = 'กรุณากรอกรหัสพนักงาน ชื่อ และแผนกให้ครบถ้วน';
+      return;
+    }
+    const isNew = !EDITING_USER_ID;
+    if (isNew && !pin) {
+      errDiv.innerText = 'กรุณากำหนด PIN สำหรับพนักงานใหม่';
+      return;
+    }
+    callApi('saveUser', {
+      role: CURRENT_USER.role,
+      isNew: isNew,
+      userData: { employeeId, name, department, role, pin, active }
+    }).then(res => {
+      if (!res.success) { errDiv.innerText = res.error; return; }
+      closeUserModal();
+      showToast(isNew ? 'เพิ่มพนักงานเรียบร้อยแล้ว' : 'บันทึกการแก้ไขเรียบร้อยแล้ว', 'success');
+      loadAdminUsers();
+    }).catch(err => errDiv.innerText = 'เกิดข้อผิดพลาด: ' + err.message);
+  }
+  function confirmDeleteUser(employeeId) {
+    ADMIN_DELETE_TARGET = { type: 'user', id: employeeId };
+    document.getElementById('confirmDeleteText').innerText =
+      `ต้องการลบพนักงานรหัส ${employeeId} ใช่หรือไม่? การลบไม่สามารถย้อนกลับได้`;
+    document.getElementById('confirmDeleteOverlay').classList.remove('hidden');
+  }
+
+  // ---- Departments ----
+  function loadAdminDepts() {
+    const wrap = document.getElementById('adminDeptsTableWrap');
+    wrap.innerHTML = '<div class="spinner"><span class="spinner-ring"></span>กำลังโหลด...</div>';
+    callApi('getAdminDepartments', { role: CURRENT_USER.role }).then(res => {
+      if (!res.success) { wrap.innerHTML = `<div class="error-msg">${res.error}</div>`; return; }
+      ADMIN_DEPTS = res.departments;
+      if (ADMIN_DEPTS.length === 0) {
+        wrap.innerHTML = `<div class="empty-state">${ICONS.tray}<p>ยังไม่มีข้อมูลแผนก</p></div>`;
+        return;
+      }
+      wrap.innerHTML = `<div class="admin-table-scroll"><table class="admin-table">
+        <thead><tr><th>แผนก</th><th>หัวหน้างาน (รหัสพนักงาน)</th><th></th></tr></thead>
+        <tbody>${ADMIN_DEPTS.map(d => `<tr>
+            <td>${d.Department}</td>
+            <td class="mono">${d.SupervisorEmployeeID || '-'}</td>
+            <td class="admin-row-actions">
+              <button class="icon-btn" title="แก้ไข" onclick='openDeptModal(${JSON.stringify(String(d.Department))})'>${ICONS.edit}</button>
+              <button class="icon-btn icon-btn-danger" title="ลบ" onclick='confirmDeleteDept(${JSON.stringify(String(d.Department))})'>${ICONS.trash}</button>
+            </td>
+          </tr>`).join('')}</tbody>
+      </table></div>`;
+    });
+  }
+
+  function openDeptModal(department) {
+    const existing = department ? ADMIN_DEPTS.find(d => String(d.Department) === String(department)) : null;
+    EDITING_DEPT_KEY = existing ? String(existing.Department) : null;
+    document.getElementById('deptModalTitle').innerText = existing ? 'แก้ไขแผนก' : 'เพิ่มแผนกใหม่';
+    document.getElementById('deptFormName').value = existing ? existing.Department : '';
+    document.getElementById('deptFormSupervisor').value = existing ? existing.SupervisorEmployeeID : '';
+    document.getElementById('deptFormError').innerText = '';
+    document.getElementById('deptModalOverlay').classList.remove('hidden');
+  }
+  function closeDeptModal() {
+    document.getElementById('deptModalOverlay').classList.add('hidden');
+  }
+  function saveDeptForm() {
+    const department = document.getElementById('deptFormName').value.trim();
+    const supervisorEmployeeId = document.getElementById('deptFormSupervisor').value.trim();
+    const errDiv = document.getElementById('deptFormError');
+    errDiv.innerText = '';
+    if (!department) { errDiv.innerText = 'กรุณากรอกชื่อแผนก'; return; }
+    callApi('saveDepartment', {
+      role: CURRENT_USER.role,
+      deptData: { department, supervisorEmployeeId },
+      originalDepartment: EDITING_DEPT_KEY
+    }).then(res => {
+      if (!res.success) { errDiv.innerText = res.error; return; }
+      closeDeptModal();
+      showToast(EDITING_DEPT_KEY ? 'บันทึกการแก้ไขเรียบร้อยแล้ว' : 'เพิ่มแผนกเรียบร้อยแล้ว', 'success');
+      loadAdminDepts();
+    }).catch(err => errDiv.innerText = 'เกิดข้อผิดพลาด: ' + err.message);
+  }
+  function confirmDeleteDept(department) {
+    ADMIN_DELETE_TARGET = { type: 'dept', id: department };
+    document.getElementById('confirmDeleteText').innerText =
+      `ต้องการลบแผนก "${department}" ใช่หรือไม่? การลบไม่สามารถย้อนกลับได้`;
+    document.getElementById('confirmDeleteOverlay').classList.remove('hidden');
+  }
+
+  // ---- Shared delete confirmation ----
+  function closeConfirmDelete() {
+    document.getElementById('confirmDeleteOverlay').classList.add('hidden');
+    ADMIN_DELETE_TARGET = null;
+  }
+  function runConfirmedDelete() {
+    const target = ADMIN_DELETE_TARGET;
+    closeConfirmDelete();
+    if (!target) return;
+    if (target.type === 'user') {
+      callApi('deleteUser', { role: CURRENT_USER.role, employeeId: target.id }).then(res => {
+        if (res.success) { showToast('ลบพนักงานเรียบร้อยแล้ว', 'success'); loadAdminUsers(); }
+        else showToast(res.error, 'danger');
+      }).catch(err => showToast('เกิดข้อผิดพลาด: ' + err.message, 'danger'));
+    } else if (target.type === 'dept') {
+      callApi('deleteDepartment', { role: CURRENT_USER.role, department: target.id }).then(res => {
+        if (res.success) { showToast('ลบแผนกเรียบร้อยแล้ว', 'success'); loadAdminDepts(); }
+        else showToast(res.error, 'danger');
+      }).catch(err => showToast('เกิดข้อผิดพลาด: ' + err.message, 'danger'));
+    }
   }
 
   // ---------- BOOT ----------
