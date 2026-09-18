@@ -169,7 +169,23 @@
   .topbar-title{ font-size:15px; font-weight:600; }
 
   .main-content{ flex:1; min-width:0; }
-  .container{ max-width:740px; margin:0 auto; padding:28px 20px 60px; }
+  .container{ max-width:740px; margin:0 auto; padding:32px 32px 60px; }
+
+  .content-header{
+    display:flex; align-items:center; justify-content:space-between; gap:20px;
+    background:var(--surface); border-bottom:1px solid var(--line);
+    padding:21px 32px; position:sticky; top:0; z-index:5;
+  }
+  .content-header-title h2{ font-size:19px; }
+  .content-header-sub{ display:block; font-size:13px; color:var(--ink-soft); margin-top:3px; }
+  .content-header-user{ display:flex; align-items:center; gap:12px; flex-shrink:0; }
+  .chu-name{ font-size:13.5px; font-weight:600; text-align:right; }
+  .chu-role{ font-size:12px; color:var(--ink-soft); text-align:right; margin-top:1px; }
+  .chu-avatar{
+    width:38px; height:38px; border-radius:50%; background:var(--steel); color:#fff;
+    display:flex; align-items:center; justify-content:center; font-weight:600; font-size:14px;
+    flex-shrink:0; font-family:var(--font-mono);
+  }
 
   .sidebar-overlay{ display:none; position:fixed; inset:0; background:rgba(12,20,28,0.5); z-index:10; }
 
@@ -178,7 +194,11 @@
     .sidebar.open{ left:0; }
     .sidebar-overlay.show{ display:block; }
     .topbar{ display:flex; }
+    .content-header{ display:none; }
     .container{ padding:20px 16px 48px; }
+  }
+  @media (min-width:801px){
+    .topbar{ display:none !important; }
   }
 
   /* ---------- cards ---------- */
@@ -367,14 +387,24 @@
         </div>
       </div>
 
+      <div class="content-header" id="contentHeader">
+        <div class="content-header-title">
+          <h2 id="pageTitle">ยื่นคำขอเบิกสวัสดิการ</h2>
+          <span class="content-header-sub" id="pageSubtitle">กรอกแบบฟอร์มเพื่อยื่นคำขอเบิกสวัสดิการ</span>
+        </div>
+        <div class="content-header-user">
+          <div>
+            <div class="chu-name" id="headerUserName"></div>
+            <div class="chu-role" id="headerUserRole"></div>
+          </div>
+          <div class="chu-avatar" id="headerAvatar"></div>
+        </div>
+      </div>
+
       <div class="container">
         <!-- TAB: ยื่นคำขอเบิก -->
         <div id="tabSubmit" class="tab-content">
         <div class="card">
-          <div class="card-head">
-            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
-            <h3>ยื่นคำขอเบิกสวัสดิการ</h3>
-          </div>
           <div id="limitBox" class="limit-box"></div>
 
           <div class="field">
@@ -418,10 +448,6 @@
       <!-- TAB: ประวัติของฉัน -->
       <div id="tabHistory" class="tab-content hidden">
         <div class="card">
-          <div class="card-head">
-            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="4.5" cy="6" r="1"/><line x1="8.5" y1="6" x2="20" y2="6"/><circle cx="4.5" cy="12" r="1"/><line x1="8.5" y1="12" x2="20" y2="12"/><circle cx="4.5" cy="18" r="1"/><line x1="8.5" y1="18" x2="20" y2="18"/></svg>
-            <h3>ประวัติการเบิกของฉัน</h3>
-          </div>
           <div id="historyList"><div class="spinner"><span class="spinner-ring"></span>กำลังโหลด...</div></div>
         </div>
       </div>
@@ -429,10 +455,6 @@
         <!-- TAB: รออนุมัติ (approver only) -->
         <div id="tabApprove" class="tab-content hidden">
           <div class="card">
-            <div class="card-head">
-              <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5 19 6.5v5.6c0 4.6-3 7.7-7 9.1-4-1.4-7-4.5-7-9.1V6.5l7-3z"/><path d="M9 12.3l2 2 4-4.2"/></svg>
-              <h3>รายการรออนุมัติ</h3>
-            </div>
             <div id="approvalList"><div class="spinner"><span class="spinner-ring"></span>กำลังโหลด...</div></div>
           </div>
         </div>
@@ -455,7 +477,7 @@
 
 <script>
   // ⚠️ ตั้งค่าตรงนี้: วาง Web app URL จาก Apps Script deployment (ลงท้ายด้วย /exec)
-  const API_URL = 'https://script.google.com/macros/s/AKfycbyYPeS8Lakd2_wYaBe5yZF7uLNPmhUGgX6OANMTF2u9ldfEwkA8ieDuSyiaWCwcf2T-Ow/exec';
+  const API_URL = 'https://script.google.com/macros/s/YOUR_DEPLOYMENT_ID_HERE/exec';
 
   const ICONS = {
     pulse: '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 12 8 12 10 6 14 18 16 12 21 12"/></svg>',
@@ -532,12 +554,21 @@
     document.getElementById('loginScreen').classList.remove('hidden');
   }
 
+  const TAB_META = {
+    submit: { title: 'ยื่นคำขอเบิกสวัสดิการ', sub: 'กรอกแบบฟอร์มเพื่อยื่นคำขอเบิกสวัสดิการ' },
+    history: { title: 'ประวัติการเบิกของฉัน', sub: 'ตรวจสอบสถานะคำขอที่เคยยื่นทั้งหมด' },
+    approve: { title: 'รายการรออนุมัติ', sub: 'ตรวจสอบและอนุมัติคำขอจากพนักงาน' }
+  };
+
   // ---------- APP INIT ----------
   function initApp() {
     document.getElementById('loginScreen').classList.add('hidden');
     document.getElementById('appScreen').classList.remove('hidden');
     document.getElementById('userNameDisplay').innerHTML =
       `${CURRENT_USER.name}<div class="role-tag">${CURRENT_USER.department} · ${roleLabel(CURRENT_USER.role)}</div>`;
+    document.getElementById('headerUserName').innerText = CURRENT_USER.name;
+    document.getElementById('headerUserRole').innerText = `${CURRENT_USER.department} · ${roleLabel(CURRENT_USER.role)}`;
+    document.getElementById('headerAvatar').innerText = CURRENT_USER.name.trim().charAt(0).toUpperCase();
 
     buildTabs();
     loadCategories();
@@ -566,6 +597,11 @@
       if (content) content.classList.toggle('hidden', t !== name);
       if (btn) btn.classList.toggle('active', t === name);
     });
+    const meta = TAB_META[name];
+    if (meta) {
+      document.getElementById('pageTitle').innerText = meta.title;
+      document.getElementById('pageSubtitle').innerText = meta.sub;
+    }
     if (name === 'history') loadHistory();
     if (name === 'approve') loadApprovals();
     closeSidebar();
