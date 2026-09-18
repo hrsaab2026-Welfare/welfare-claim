@@ -380,6 +380,71 @@
   .modal h4{ font-size:16px; margin-bottom:5px; }
   .modal-sub{ font-size:13px; color:var(--ink-soft); display:block; margin-bottom:14px; }
   .modal-actions{ display:flex; justify-content:flex-end; gap:10px; margin-top:16px; }
+  .modal-wide{ max-width:560px; }
+
+  /* ---------- ใบส่งตัว (referral) ---------- */
+  .form-grid{ display:grid; grid-template-columns:1fr 1fr; gap:0 16px; }
+  .form-grid .full{ grid-column:1 / -1; }
+  @media (max-width:700px){ .form-grid{ grid-template-columns:1fr; } }
+
+  .lookup-row{ display:flex; gap:8px; }
+  .lookup-row input{ flex:1; }
+  .lookup-row button{ flex-shrink:0; }
+  .lookup-hint{ font-size:12.5px; color:var(--ink-soft); margin-top:6px; }
+  .lookup-hint.found{ color:var(--success); }
+
+  .radio-stack{ display:flex; flex-direction:column; gap:7px; margin-bottom:6px; }
+  .radio-line{
+    display:flex; align-items:center; gap:9px; font-size:14.5px; font-weight:400;
+    padding:9px 12px; border:1px solid var(--line); border-radius:var(--radius-s);
+    background:var(--surface); cursor:pointer;
+  }
+  .radio-line:hover{ background:var(--line-soft); }
+  .radio-line.checked{ border-color:var(--steel); background:rgba(31,76,115,0.05); }
+  .radio-line input{ width:auto; margin:0; accent-color:var(--steel); }
+
+  .ref-row{ border:1px solid var(--line); border-radius:var(--radius-m); padding:14px 16px; margin-bottom:10px; background:var(--surface); }
+  .ref-top{ display:flex; justify-content:space-between; align-items:flex-start; gap:12px; flex-wrap:wrap; }
+  .ref-id{ font-family:var(--font-mono); font-size:13px; color:var(--steel); font-weight:600; }
+  .ref-name{ font-weight:600; font-size:15px; }
+  .ref-meta{ display:flex; flex-wrap:wrap; gap:6px 14px; font-size:13px; color:var(--ink-soft); margin-top:7px; }
+  .ref-actions{ display:flex; gap:8px; margin-top:12px; flex-wrap:wrap; }
+  .ref-actions button{ padding:7px 14px; font-size:13.5px; }
+  .status-void{ background:var(--line-soft); color:var(--ink-soft); }
+  .status-closed{ background:var(--success-bg); color:var(--success); }
+  .search-row{ display:flex; gap:8px; margin-bottom:14px; }
+  .search-row input{ flex:1; }
+
+  /* ---------- หน้าพิมพ์ใบส่งตัว (เลียนแบบฟอร์มจริงของ รพ.) ---------- */
+  #printArea{ display:none; }
+  .rjh-sheet{
+    width:210mm; padding:12mm 14mm; background:#fff; color:#000;
+    font-family:var(--font-ui); font-size:12.5pt; line-height:1.75;
+  }
+  .rjh-topnos{ display:flex; justify-content:space-between; font-size:12pt; margin-bottom:4mm; }
+  .rjh-topnos b{ color:#c00; font-size:14pt; }
+  .rjh-head{ border-bottom:1.5pt solid #000; padding-bottom:3mm; margin-bottom:5mm; }
+  .rjh-head .h-th{ font-size:14pt; font-weight:700; }
+  .rjh-head .h-en{ font-size:11pt; font-weight:700; }
+  .rjh-head .h-addr{ font-size:9pt; line-height:1.5; margin-top:2mm; }
+  .rjh-title{ text-align:center; font-size:15pt; font-weight:700; margin-bottom:5mm; }
+  .rjh-right{ margin-left:auto; width:60%; }
+  .fill{ border-bottom:1px dotted #000; display:inline-block; min-width:40mm; padding:0 2mm; }
+  .fill-grow{ flex:1; }
+  .rjh-line{ display:flex; align-items:baseline; gap:2mm; margin-bottom:2mm; }
+  .rjh-indent{ padding-left:14mm; }
+  .box{ display:inline-block; width:4.5mm; height:4.5mm; border:1pt solid #000; text-align:center; line-height:4.2mm; font-weight:700; margin-right:2mm; }
+  .rjh-signs{ display:flex; justify-content:space-between; margin-top:10mm; text-align:center; font-size:11.5pt; }
+  .rjh-signs > div{ width:45%; }
+  .rjh-note{ font-size:10pt; margin-top:8mm; border-top:1px solid #000; padding-top:3mm; }
+
+  @media print{
+    @page{ size:A4; margin:0; }
+    body{ background:#fff; }
+    #loginScreen, #appScreen, .toast, .modal-overlay{ display:none !important; }
+    #printArea{ display:block !important; }
+    .rjh-sheet{ width:auto; padding:10mm 12mm; }
+  }
 </style>
 </head>
 <body>
@@ -524,6 +589,126 @@
           </div>
         </div>
 
+        <!-- TAB: ใบส่งตัว (HR / admin only) -->
+        <div id="tabReferral" class="tab-content hidden">
+          <div class="admin-subtabs">
+            <button class="admin-subtab-btn active" id="refSubBtn-new" onclick="showRefSubTab('new')">ออกใบส่งตัว</button>
+            <button class="admin-subtab-btn" id="refSubBtn-list" onclick="showRefSubTab('list')">ใบที่ออกแล้ว</button>
+          </div>
+
+          <!-- ออกใบใหม่ -->
+          <div id="refSubNew" class="admin-subtab-content">
+            <div class="card">
+              <div class="card-head">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="color:var(--steel)"><path d="M19 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2z"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+                <h3>ใบแจ้งขอเข้ารับบริการ (ใบส่งตัว)</h3>
+              </div>
+              <p style="font-size:13.5px; color:var(--ink-soft); margin:-4px 0 18px;">
+                ออกให้พนักงาน<b>ก่อน</b>ไปโรงพยาบาล เพื่อให้โรงพยาบาลเรียกเก็บค่ารักษากับบริษัทโดยตรง — ไม่ใช่การเบิกคืน
+              </p>
+
+              <div class="field">
+                <label>รหัสพนักงาน</label>
+                <div class="lookup-row">
+                  <input type="text" id="refEmpId" placeholder="เช่น EMP001" onkeypress="if(event.key==='Enter')doLookupEmployee()">
+                  <button class="btn-secondary" onclick="doLookupEmployee()">ค้นหา</button>
+                </div>
+                <div class="lookup-hint" id="refLookupHint">พิมพ์รหัสพนักงานแล้วกดค้นหา ระบบจะเติมชื่อและแผนกให้</div>
+              </div>
+
+              <div class="form-grid">
+                <div class="field">
+                  <label>ชื่อ-สกุล</label>
+                  <input type="text" id="refName">
+                </div>
+                <div class="field">
+                  <label>อายุ (ปี)</label>
+                  <input type="number" id="refAge" min="15" max="99">
+                </div>
+                <div class="field">
+                  <label>ตำแหน่ง</label>
+                  <input type="text" id="refPosition">
+                </div>
+                <div class="field">
+                  <label>แผนก</label>
+                  <input type="text" id="refDepartment">
+                </div>
+                <div class="field">
+                  <label>ฝ่าย</label>
+                  <input type="text" id="refDivision">
+                </div>
+                <div class="field">
+                  <label>วันที่เข้ารับบริการ</label>
+                  <input type="date" id="refVisitDate">
+                </div>
+                <div class="field full">
+                  <label>อาการ / เหตุผลที่ส่งตัว</label>
+                  <textarea id="refSymptoms" placeholder="เช่น ปวดท้องรุนแรง, มีไข้สูง 2 วัน"></textarea>
+                </div>
+              </div>
+
+              <div class="field">
+                <label>กรณีเข้ารับบริการ</label>
+                <div class="radio-stack" id="refServiceTypes"></div>
+                <input type="text" id="refServiceDetail" class="hidden" placeholder="ระบุรายละเอียด">
+              </div>
+
+              <div class="field">
+                <label>โรงพยาบาล</label>
+                <select id="refHospital"></select>
+              </div>
+
+              <div class="field">
+                <label>โดยขอใช้สิทธิ์รักษา</label>
+                <div class="radio-stack" id="refPayerTypes"></div>
+                <input type="text" id="refPayerDetail" class="hidden" placeholder="ระบุรายละเอียด">
+              </div>
+
+              <div class="form-grid">
+                <div class="field">
+                  <label>ชื่อผู้ประสานงานบริษัท</label>
+                  <input type="text" id="refCoordName">
+                </div>
+                <div class="field">
+                  <label>โทรศัพท์ผู้ประสานงาน</label>
+                  <input type="text" id="refCoordPhone" placeholder="เช่น 035-xxxxxx ต่อ xxx">
+                </div>
+                <div class="field">
+                  <label>ผู้มีอำนาจลงนาม</label>
+                  <input type="text" id="refSignerName">
+                </div>
+                <div class="field">
+                  <label>ตำแหน่งผู้ลงนาม</label>
+                  <input type="text" id="refSignerPosition" placeholder="เช่น ผู้จัดการฝ่ายทรัพยากรบุคคล">
+                </div>
+                <div class="field">
+                  <label>เล่มที่ (จากใบกระดาษ)</label>
+                  <input type="text" id="refBookNo" placeholder="ไม่บังคับ">
+                </div>
+                <div class="field">
+                  <label>เลขที่ (จากใบกระดาษ)</label>
+                  <input type="text" id="refDocNo" placeholder="ไม่บังคับ">
+                </div>
+              </div>
+
+              <div id="refWarning" class="warning-box hidden"></div>
+              <div id="refError" class="error-msg"></div>
+              <button class="btn-primary" id="refSubmitBtn" onclick="doCreateReferral()" style="width:auto; padding-left:26px; padding-right:26px;">ออกใบส่งตัว</button>
+            </div>
+          </div>
+
+          <!-- รายการใบที่ออกแล้ว -->
+          <div id="refSubList" class="admin-subtab-content hidden">
+            <div class="card">
+              <div class="search-row">
+                <input type="text" id="refSearch" placeholder="ค้นหาชื่อ / รหัสพนักงาน / เลขที่ใบ" onkeypress="if(event.key==='Enter')loadReferrals()">
+                <button class="btn-secondary" onclick="loadReferrals()">ค้นหา</button>
+              </div>
+              <div id="referralList"><div class="spinner"><span class="spinner-ring"></span>กำลังโหลด...</div></div>
+            </div>
+          </div>
+        </div>
+
         <!-- TAB: จัดการระบบ (admin only) -->
         <div id="tabAdmin" class="tab-content hidden">
           <div class="admin-subtabs">
@@ -656,6 +841,49 @@
     </div>
   </div>
 
+  <!-- ==================== ปิดงานใบส่งตัว ==================== -->
+  <div id="refCloseOverlay" class="modal-overlay hidden" onclick="closeRefCloseModal()">
+    <div class="modal" onclick="event.stopPropagation()">
+      <h4>ปิดงานใบส่งตัว</h4>
+      <span class="modal-sub" id="refCloseSub"></span>
+      <div class="field">
+        <label>ยอดตามใบแจ้งหนี้ (บาท)</label>
+        <input type="number" id="refInvoiceAmount" min="0" step="1">
+      </div>
+      <div class="field">
+        <label>เลขที่คำขอเบิกที่เกี่ยวข้อง (ถ้ามี)</label>
+        <input type="text" id="refLinkedClaim" placeholder="เช่น WF-20260918-101500">
+      </div>
+      <div class="field">
+        <label>หมายเหตุ</label>
+        <textarea id="refCloseNote" rows="2"></textarea>
+      </div>
+      <div class="modal-actions">
+        <button class="btn-secondary" onclick="closeRefCloseModal()">ยกเลิก</button>
+        <button class="btn-primary" style="width:auto; padding:11px 20px;" onclick="confirmCloseReferral()">ปิดงาน</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== ยกเลิกใบส่งตัว ==================== -->
+  <div id="refVoidOverlay" class="modal-overlay hidden" onclick="closeRefVoidModal()">
+    <div class="modal" onclick="event.stopPropagation()">
+      <h4>ยกเลิกใบส่งตัว</h4>
+      <span class="modal-sub" id="refVoidSub"></span>
+      <div class="field">
+        <label>เหตุผลการยกเลิก</label>
+        <textarea id="refVoidReason" rows="3" placeholder="เช่น พนักงานไม่ไปโรงพยาบาล / ออกใบผิด"></textarea>
+      </div>
+      <div class="modal-actions">
+        <button class="btn-secondary" onclick="closeRefVoidModal()">ปิด</button>
+        <button class="btn-primary" style="width:auto; padding:11px 20px; background:var(--danger);" onclick="confirmVoidReferral()">ยืนยันยกเลิก</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== พื้นที่สำหรับพิมพ์ใบส่งตัว ==================== -->
+  <div id="printArea"></div>
+
 <script>
   // ⚠️ ตั้งค่าตรงนี้: วาง Web app URL จาก Apps Script deployment (ลงท้ายด้วย /exec)
   const API_URL = 'https://script.google.com/macros/s/AKfycbyYPeS8Lakd2_wYaBe5yZF7uLNPmhUGgX6OANMTF2u9ldfEwkA8ieDuSyiaWCwcf2T-Ow/exec';
@@ -674,6 +902,8 @@
     shield: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5 19 6.5v5.6c0 4.6-3 7.7-7 9.1-4-1.4-7-4.5-7-9.1V6.5l7-3z"/><path d="M9 12.3l2 2 4-4.2"/></svg>',
     settings: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.6a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>',
     plus: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>',
+    hospital: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21V8.5L12 3l8 5.5V21"/><path d="M9 21v-6h6v6"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="10" y1="10" x2="14" y2="10"/></svg>',
+    printer: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 3 18 3 18 9"/><rect x="4" y="9" width="16" height="8" rx="1.5"/><rect x="7" y="17" width="10" height="4"/></svg>',
     trash: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>'
   };
 
@@ -742,6 +972,7 @@
     submit: { title: 'ยื่นคำขอเบิกสวัสดิการ', sub: 'กรอกแบบฟอร์มเพื่อยื่นคำขอเบิกสวัสดิการ' },
     history: { title: 'ประวัติการเบิกของฉัน', sub: 'ตรวจสอบสถานะคำขอที่เคยยื่นทั้งหมด' },
     approve: { title: 'รายการรออนุมัติ', sub: 'ตรวจสอบและอนุมัติคำขอจากพนักงาน' },
+    referral: { title: 'ใบส่งตัวโรงพยาบาล', sub: 'ออกใบส่งตัวให้พนักงานก่อนเข้ารักษา · สำหรับฝ่ายบุคคล' },
     admin: { title: 'จัดการระบบ', sub: 'เพิ่ม แก้ไข หรือลบข้อมูลพนักงานและแผนก · สำหรับแอดมิน' }
   };
 
@@ -773,6 +1004,9 @@
     if (['supervisor','hr','accounting','admin'].indexOf(CURRENT_USER.role) !== -1) {
       html += `<button class="nav-item" id="tabBtn-approve" onclick="showTab('approve')" title="รออนุมัติ">${ICONS.shield}<span>รออนุมัติ</span></button>`;
     }
+    if (['hr','admin'].indexOf(CURRENT_USER.role) !== -1) {
+      html += `<button class="nav-item" id="tabBtn-referral" onclick="showTab('referral')" title="ใบส่งตัว">${ICONS.hospital}<span>ใบส่งตัว</span></button>`;
+    }
     if (CURRENT_USER.role === 'admin') {
       html += `<button class="nav-item" id="tabBtn-admin" onclick="showTab('admin')" title="จัดการระบบ">${ICONS.settings}<span>จัดการระบบ</span></button>`;
     }
@@ -780,7 +1014,7 @@
   }
 
   function showTab(name) {
-    ['submit','history','approve','admin'].forEach(t => {
+    ['submit','history','approve','referral','admin'].forEach(t => {
       const content = document.getElementById('tab' + capitalize(t));
       const btn = document.getElementById('tabBtn-' + t);
       if (content) content.classList.toggle('hidden', t !== name);
@@ -793,6 +1027,7 @@
     }
     if (name === 'history') loadHistory();
     if (name === 'approve') loadApprovals();
+    if (name === 'referral') loadReferralOptions().then(() => showRefSubTab('new'));
     if (name === 'admin') showAdminSubTab('users');
     closeSidebar();
   }
@@ -1233,6 +1468,350 @@
         else showToast(res.error, 'danger');
       }).catch(err => showToast('เกิดข้อผิดพลาด: ' + err.message, 'danger'));
     }
+  }
+
+  // ==========================================================
+  // ใบส่งตัว (REFERRAL / CASHLESS)
+  // ==========================================================
+  let REF_OPTIONS = null;
+  let REF_SERVICE = null;   // service type id ที่เลือก
+  let REF_PAYER = null;     // payer type id ที่เลือก
+  let REF_LIST = [];
+  let REF_TARGET_ID = null;
+
+  function showRefSubTab(name) {
+    ['new','list'].forEach(t => {
+      document.getElementById('refSub' + capitalize(t)).classList.toggle('hidden', t !== name);
+      document.getElementById('refSubBtn-' + t).classList.toggle('active', t === name);
+    });
+    if (name === 'list') loadReferrals();
+  }
+
+  function loadReferralOptions() {
+    if (REF_OPTIONS) return Promise.resolve(REF_OPTIONS);
+    return callApi('getReferralOptions', {}).then(res => {
+      REF_OPTIONS = res;
+      document.getElementById('refHospital').innerHTML =
+        res.hospitals.map(h => `<option value="${h}">${h}</option>`).join('');
+      document.getElementById('refServiceTypes').innerHTML = res.serviceTypes.map(s => `
+        <label class="radio-line" id="refSvc-${s.id}">
+          <input type="radio" name="refService" value="${s.id}" onchange="onRefServiceChange('${s.id}')">
+          <span>${s.label}</span>
+        </label>`).join('');
+      document.getElementById('refPayerTypes').innerHTML = res.payerTypes.map(p => `
+        <label class="radio-line" id="refPay-${p.id}">
+          <input type="radio" name="refPayer" value="${p.id}" onchange="onRefPayerChange('${p.id}')">
+          <span>${p.label}</span>
+        </label>`).join('');
+      // ค่าเริ่มต้นที่ใช้บ่อยที่สุด
+      const t = document.querySelector('input[name="refService"][value="treatment"]');
+      if (t) { t.checked = true; onRefServiceChange('treatment'); }
+      const c = document.querySelector('input[name="refPayer"][value="company"]');
+      if (c) { c.checked = true; onRefPayerChange('company'); }
+      // ผู้ประสานงาน = HR ที่ล็อกอินอยู่
+      if (!document.getElementById('refCoordName').value) {
+        document.getElementById('refCoordName').value = CURRENT_USER.name;
+      }
+      if (!document.getElementById('refVisitDate').value) {
+        document.getElementById('refVisitDate').value = new Date().toISOString().slice(0, 10);
+      }
+      return res;
+    });
+  }
+
+  function onRefServiceChange(id) {
+    REF_SERVICE = id;
+    const opt = REF_OPTIONS.serviceTypes.find(s => s.id === id);
+    REF_OPTIONS.serviceTypes.forEach(s =>
+      document.getElementById('refSvc-' + s.id).classList.toggle('checked', s.id === id));
+    const detail = document.getElementById('refServiceDetail');
+    detail.classList.toggle('hidden', !opt.needDetail);
+    detail.placeholder = 'ระบุรายละเอียด' + (opt.needDetail ? ' (' + opt.label + ')' : '');
+  }
+
+  function onRefPayerChange(id) {
+    REF_PAYER = id;
+    const opt = REF_OPTIONS.payerTypes.find(p => p.id === id);
+    REF_OPTIONS.payerTypes.forEach(p =>
+      document.getElementById('refPay-' + p.id).classList.toggle('checked', p.id === id));
+    document.getElementById('refPayerDetail').classList.toggle('hidden', !opt.needDetail);
+  }
+
+  function doLookupEmployee() {
+    const id = document.getElementById('refEmpId').value.trim();
+    const hint = document.getElementById('refLookupHint');
+    if (!id) { hint.className = 'lookup-hint'; hint.innerText = 'กรุณากรอกรหัสพนักงาน'; return; }
+    hint.className = 'lookup-hint';
+    hint.innerText = 'กำลังค้นหา...';
+    callApi('lookupEmployee', { role: CURRENT_USER.role, employeeId: id }).then(res => {
+      if (!res.success) { hint.innerText = res.error; return; }
+      const e = res.employee;
+      document.getElementById('refName').value = e.name || '';
+      document.getElementById('refDepartment').value = e.department || '';
+      document.getElementById('refPosition').value = e.position || '';
+      document.getElementById('refDivision').value = e.division || '';
+      if (e.age) document.getElementById('refAge').value = e.age;
+      hint.className = 'lookup-hint found';
+      hint.innerText = 'พบข้อมูล: ' + e.name + (e.department ? ' · ' + e.department : '');
+    }).catch(err => hint.innerText = 'เกิดข้อผิดพลาด: ' + err.message);
+  }
+
+  function doCreateReferral() {
+    const errDiv = document.getElementById('refError');
+    const warnDiv = document.getElementById('refWarning');
+    const btn = document.getElementById('refSubmitBtn');
+    errDiv.innerText = '';
+    warnDiv.classList.add('hidden');
+
+    const data = {
+      employeeId: document.getElementById('refEmpId').value.trim(),
+      name: document.getElementById('refName').value.trim(),
+      age: document.getElementById('refAge').value,
+      position: document.getElementById('refPosition').value.trim(),
+      department: document.getElementById('refDepartment').value.trim(),
+      division: document.getElementById('refDivision').value.trim(),
+      symptoms: document.getElementById('refSymptoms').value.trim(),
+      serviceTypeId: REF_SERVICE,
+      serviceDetail: document.getElementById('refServiceDetail').value.trim(),
+      hospital: document.getElementById('refHospital').value,
+      visitDate: document.getElementById('refVisitDate').value,
+      payerTypeId: REF_PAYER,
+      payerDetail: document.getElementById('refPayerDetail').value.trim(),
+      coordinatorName: document.getElementById('refCoordName').value.trim(),
+      coordinatorPhone: document.getElementById('refCoordPhone').value.trim(),
+      authorizedSignerName: document.getElementById('refSignerName').value.trim(),
+      authorizedSignerPosition: document.getElementById('refSignerPosition').value.trim(),
+      bookNo: document.getElementById('refBookNo').value.trim(),
+      docNo: document.getElementById('refDocNo').value.trim()
+    };
+
+    btn.disabled = true;
+    btn.innerText = 'กำลังออกใบ...';
+    callApi('createReferral', {
+      role: CURRENT_USER.role,
+      issuedBy: { employeeId: CURRENT_USER.employeeId, name: CURRENT_USER.name },
+      referralData: data
+    }).then(res => {
+      btn.disabled = false;
+      btn.innerText = 'ออกใบส่งตัว';
+      if (!res.success) { errDiv.innerText = res.error; return; }
+      if (res.warning) {
+        warnDiv.innerHTML = ICONS.warning + `<span>${res.warning}</span>`;
+        warnDiv.classList.remove('hidden');
+      }
+      showToast('ออกใบส่งตัวเรียบร้อย · ' + res.referralId, 'success');
+      resetReferralForm();
+      if (res.referral) printReferralData(res.referral);
+    }).catch(err => {
+      btn.disabled = false;
+      btn.innerText = 'ออกใบส่งตัว';
+      errDiv.innerText = 'เกิดข้อผิดพลาด: ' + err.message;
+    });
+  }
+
+  function resetReferralForm() {
+    ['refEmpId','refName','refAge','refPosition','refDepartment','refDivision',
+     'refSymptoms','refServiceDetail','refPayerDetail','refBookNo','refDocNo']
+      .forEach(id => document.getElementById(id).value = '');
+    document.getElementById('refLookupHint').className = 'lookup-hint';
+    document.getElementById('refLookupHint').innerText = 'พิมพ์รหัสพนักงานแล้วกดค้นหา ระบบจะเติมชื่อและแผนกให้';
+  }
+
+  // ---------- รายการใบส่งตัว ----------
+  function loadReferrals() {
+    const div = document.getElementById('referralList');
+    div.innerHTML = '<div class="spinner"><span class="spinner-ring"></span>กำลังโหลด...</div>';
+    callApi('getReferrals', { role: CURRENT_USER.role, keyword: document.getElementById('refSearch').value.trim() })
+      .then(res => {
+        if (!res.success) { div.innerHTML = `<div class="empty-state">${ICONS.tray}<p>${res.error}</p></div>`; return; }
+        REF_LIST = res.referrals;
+        if (!REF_LIST.length) {
+          div.innerHTML = `<div class="empty-state">${ICONS.tray}<p>ยังไม่มีใบส่งตัวในระบบ</p></div>`;
+          return;
+        }
+        div.innerHTML = REF_LIST.map(r => {
+          const cls = r.status === 'ยกเลิก' ? 'status-void'
+            : (r.status === 'ออกใบแล้ว' ? 'status-pending' : 'status-closed');
+          const canAct = r.status === 'ออกใบแล้ว';
+          return `
+          <div class="ref-row">
+            <div class="ref-top">
+              <div>
+                <div class="ref-id">${r.referralId}</div>
+                <div class="ref-name">${r.name} <span style="color:var(--ink-faint); font-weight:400;">· ${r.department || '-'}</span></div>
+              </div>
+              <span class="status-badge ${cls}">${r.status}</span>
+            </div>
+            <div class="ref-meta">
+              <span>${r.serviceTypeLabel}${r.serviceDetail ? ' (' + r.serviceDetail + ')' : ''}</span>
+              <span>${r.hospital}</span>
+              <span>${formatDate(r.visitDate)}</span>
+              <span>${r.payerTypeLabel}</span>
+              ${r.invoiceAmount ? `<span>ใบแจ้งหนี้ ${Number(r.invoiceAmount).toLocaleString()} บาท</span>` : ''}
+            </div>
+            ${r.symptoms ? `<div class="claim-desc">อาการ: ${r.symptoms}</div>` : ''}
+            <div class="ref-actions">
+              <button class="btn-secondary" onclick="printReferral('${r.referralId}')">${ICONS.printer} พิมพ์ใบส่งตัว</button>
+              ${canAct ? `<button class="btn-secondary" onclick="openRefCloseModal('${r.referralId}')">ปิดงาน</button>` : ''}
+              ${canAct ? `<button class="btn-secondary" style="color:var(--danger)" onclick="openRefVoidModal('${r.referralId}')">ยกเลิก</button>` : ''}
+            </div>
+          </div>`;
+        }).join('');
+      })
+      .catch(err => div.innerHTML = `<div class="empty-state">${ICONS.tray}<p>เกิดข้อผิดพลาด: ${err.message}</p></div>`);
+  }
+
+  function openRefCloseModal(referralId) {
+    REF_TARGET_ID = referralId;
+    document.getElementById('refCloseSub').innerText = 'ใบเลขที่ ' + referralId;
+    document.getElementById('refCloseOverlay').classList.remove('hidden');
+  }
+  function closeRefCloseModal() {
+    document.getElementById('refCloseOverlay').classList.add('hidden');
+    REF_TARGET_ID = null;
+  }
+  function confirmCloseReferral() {
+    const id = REF_TARGET_ID;
+    const payload = {
+      role: CURRENT_USER.role, referralId: id,
+      invoiceAmount: document.getElementById('refInvoiceAmount').value,
+      linkedClaimId: document.getElementById('refLinkedClaim').value.trim(),
+      note: document.getElementById('refCloseNote').value.trim()
+    };
+    closeRefCloseModal();
+    callApi('closeReferral', payload).then(res => {
+      if (res.success) { showToast('ปิดงานใบส่งตัวเรียบร้อย', 'success'); loadReferrals(); }
+      else showToast(res.error, 'danger');
+    }).catch(err => showToast('เกิดข้อผิดพลาด: ' + err.message, 'danger'));
+  }
+
+  function openRefVoidModal(referralId) {
+    REF_TARGET_ID = referralId;
+    document.getElementById('refVoidSub').innerText = 'ใบเลขที่ ' + referralId;
+    document.getElementById('refVoidReason').value = '';
+    document.getElementById('refVoidOverlay').classList.remove('hidden');
+  }
+  function closeRefVoidModal() {
+    document.getElementById('refVoidOverlay').classList.add('hidden');
+    REF_TARGET_ID = null;
+  }
+  function confirmVoidReferral() {
+    const reason = document.getElementById('refVoidReason').value.trim();
+    if (!reason) { showToast('กรุณาระบุเหตุผลการยกเลิก', 'danger'); return; }
+    const id = REF_TARGET_ID;
+    closeRefVoidModal();
+    callApi('voidReferral', { role: CURRENT_USER.role, referralId: id, reason: reason }).then(res => {
+      if (res.success) { showToast('ยกเลิกใบส่งตัวแล้ว', 'success'); loadReferrals(); }
+      else showToast(res.error, 'danger');
+    }).catch(err => showToast('เกิดข้อผิดพลาด: ' + err.message, 'danger'));
+  }
+
+  // ---------- พิมพ์ใบส่งตัว ----------
+  function printReferral(referralId) {
+    const r = REF_LIST.find(x => x.referralId === referralId);
+    if (!r) { showToast('ไม่พบข้อมูลใบนี้ กรุณากดค้นหาใหม่', 'danger'); return; }
+    printReferralData(r);
+  }
+
+  function thaiDateParts(d) {
+    const dt = new Date(d);
+    if (isNaN(dt.getTime())) return { day: '', month: '', year: '' };
+    const months = ['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน',
+                    'กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'];
+    return { day: dt.getDate(), month: months[dt.getMonth()], year: dt.getFullYear() + 543 };
+  }
+
+  function printReferralData(r) {
+    const opts = REF_OPTIONS || { serviceTypes: [], payerTypes: [] };
+    const d = thaiDateParts(r.visitDate || r.timestamp);
+    const tick = (on) => `<span class="box">${on ? '✓' : ''}</span>`;
+
+    const serviceLines = opts.serviceTypes.map(s => {
+      const on = s.id === r.serviceTypeId;
+      const detail = on ? (r.serviceDetail || '') : '';
+      const needLine = s.needDetail || s.id === 'treatment';
+      return `<div class="rjh-line">${tick(on)}<span>${s.label}</span>${
+        needLine ? `<span class="fill fill-grow">${detail}</span>` : ''}</div>`;
+    }).join('');
+
+    const payerLines = opts.payerTypes.map(p => {
+      const on = p.id === r.payerTypeId;
+      const detail = on ? (r.payerDetail || '') : '';
+      return `<div class="rjh-line">${tick(on)}<span>${p.label}</span>${
+        p.needDetail ? `<span class="fill fill-grow">${detail}</span>` : ''}</div>`;
+    }).join('');
+
+    document.getElementById('printArea').innerHTML = `
+      <div class="rjh-sheet">
+        <div class="rjh-topnos">
+          <span>เล่มที่ <b>${r.bookNo || '-'}</b></span>
+          <span>เลขที่ <b>${r.docNo || r.referralId}</b></span>
+        </div>
+
+        <div class="rjh-head">
+          <div class="h-th">บริษัท โรงพยาบาลราชธานี จำกัด (มหาชน)</div>
+          <div class="h-en">RAJTHANEE HOSPITAL PUBLIC COMPANY LIMITED</div>
+          <div class="h-addr">111 หมู่ 3 ถ.โรจนะ ต.คลองสวนพลู อ.พระนครศรีอยุธยา จ.พระนครศรีอยุธยา 13000<br>
+            โทร. (035) 335555, (035) 229000 แฟกซ์ (035) 335555 ต่อ 187, 878</div>
+        </div>
+
+        <div class="rjh-title">ใบแจ้งขอเข้ารับบริการของโรงพยาบาลราชธานี</div>
+
+        <div class="rjh-right">
+          <div class="rjh-line"><span>บริษัท</span><span class="fill fill-grow">${r.companyName || ''}</span></div>
+          <div class="rjh-line"><span>วันที่</span><span class="fill">${d.day}</span>
+            <span>เดือน</span><span class="fill">${d.month}</span>
+            <span>พ.ศ.</span><span class="fill">${d.year}</span></div>
+        </div>
+
+        <div class="rjh-line" style="margin-top:4mm;"><span>เรื่อง ขอส่งตัวผู้ป่วยเข้ารับการรักษา</span></div>
+        <div class="rjh-line"><span>เรียน ผู้อำนวยการโรงพยาบาลราชธานี</span></div>
+
+        <div class="rjh-indent" style="margin-top:4mm;">
+          <div class="rjh-line"><span>ขอส่งตัวพนักงานบริษัท ชื่อ-สกุล</span>
+            <span class="fill fill-grow">${r.name || ''}</span>
+            <span>อายุ</span><span class="fill" style="min-width:18mm;">${r.age || ''}</span></div>
+          <div class="rjh-line"><span>แผนก/ฝ่าย</span>
+            <span class="fill" style="min-width:55mm;">${[r.department, r.division].filter(Boolean).join(' / ')}</span>
+            <span>โดยมีอาการ</span><span class="fill fill-grow">${r.symptoms || ''}</span></div>
+        </div>
+
+        <div style="margin-top:4mm;">
+          <div style="font-weight:600;">เข้ารับบริการในโรงพยาบาล กรณี</div>
+          <div class="rjh-indent">${serviceLines}</div>
+        </div>
+
+        <div style="margin-top:3mm;">
+          <div style="font-weight:600;">โดยขอใช้สิทธิ์รักษา</div>
+          <div class="rjh-indent">${payerLines}</div>
+        </div>
+
+        <div class="rjh-line" style="margin-top:4mm;">
+          <span>ชื่อผู้ประสานงานบริษัท</span><span class="fill" style="min-width:60mm;">${r.coordinatorName || ''}</span>
+          <span>โทรศัพท์</span><span class="fill fill-grow">${r.coordinatorPhone || ''}</span>
+        </div>
+
+        <div class="rjh-signs">
+          <div>
+            <div>ลงชื่อ ................................................</div>
+            <div>( ${r.name || '............................'} )</div>
+            <div style="margin-top:2mm;">พนักงานผู้รับบริการส่งตัวเข้ารับบริการ</div>
+          </div>
+          <div>
+            <div>ลงชื่อ ................................................</div>
+            <div>( ${r.authorizedSignerName || '............................'} )</div>
+            <div style="margin-top:2mm;">ตำแหน่ง ${r.authorizedSignerPosition || '..........................'}</div>
+            <div>ผู้มีอำนาจลงนามส่งตัวพนักงานเข้ารับบริการ</div>
+          </div>
+        </div>
+
+        <div class="rjh-note">
+          <u>หมายเหตุ</u> : กรณีที่บริษัทระบุขอใช้สิทธิ์รักษา โดยบริษัทรับผิดชอบค่าใช้จ่ายทั้งหมด
+          โรงพยาบาลฯ จะจัดส่งใบแจ้งหนี้ค่ารักษาให้กับบริษัท เมื่อสิ้นสุดการรักษาพยาบาลตามรายละเอียดการส่งตัวของเอกสารฉบับนี้
+          <div style="text-align:right; font-family:var(--font-mono); font-size:9pt; margin-top:2mm;">${r.referralId}</div>
+        </div>
+      </div>`;
+    window.print();
   }
 
   // ---------- BOOT ----------
