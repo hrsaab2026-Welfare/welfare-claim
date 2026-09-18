@@ -1,178 +1,335 @@
 <!DOCTYPE html>
-<html>
+<html lang="th">
 <head>
-  <meta charset="utf-8">
-  <style>
-    * { box-sizing: border-box; }
-    body {
-      font-family: 'Segoe UI', 'Sarabun', sans-serif;
-      background: #f2f5f9;
-      margin: 0;
-      padding: 0;
-      color: #222;
-    }
-    .app-layout { display: flex; min-height: 100vh; }
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#122A3E">
+<title>ระบบเบิกสวัสดิการ · Summit Auto Body Industry</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23122A3E'/%3E%3Ctext x='16' y='21' font-family='monospace' font-weight='700' font-size='12' fill='white' text-anchor='middle'%3ESAB%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600&family=IBM+Plex+Sans+Thai:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#17242F; --ink-soft:#54636F; --ink-faint:#8B97A0;
+    --paper:#F2F3F0; --surface:#FFFFFF;
+    --line:#DCDFDD; --line-soft:#EAEBE8;
+    --steel:#1F4C73; --steel-hover:#194061; --steel-dark:#122A3E; --steel-darker:#0C1E2C;
+    --copper:#B5651D; --copper-soft:#F5E5D3;
+    --success:#2E7D53; --success-bg:#E7F3EC;
+    --danger:#B23A2E; --danger-bg:#FBEAE8;
+    --warning:#9C6B15; --warning-bg:#FBF1DC;
+    --radius-s:4px; --radius-m:8px;
+    --font-ui:'IBM Plex Sans Thai',-apple-system,BlinkMacSystemFont,sans-serif;
+    --font-mono:'IBM Plex Mono',ui-monospace,SFMono-Regular,monospace;
+  }
+  *{ box-sizing:border-box; }
+  html{ -webkit-text-size-adjust:100%; }
+  body{
+    font-family:var(--font-ui); background:var(--paper); color:var(--ink);
+    margin:0; padding:0; line-height:1.5; font-size:15px;
+  }
+  h1,h2,h3,h4{ font-family:var(--font-ui); font-weight:700; margin:0; color:var(--ink); }
+  p{ margin:0; }
+  a{ color:var(--steel); }
+  button{ font-family:inherit; }
+  .hidden{ display:none !important; }
+  ::selection{ background:var(--copper-soft); }
 
-    /* ---------- SIDEBAR ---------- */
-    .sidebar {
-      width: 230px;
-      background: #1c3f5f;
-      color: white;
-      flex-shrink: 0;
-      display: flex;
-      flex-direction: column;
-      position: sticky;
-      top: 0;
-      height: 100vh;
-    }
-    .sidebar-brand {
-      padding: 20px 18px;
-      border-bottom: 1px solid rgba(255,255,255,0.12);
-    }
-    .sidebar-brand h1 { font-size: 16px; margin: 0 0 4px; }
-    .sidebar-brand p { font-size: 12px; margin: 0; opacity: 0.7; }
-    .sidebar-user {
-      padding: 14px 18px;
-      border-bottom: 1px solid rgba(255,255,255,0.12);
-      font-size: 13px;
-    }
-    .sidebar-user .name { font-weight: 600; margin-bottom: 2px; }
-    .sidebar-user .role { opacity: 0.7; }
-    .sidebar-nav { flex: 1; padding: 10px 0; }
-    .sidebar-nav .nav-item {
-      display: flex; align-items: center; gap: 10px;
-      padding: 12px 18px; font-size: 14px; cursor: pointer;
-      color: rgba(255,255,255,0.85);
-      border-left: 3px solid transparent;
-    }
-    .sidebar-nav .nav-item:hover { background: rgba(255,255,255,0.06); }
-    .sidebar-nav .nav-item.active {
-      background: rgba(255,255,255,0.1);
-      border-left-color: #5ba7e0;
-      color: white;
-      font-weight: 600;
-    }
-    .sidebar-logout {
-      padding: 16px 18px;
-      border-top: 1px solid rgba(255,255,255,0.12);
-      font-size: 13px;
-      cursor: pointer;
-      opacity: 0.8;
-    }
-    .sidebar-logout:hover { opacity: 1; }
+  :focus-visible{ outline:2px solid var(--copper); outline-offset:2px; }
 
-    /* ---------- TOPBAR (mobile only) ---------- */
-    .topbar {
-      display: none;
-      background: #245c8c;
-      color: white;
-      padding: 14px 16px;
-      align-items: center;
-      gap: 12px;
-    }
-    .topbar .hamburger { font-size: 22px; cursor: pointer; }
-    .topbar .topbar-title { font-size: 16px; font-weight: 600; }
+  @media (prefers-reduced-motion: reduce){
+    *{ animation-duration:0.001ms !important; transition-duration:0.001ms !important; }
+  }
 
-    .main-content { flex: 1; min-width: 0; }
-    .container { max-width: 720px; margin: 0 auto; padding: 16px; }
+  /* ---------- shared form elements ---------- */
+  .field{ margin-bottom:16px; }
+  label{ display:block; font-weight:600; font-size:13.5px; margin-bottom:6px; color:var(--ink); }
+  input, select, textarea{
+    width:100%; padding:11px 12px; border:1px solid var(--line); border-radius:var(--radius-s);
+    font-size:15px; font-family:inherit; background:var(--surface); color:var(--ink);
+    transition:border-color .15s ease, box-shadow .15s ease;
+  }
+  input::placeholder, textarea::placeholder{ color:var(--ink-faint); }
+  input:focus, select:focus, textarea:focus{
+    outline:none; border-color:var(--steel); box-shadow:0 0 0 3px rgba(31,76,115,0.12);
+  }
+  textarea{ resize:vertical; min-height:70px; }
+  .error-msg{ color:var(--danger); font-size:13.5px; margin-top:10px; min-height:1px; }
+  .error-msg:not(:empty){ display:flex; align-items:center; gap:6px; }
 
-    .sidebar-overlay {
-      display: none;
-      position: fixed; inset: 0;
-      background: rgba(0,0,0,0.4);
-      z-index: 10;
-    }
+  .btn-primary{
+    width:100%; background:var(--steel); color:#fff; border:none; padding:12px 20px;
+    border-radius:var(--radius-s); font-size:15px; font-weight:600; cursor:pointer;
+    transition:background .15s ease;
+  }
+  .btn-primary:hover{ background:var(--steel-hover); }
+  .btn-primary:disabled{ background:var(--ink-faint); cursor:not-allowed; }
+  .btn-secondary{
+    background:var(--surface); color:var(--ink); border:1px solid var(--line);
+    padding:11px 18px; border-radius:var(--radius-s); font-size:14.5px; font-weight:600; cursor:pointer;
+  }
+  .btn-secondary:hover{ background:var(--line-soft); }
 
-    @media (max-width: 800px) {
-      .sidebar {
-        position: fixed;
-        left: -250px;
-        z-index: 20;
-        transition: left 0.2s ease;
-        box-shadow: 2px 0 10px rgba(0,0,0,0.2);
-      }
-      .sidebar.open { left: 0; }
-      .sidebar-overlay.show { display: block; }
-      .topbar { display: flex; }
-    }
-    .card {
-      background: white;
-      border-radius: 10px;
-      padding: 18px;
-      margin-bottom: 16px;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
-    }
-    label { display: block; font-weight: 600; margin: 12px 0 4px; font-size: 14px; }
-    input, select, textarea {
-      width: 100%;
-      padding: 10px;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      font-size: 15px;
-      font-family: inherit;
-    }
-    textarea { resize: vertical; min-height: 60px; }
-    button {
-      background: #245c8c;
-      color: white;
-      border: none;
-      padding: 11px 20px;
-      border-radius: 6px;
-      font-size: 15px;
-      cursor: pointer;
-      margin-top: 14px;
-    }
-    button:hover { background: #1c4a70; }
-    button.secondary { background: #888; }
-    button.reject { background: #c0392b; }
-    button.approve { background: #27ae60; }
-    button:disabled { background: #aaa; cursor: not-allowed; }
-    .tabs { display: flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
-    .tab-btn {
-      background: #dde5ee; color: #333; padding: 9px 16px; margin-top: 0;
-      border-radius: 20px; font-size: 14px;
-    }
-    .tab-btn.active { background: #245c8c; color: white; }
-    .status-badge {
-      display: inline-block; padding: 3px 10px; border-radius: 12px;
-      font-size: 12px; font-weight: 600;
-    }
-    .status-pending { background: #fff3cd; color: #856404; }
-    .status-approved { background: #d4edda; color: #155724; }
-    .status-rejected { background: #f8d7da; color: #721c24; }
-    .claim-row {
-      border-bottom: 1px solid #eee; padding: 10px 0;
-    }
-    .claim-row:last-child { border-bottom: none; }
-    .claim-title { font-weight: 600; }
-    .claim-meta { font-size: 13px; color: #666; margin-top: 2px; }
-    .error-msg { color: #c0392b; font-size: 14px; margin-top: 8px; }
-    .warning-box {
-      background: #fff3cd; border: 1px solid #ffe08a; border-radius: 6px;
-      padding: 10px; font-size: 13px; margin-top: 10px; color: #6a5000;
-    }
-    .hidden { display: none !important; }
-    .file-list { font-size: 13px; margin-top: 6px; color: #245c8c; }
-    .limit-box {
-      background: #eef4fb; border-radius: 8px; padding: 12px; font-size: 13px; margin-bottom: 14px;
-    }
-    .spinner { text-align: center; padding: 20px; color: #888; }
-    a { color: #245c8c; }
-  </style>
+  /* ---------- login screen ---------- */
+  .login-shell{ display:flex; min-height:100vh; }
+  .login-brandpanel{
+    flex:0 0 42%; min-height:100vh; background:var(--steel-dark); color:#fff;
+    display:flex; align-items:center; position:relative; overflow:hidden;
+  }
+  .login-brandpanel::before{
+    content:""; position:absolute; inset:0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px);
+    background-size:34px 34px;
+    mask-image:linear-gradient(to bottom right, black, transparent 75%);
+  }
+  .login-brandpanel::after{
+    content:""; position:absolute; top:0; left:0; right:0; height:4px; background:var(--copper);
+  }
+  .login-brandpanel-inner{ position:relative; padding:56px; max-width:460px; }
+  .brand-mark{
+    width:52px; height:52px; border-radius:var(--radius-s); background:var(--copper);
+    color:#fff; font-family:var(--font-mono); font-weight:600; font-size:15px;
+    display:flex; align-items:center; justify-content:center; letter-spacing:0.5px; margin-bottom:28px;
+  }
+  .login-brandpanel-inner h1{ font-size:26px; line-height:1.35; margin-bottom:10px; }
+  .login-brandpanel-inner .tagline{ color:rgba(255,255,255,0.62); font-size:14.5px; margin-bottom:40px; }
+  .brand-meta{ border-top:1px solid rgba(255,255,255,0.14); padding-top:20px; }
+  .brand-meta-row{
+    display:flex; justify-content:space-between; font-size:13.5px;
+    color:rgba(255,255,255,0.75); padding:7px 0;
+  }
+  .brand-meta-row span:last-child{ font-family:var(--font-mono); color:#fff; }
+
+  .login-formpanel{ flex:1; display:flex; align-items:center; justify-content:center; padding:32px; }
+  .login-form-inner{ width:100%; max-width:340px; }
+  .login-form-inner h2{ font-size:22px; margin-bottom:6px; }
+  .login-sub{ color:var(--ink-soft); font-size:14px; margin-bottom:28px; display:block; }
+  .login-form-inner .btn-primary{ margin-top:6px; }
+
+  @media (max-width:800px){
+    .login-shell{ flex-direction:column; }
+    .login-brandpanel{ flex:0 0 auto; min-height:0; padding:0; }
+    .login-brandpanel-inner{ padding:32px 24px; max-width:none; }
+    .login-brandpanel-inner h1{ font-size:21px; }
+    .login-brandpanel-inner .tagline{ margin-bottom:0; }
+    .brand-meta{ display:none; }
+    .login-formpanel{ padding:32px 24px 48px; }
+  }
+
+  /* ---------- app shell ---------- */
+  .app-layout{ display:flex; min-height:100vh; }
+  .sidebar{
+    width:246px; background:var(--steel-dark); color:#fff; flex-shrink:0;
+    display:flex; flex-direction:column; position:sticky; top:0; height:100vh;
+  }
+  .sidebar-brand{ padding:22px 20px; border-bottom:1px solid rgba(255,255,255,0.1); display:flex; gap:12px; align-items:center; }
+  .brand-mark-sm{
+    width:34px; height:34px; flex-shrink:0; border-radius:4px; background:var(--copper);
+    color:#fff; font-family:var(--font-mono); font-weight:600; font-size:11px;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .sidebar-brand-text h1{ font-size:14.5px; color:#fff; line-height:1.3; }
+  .sidebar-brand-text p{ font-size:11.5px; color:rgba(255,255,255,0.55); margin-top:2px; }
+
+  .sidebar-user{ padding:16px 20px; border-bottom:1px solid rgba(255,255,255,0.1); }
+  .sidebar-user .name{ font-weight:600; font-size:14px; margin-bottom:6px; }
+  .role-tag{
+    display:inline-block; font-size:11.5px; padding:3px 9px; border-radius:3px;
+    background:rgba(255,255,255,0.1); color:rgba(255,255,255,0.85);
+  }
+
+  .sidebar-nav{ flex:1; padding:10px 12px; display:flex; flex-direction:column; gap:2px; }
+  .nav-item{
+    display:flex; align-items:center; gap:11px; width:100%; text-align:left;
+    padding:11px 12px; font-size:14px; cursor:pointer; background:none; border:none;
+    color:rgba(255,255,255,0.7); border-radius:var(--radius-s); border-left:3px solid transparent;
+    transition:background .15s ease, color .15s ease;
+  }
+  .nav-item svg{ flex-shrink:0; opacity:0.85; }
+  .nav-item:hover{ background:rgba(255,255,255,0.06); color:#fff; }
+  .nav-item.active{ background:rgba(255,255,255,0.09); border-left-color:var(--copper); color:#fff; font-weight:600; }
+
+  .sidebar-logout{
+    display:flex; align-items:center; gap:10px; margin:12px; padding:11px 12px;
+    border-top:1px solid rgba(255,255,255,0.1); font-size:13.5px; cursor:pointer;
+    background:none; border-left:none; border-right:none; border-bottom:none;
+    color:rgba(255,255,255,0.6); border-radius:var(--radius-s); width:calc(100% - 24px);
+  }
+  .sidebar-logout:hover{ color:#fff; background:rgba(255,255,255,0.05); }
+
+  .topbar{
+    display:none; background:var(--steel-dark); color:#fff; padding:14px 16px;
+    align-items:center; gap:12px; position:sticky; top:0; z-index:5;
+  }
+  .hamburger-btn{ background:none; border:none; color:#fff; padding:4px; cursor:pointer; display:flex; }
+  .topbar-brand{ display:flex; align-items:center; gap:10px; }
+  .topbar-title{ font-size:15px; font-weight:600; }
+
+  .main-content{ flex:1; min-width:0; }
+  .container{ max-width:740px; margin:0 auto; padding:28px 20px 60px; }
+
+  .sidebar-overlay{ display:none; position:fixed; inset:0; background:rgba(12,20,28,0.5); z-index:10; }
+
+  @media (max-width:800px){
+    .sidebar{ position:fixed; left:-260px; z-index:20; transition:left .22s ease; height:100%; }
+    .sidebar.open{ left:0; }
+    .sidebar-overlay.show{ display:block; }
+    .topbar{ display:flex; }
+    .container{ padding:20px 16px 48px; }
+  }
+
+  /* ---------- cards ---------- */
+  .card{
+    background:var(--surface); border:1px solid var(--line); border-radius:var(--radius-m);
+    padding:22px; margin-bottom:18px;
+  }
+  .card-head{ display:flex; align-items:center; gap:10px; margin-bottom:20px; }
+  .card-head svg{ color:var(--steel); flex-shrink:0; }
+  .card-head h3{ font-size:16.5px; }
+
+  /* ---------- limit box ---------- */
+  .limit-box{ background:var(--paper); border:1px solid var(--line-soft); border-radius:var(--radius-m); padding:16px 18px; margin-bottom:20px; }
+  .limit-head{ display:flex; align-items:center; gap:8px; font-size:13.5px; font-weight:600; color:var(--ink-soft); margin-bottom:10px; }
+  .limit-head svg{ color:var(--copper); flex-shrink:0; }
+  .limit-figures{ display:flex; align-items:baseline; gap:6px; font-family:var(--font-mono); margin-bottom:9px; }
+  .limit-used{ font-size:19px; font-weight:600; color:var(--ink); }
+  .limit-sep{ color:var(--ink-faint); }
+  .limit-total{ font-size:13.5px; color:var(--ink-soft); }
+  .limit-track{ height:6px; background:var(--line-soft); border-radius:3px; overflow:hidden; }
+  .limit-fill{ height:100%; background:var(--steel); border-radius:3px; }
+  .limit-fill.over{ background:var(--danger); }
+  .limit-remaining{ font-size:12.5px; color:var(--ink-soft); margin-top:8px; }
+
+  /* ---------- amount field with suffix ---------- */
+  .amount-wrap{ position:relative; }
+  .amount-wrap input{ padding-right:52px; }
+  .amount-suffix{
+    position:absolute; right:12px; top:50%; transform:translateY(-50%);
+    font-size:13.5px; color:var(--ink-faint); font-family:var(--font-mono); pointer-events:none;
+  }
+
+  /* ---------- file input ---------- */
+  .file-input-row{
+    border:1px dashed var(--line); border-radius:var(--radius-s); padding:12px;
+    display:flex; align-items:center; gap:10px; background:var(--paper);
+  }
+  .file-input-row input[type=file]{ border:none; background:none; padding:0; font-size:13.5px; }
+  .file-list{ font-size:13px; margin-top:8px; color:var(--ink-soft); display:flex; flex-wrap:wrap; gap:6px; }
+  .file-chip{ display:inline-flex; align-items:center; gap:5px; background:var(--copper-soft); color:var(--copper); padding:4px 9px; border-radius:3px; font-size:12.5px; }
+
+  /* ---------- warning / status ---------- */
+  .warning-box{
+    display:flex; gap:9px; background:var(--warning-bg); border:1px solid #EFDDAE; border-radius:var(--radius-s);
+    padding:11px 13px; font-size:13px; margin-top:12px; color:#6E4C0F;
+  }
+  .warning-box svg{ flex-shrink:0; color:var(--warning); margin-top:1px; }
+
+  .status-badge{
+    display:inline-flex; align-items:center; gap:6px; padding:4px 10px 4px 8px; border-radius:3px;
+    font-size:12px; font-weight:600; border-left:3px solid transparent;
+  }
+  .status-badge::before{ content:""; width:6px; height:6px; border-radius:50%; }
+  .status-pending{ background:var(--warning-bg); color:#7A5610; border-left-color:var(--warning); }
+  .status-pending::before{ background:var(--warning); }
+  .status-approved{ background:var(--success-bg); color:#1F5E3E; border-left-color:var(--success); }
+  .status-approved::before{ background:var(--success); }
+  .status-rejected{ background:var(--danger-bg); color:#8C2C22; border-left-color:var(--danger); }
+  .status-rejected::before{ background:var(--danger); }
+
+  /* ---------- claim rows ---------- */
+  .claim-row{ border-bottom:1px solid var(--line-soft); padding:16px 0; }
+  .claim-row:first-child{ padding-top:2px; }
+  .claim-row:last-child{ border-bottom:none; padding-bottom:2px; }
+  .claim-top{ display:flex; justify-content:space-between; align-items:flex-start; gap:12px; margin-bottom:6px; flex-wrap:wrap; }
+  .claim-title{ font-weight:600; font-size:14.5px; }
+  .claim-amount{ font-family:var(--font-mono); font-weight:600; font-size:14.5px; white-space:nowrap; }
+  .claim-meta{ display:flex; flex-wrap:wrap; gap:x 14px; gap:5px 14px; font-size:12.5px; color:var(--ink-soft); margin-top:4px; }
+  .claim-meta-item{ display:inline-flex; align-items:center; gap:5px; }
+  .claim-meta-item svg{ flex-shrink:0; opacity:0.7; }
+  .claim-meta .mono{ font-family:var(--font-mono); }
+  .claim-desc{ font-size:13.5px; color:var(--ink-soft); margin-top:8px; }
+  .claim-attachments{ margin-top:8px; }
+  .claim-attachments a{ font-size:12.5px; display:inline-flex; align-items:center; gap:5px; margin-right:12px; }
+  .claim-actions{ margin-top:12px; display:flex; gap:8px; }
+
+  .btn-approve, .btn-reject{
+    display:inline-flex; align-items:center; gap:7px; border:none; border-radius:var(--radius-s);
+    padding:9px 16px; font-size:13.5px; font-weight:600; cursor:pointer; color:#fff;
+    transition:background .15s ease;
+  }
+  .btn-approve{ background:var(--success); }
+  .btn-approve:hover{ background:#256944; }
+  .btn-reject{ background:var(--danger); }
+  .btn-reject:hover{ background:#983025; }
+
+  /* ---------- empty / loading states ---------- */
+  .empty-state{ display:flex; flex-direction:column; align-items:center; text-align:center; padding:36px 10px; color:var(--ink-faint); }
+  .empty-state svg{ margin-bottom:12px; color:var(--ink-faint); }
+  .empty-state p{ font-size:14px; color:var(--ink-soft); }
+
+  .spinner{ display:flex; align-items:center; justify-content:center; gap:10px; padding:34px 0; color:var(--ink-soft); font-size:13.5px; }
+  .spinner-ring{
+    width:16px; height:16px; border-radius:50%; border:2px solid var(--line);
+    border-top-color:var(--steel); animation:spin .7s linear infinite;
+  }
+  @keyframes spin{ to{ transform:rotate(360deg); } }
+
+  /* ---------- toast ---------- */
+  .toast{
+    position:fixed; left:50%; bottom:26px; transform:translate(-50%, 12px); opacity:0;
+    background:var(--steel-dark); color:#fff; padding:13px 18px; border-radius:var(--radius-s);
+    font-size:13.5px; box-shadow:0 6px 20px rgba(0,0,0,0.2); z-index:50; max-width:90vw;
+    display:flex; align-items:center; gap:9px; border-left:3px solid var(--steel);
+    transition:opacity .25s ease, transform .25s ease;
+  }
+  .toast.show{ opacity:1; transform:translate(-50%, 0); }
+  .toast.success{ border-left-color:var(--success); }
+  .toast.danger{ border-left-color:var(--danger); }
+
+  /* ---------- modal ---------- */
+  .modal-overlay{
+    position:fixed; inset:0; background:rgba(12,20,28,0.5); z-index:40;
+    display:flex; align-items:center; justify-content:center; padding:20px;
+  }
+  .modal{ background:var(--surface); border-radius:var(--radius-m); padding:24px; width:100%; max-width:380px; }
+  .modal h4{ font-size:16px; margin-bottom:5px; }
+  .modal-sub{ font-size:13px; color:var(--ink-soft); display:block; margin-bottom:14px; }
+  .modal-actions{ display:flex; justify-content:flex-end; gap:10px; margin-top:16px; }
+</style>
 </head>
 <body>
 
   <!-- ==================== LOGIN SCREEN ==================== -->
-  <div id="loginScreen" class="container" style="max-width: 380px; margin-top: 60px;">
-    <div class="card">
-      <h2 style="text-align:center; color:#245c8c;">🏢 ระบบเบิกสวัสดิการ</h2>
-      <p style="text-align:center; color:#777; font-size:14px;">Summit Auto Body Industry (สาขาอยุธยา)</p>
-      <label>รหัสพนักงาน</label>
-      <input type="text" id="loginEmployeeId" placeholder="เช่น EMP001">
-      <label>PIN</label>
-      <input type="password" id="loginPin" placeholder="กรอก PIN 4 หลัก">
-      <button onclick="doLogin()" style="width:100%;">เข้าสู่ระบบ</button>
-      <div id="loginError" class="error-msg"></div>
+  <div id="loginScreen" class="login-shell">
+    <div class="login-brandpanel">
+      <div class="login-brandpanel-inner">
+        <div class="brand-mark">SAB</div>
+        <h1>ระบบเบิกสวัสดิการพนักงาน</h1>
+        <p class="tagline">Summit Auto Body Industry — สาขาอยุธยา</p>
+        <div class="brand-meta">
+          <div class="brand-meta-row"><span>ขั้นตอนอนุมัติ</span><span>3 ขั้น</span></div>
+          <div class="brand-meta-row"><span>วงเงินรักษาพยาบาล</span><span>15,000 / ปี</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="login-formpanel">
+      <div class="login-form-inner">
+        <h2>เข้าสู่ระบบ</h2>
+        <span class="login-sub">กรอกรหัสพนักงานและ PIN เพื่อดำเนินการต่อ</span>
+        <div class="field">
+          <label for="loginEmployeeId">รหัสพนักงาน</label>
+          <input type="text" id="loginEmployeeId" placeholder="เช่น EMP001" autocomplete="username">
+        </div>
+        <div class="field">
+          <label for="loginPin">PIN</label>
+          <input type="password" id="loginPin" placeholder="ตัวเลข 4 หลัก" inputmode="numeric" autocomplete="current-password">
+        </div>
+        <button class="btn-primary" onclick="doLogin()">เข้าสู่ระบบ</button>
+        <div id="loginError" class="error-msg"></div>
+      </div>
     </div>
   </div>
 
@@ -183,75 +340,136 @@
 
     <aside class="sidebar" id="sidebar">
       <div class="sidebar-brand">
-        <h1>🏢 ระบบเบิกสวัสดิการ</h1>
-        <p>Summit Auto Body Industry</p>
+        <div class="brand-mark-sm">SAB</div>
+        <div class="sidebar-brand-text">
+          <h1>ระบบเบิกสวัสดิการ</h1>
+          <p>Summit Auto Body Industry</p>
+        </div>
       </div>
       <div class="sidebar-user">
         <div class="name" id="userNameDisplay"></div>
       </div>
       <nav class="sidebar-nav" id="tabBar"></nav>
-      <div class="sidebar-logout" onclick="logout()">ออกจากระบบ ↩</div>
+      <button class="sidebar-logout" onclick="logout()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        ออกจากระบบ
+      </button>
     </aside>
 
     <div class="main-content">
       <div class="topbar">
-        <span class="hamburger" onclick="openSidebar()">☰</span>
-        <span class="topbar-title">🏢 ระบบเบิกสวัสดิการ</span>
+        <button class="hamburger-btn" onclick="openSidebar()" aria-label="เปิดเมนู">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/></svg>
+        </button>
+        <div class="topbar-brand">
+          <div class="brand-mark-sm">SAB</div>
+          <span class="topbar-title">ระบบเบิกสวัสดิการ</span>
+        </div>
       </div>
 
       <div class="container">
         <!-- TAB: ยื่นคำขอเบิก -->
         <div id="tabSubmit" class="tab-content">
         <div class="card">
-          <h3>📝 ยื่นคำขอเบิกสวัสดิการ</h3>
+          <div class="card-head">
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+            <h3>ยื่นคำขอเบิกสวัสดิการ</h3>
+          </div>
           <div id="limitBox" class="limit-box"></div>
 
-          <label>ประเภทสวัสดิการ</label>
-          <select id="categorySelect" onchange="onCategoryChange()"></select>
+          <div class="field">
+            <label>ประเภทสวัสดิการ</label>
+            <select id="categorySelect" onchange="onCategoryChange()"></select>
+          </div>
 
-          <div id="relationField" class="hidden">
+          <div id="relationField" class="field hidden">
             <label>ระบุความสัมพันธ์ (เช่น บิดา / มารดา / คู่สมรส / บุตร)</label>
             <input type="text" id="relationDetail">
           </div>
 
-          <label>จำนวนเงินที่เบิก (บาท)</label>
-          <input type="number" id="amountInput" min="0" step="1">
+          <div class="field">
+            <label>จำนวนเงินที่เบิก</label>
+            <div class="amount-wrap">
+              <input type="number" id="amountInput" min="0" step="1">
+              <span class="amount-suffix">บาท</span>
+            </div>
+          </div>
 
-          <label>รายละเอียดเพิ่มเติม</label>
-          <textarea id="descInput" placeholder="เช่น ชื่อโรค, วันที่เข้ารับการรักษา"></textarea>
+          <div class="field">
+            <label>รายละเอียดเพิ่มเติม</label>
+            <textarea id="descInput" placeholder="เช่น ชื่อโรค, วันที่เข้ารับการรักษา"></textarea>
+          </div>
 
-          <label>แนบไฟล์ (ใบเสร็จ / ใบรับรองแพทย์ / เอกสารประกอบ)</label>
-          <input type="file" id="fileInput" multiple accept="image/*,.pdf">
-          <div id="fileList" class="file-list"></div>
+          <div class="field">
+            <label>แนบไฟล์ (ใบเสร็จ / ใบรับรองแพทย์ / เอกสารประกอบ)</label>
+            <div class="file-input-row">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="color:var(--ink-faint); flex-shrink:0;"><path d="M21 11.5 12.5 20a4.5 4.5 0 0 1-6.36-6.36l8.49-8.49a3 3 0 0 1 4.24 4.24l-8.49 8.49a1.5 1.5 0 0 1-2.12-2.12l7.78-7.78"/></svg>
+              <input type="file" id="fileInput" multiple accept="image/*,.pdf">
+            </div>
+            <div id="fileList" class="file-list"></div>
+          </div>
 
           <div id="submitWarning" class="warning-box hidden"></div>
           <div id="submitError" class="error-msg"></div>
-          <button onclick="doSubmitClaim()" id="submitBtn">ส่งคำขอเบิก</button>
+          <button class="btn-primary" onclick="doSubmitClaim()" id="submitBtn" style="width:auto; padding-left:26px; padding-right:26px;">ส่งคำขอเบิก</button>
         </div>
       </div>
 
       <!-- TAB: ประวัติของฉัน -->
       <div id="tabHistory" class="tab-content hidden">
         <div class="card">
-          <h3>📋 ประวัติการเบิกของฉัน</h3>
-          <div id="historyList"><div class="spinner">กำลังโหลด...</div></div>
+          <div class="card-head">
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="4.5" cy="6" r="1"/><line x1="8.5" y1="6" x2="20" y2="6"/><circle cx="4.5" cy="12" r="1"/><line x1="8.5" y1="12" x2="20" y2="12"/><circle cx="4.5" cy="18" r="1"/><line x1="8.5" y1="18" x2="20" y2="18"/></svg>
+            <h3>ประวัติการเบิกของฉัน</h3>
+          </div>
+          <div id="historyList"><div class="spinner"><span class="spinner-ring"></span>กำลังโหลด...</div></div>
         </div>
       </div>
 
         <!-- TAB: รออนุมัติ (approver only) -->
         <div id="tabApprove" class="tab-content hidden">
           <div class="card">
-            <h3>✅ รายการรออนุมัติ</h3>
-            <div id="approvalList"><div class="spinner">กำลังโหลด...</div></div>
+            <div class="card-head">
+              <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5 19 6.5v5.6c0 4.6-3 7.7-7 9.1-4-1.4-7-4.5-7-9.1V6.5l7-3z"/><path d="M9 12.3l2 2 4-4.2"/></svg>
+              <h3>รายการรออนุมัติ</h3>
+            </div>
+            <div id="approvalList"><div class="spinner"><span class="spinner-ring"></span>กำลังโหลด...</div></div>
           </div>
         </div>
       </div> <!-- /.container -->
     </div> <!-- /.main-content -->
   </div> <!-- /.app-layout -->
 
+  <!-- ==================== REJECT MODAL ==================== -->
+  <div id="modalOverlay" class="modal-overlay hidden" onclick="closeModal()">
+    <div class="modal" onclick="event.stopPropagation()">
+      <h4>ระบุเหตุผลที่ปฏิเสธ</h4>
+      <span class="modal-sub">เหตุผลนี้จะแสดงให้พนักงานเห็น (ไม่บังคับ)</span>
+      <textarea id="rejectNote" rows="3" placeholder="เช่น เอกสารไม่ครบถ้วน"></textarea>
+      <div class="modal-actions">
+        <button class="btn-secondary" onclick="closeModal()">ยกเลิก</button>
+        <button class="btn-reject" onclick="confirmReject()">ยืนยันปฏิเสธ</button>
+      </div>
+    </div>
+  </div>
+
 <script>
   // ⚠️ ตั้งค่าตรงนี้: วาง Web app URL จาก Apps Script deployment (ลงท้ายด้วย /exec)
   const API_URL = 'https://script.google.com/macros/s/AKfycbyYPeS8Lakd2_wYaBe5yZF7uLNPmhUGgX6OANMTF2u9ldfEwkA8ieDuSyiaWCwcf2T-Ow/exec';
+
+  const ICONS = {
+    pulse: '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 12 8 12 10 6 14 18 16 12 21 12"/></svg>',
+    calendar: '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="16" rx="2"/><line x1="3.5" y1="10" x2="20.5" y2="10"/><line x1="8" y1="3" x2="8" y2="7"/><line x1="16" y1="3" x2="16" y2="7"/></svg>',
+    hash: '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="9" x2="19" y2="9"/><line x1="5" y1="15" x2="19" y2="15"/><line x1="10" y1="4" x2="8" y2="20"/><line x1="16" y1="4" x2="14" y2="20"/></svg>',
+    paperclip: '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5 12.5 20a4.5 4.5 0 0 1-6.36-6.36l8.49-8.49a3 3 0 0 1 4.24 4.24l-8.49 8.49a1.5 1.5 0 0 1-2.12-2.12l7.78-7.78"/></svg>',
+    warning: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5 2.3 20h19.4L12 3.5z"/><line x1="12" y1="9.5" x2="12" y2="14"/><circle cx="12" cy="17" r="0.9" fill="currentColor" stroke="none"/></svg>',
+    check: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 12 9 17 20 6"/></svg>',
+    x: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="5" x2="19" y2="19"/><line x1="19" y1="5" x2="5" y2="19"/></svg>',
+    tray: '<svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.5 5.5 4h13L21 8.5"/><path d="M3 8.5v9.5a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V8.5"/><path d="M3 8.5h5l1.8 3h4.4l1.8-3h5"/></svg>',
+    edit: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>',
+    list: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="4.5" cy="6" r="1"/><line x1="8.5" y1="6" x2="20" y2="6"/><circle cx="4.5" cy="12" r="1"/><line x1="8.5" y1="12" x2="20" y2="12"/><circle cx="4.5" cy="18" r="1"/><line x1="8.5" y1="18" x2="20" y2="18"/></svg>',
+    shield: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5 19 6.5v5.6c0 4.6-3 7.7-7 9.1-4-1.4-7-4.5-7-9.1V6.5l7-3z"/><path d="M9 12.3l2 2 4-4.2"/></svg>'
+  };
 
   /**
    * เรียก Apps Script backend API
@@ -268,6 +486,20 @@
   let CURRENT_USER = null;
   let CATEGORIES = [];
   let PENDING_FILES = []; // {base64Data, mimeType, filename}
+  let PENDING_REJECT_ID = null;
+
+  // ---------- TOAST ----------
+  function showToast(message, type) {
+    const toast = document.createElement('div');
+    toast.className = 'toast' + (type ? ' ' + type : '');
+    toast.textContent = message;
+    document.body.appendChild(toast);
+    requestAnimationFrame(() => toast.classList.add('show'));
+    setTimeout(() => {
+      toast.classList.remove('show');
+      setTimeout(() => toast.remove(), 300);
+    }, 3200);
+  }
 
   // ---------- LOGIN ----------
   function doLogin() {
@@ -305,7 +537,7 @@
     document.getElementById('loginScreen').classList.add('hidden');
     document.getElementById('appScreen').classList.remove('hidden');
     document.getElementById('userNameDisplay').innerHTML =
-      `${CURRENT_USER.name}<div class="role">${CURRENT_USER.department} · ${roleLabel(CURRENT_USER.role)}</div>`;
+      `${CURRENT_USER.name}<div class="role-tag">${CURRENT_USER.department} · ${roleLabel(CURRENT_USER.role)}</div>`;
 
     buildTabs();
     loadCategories();
@@ -319,10 +551,10 @@
 
   function buildTabs() {
     const bar = document.getElementById('tabBar');
-    let html = `<div class="nav-item" id="tabBtn-submit" onclick="showTab('submit')">📝 ยื่นคำขอ</div>
-                <div class="nav-item" id="tabBtn-history" onclick="showTab('history')">📋 ประวัติของฉัน</div>`;
+    let html = `<button class="nav-item" id="tabBtn-submit" onclick="showTab('submit')">${ICONS.edit}<span>ยื่นคำขอ</span></button>
+                <button class="nav-item" id="tabBtn-history" onclick="showTab('history')">${ICONS.list}<span>ประวัติของฉัน</span></button>`;
     if (['supervisor','hr','accounting','admin'].indexOf(CURRENT_USER.role) !== -1) {
-      html += `<div class="nav-item" id="tabBtn-approve" onclick="showTab('approve')">✅ รออนุมัติ</div>`;
+      html += `<button class="nav-item" id="tabBtn-approve" onclick="showTab('approve')">${ICONS.shield}<span>รออนุมัติ</span></button>`;
     }
     bar.innerHTML = html;
   }
@@ -368,9 +600,18 @@
 
   function loadLimitBox() {
     callApi('getYearlyMedicalUsage', { employeeId: CURRENT_USER.employeeId }).then(usage => {
-      document.getElementById('limitBox').innerHTML =
-        `💊 วงเงินค่ารักษาพยาบาลปีนี้: ใช้ไปแล้ว <b>${usage.used.toLocaleString()}</b> / ${usage.limit.toLocaleString()} บาท
-         (คงเหลือ <b>${usage.remaining.toLocaleString()}</b> บาท)`;
+      const pct = usage.limit > 0 ? Math.min(100, Math.round((usage.used / usage.limit) * 100)) : 0;
+      const over = usage.used > usage.limit;
+      document.getElementById('limitBox').innerHTML = `
+        <div class="limit-head">${ICONS.pulse}<span>วงเงินค่ารักษาพยาบาลปีนี้</span></div>
+        <div class="limit-figures">
+          <span class="limit-used">${usage.used.toLocaleString()}</span>
+          <span class="limit-sep">/</span>
+          <span class="limit-total">${usage.limit.toLocaleString()} บาท</span>
+        </div>
+        <div class="limit-track"><div class="limit-fill${over ? ' over' : ''}" style="width:${pct}%"></div></div>
+        <div class="limit-remaining">คงเหลือ ${usage.remaining.toLocaleString()} บาท</div>
+      `;
     });
   }
 
@@ -381,7 +622,7 @@
     const listDiv = document.getElementById('fileList');
     listDiv.innerText = 'กำลังอ่านไฟล์...';
     let loaded = 0;
-    if (files.length === 0) { listDiv.innerText = ''; return; }
+    if (files.length === 0) { listDiv.innerHTML = ''; return; }
     files.forEach(file => {
       const reader = new FileReader();
       reader.onload = function(evt) {
@@ -389,7 +630,7 @@
         PENDING_FILES.push({ base64Data: base64, mimeType: file.type, filename: file.name });
         loaded++;
         if (loaded === files.length) {
-          listDiv.innerText = '📎 ' + PENDING_FILES.map(f => f.filename).join(', ');
+          listDiv.innerHTML = PENDING_FILES.map(f => `<span class="file-chip">${ICONS.paperclip}${f.filename}</span>`).join('');
         }
       };
       reader.readAsDataURL(file);
@@ -433,14 +674,14 @@
             return;
           }
           if (res.warning) {
-            warnDiv.innerText = res.warning;
+            warnDiv.innerHTML = ICONS.warning + `<span>${res.warning}</span>`;
             warnDiv.classList.remove('hidden');
           }
-          alert('✅ ส่งคำขอเบิกเรียบร้อยแล้ว รหัส: ' + res.claimId);
+          showToast('ส่งคำขอเบิกเรียบร้อยแล้ว · รหัส ' + res.claimId, 'success');
           document.getElementById('amountInput').value = '';
           document.getElementById('descInput').value = '';
           document.getElementById('fileInput').value = '';
-          document.getElementById('fileList').innerText = '';
+          document.getElementById('fileList').innerHTML = '';
           PENDING_FILES = [];
           loadLimitBox();
         })
@@ -464,19 +705,25 @@
 
   // ---------- HISTORY ----------
   function loadHistory() {
-    document.getElementById('historyList').innerHTML = '<div class="spinner">กำลังโหลด...</div>';
+    document.getElementById('historyList').innerHTML = '<div class="spinner"><span class="spinner-ring"></span>กำลังโหลด...</div>';
     callApi('getMyClaims', { employeeId: CURRENT_USER.employeeId }).then(claims => {
       const div = document.getElementById('historyList');
       if (claims.length === 0) {
-        div.innerHTML = '<p style="color:#888;">ยังไม่มีประวัติการเบิก</p>';
+        div.innerHTML = `<div class="empty-state">${ICONS.tray}<p>ยังไม่มีประวัติการเบิก</p></div>`;
         return;
       }
       div.innerHTML = claims.map(c => `
         <div class="claim-row">
-          <div class="claim-title">${c.CategoryLabel} — ${Number(c.Amount).toLocaleString()} บาท</div>
-          <div class="claim-meta">${formatDate(c.Timestamp)} · รหัส ${c.ClaimID}</div>
-          <div class="claim-meta">${c.Description || ''}</div>
-          ${statusBadge(c.Status)}
+          <div class="claim-top">
+            <div class="claim-title">${c.CategoryLabel}</div>
+            <div class="claim-amount">${Number(c.Amount).toLocaleString()} บาท</div>
+          </div>
+          <div class="claim-meta">
+            <span class="claim-meta-item">${ICONS.calendar}${formatDate(c.Timestamp)}</span>
+            <span class="claim-meta-item mono">${ICONS.hash}${c.ClaimID}</span>
+          </div>
+          ${c.Description ? `<div class="claim-desc">${c.Description}</div>` : ''}
+          <div style="margin-top:10px;">${statusBadge(c.Status)}</div>
         </div>
       `).join('');
     });
@@ -497,11 +744,11 @@
 
   // ---------- APPROVALS ----------
   function loadApprovals() {
-    document.getElementById('approvalList').innerHTML = '<div class="spinner">กำลังโหลด...</div>';
+    document.getElementById('approvalList').innerHTML = '<div class="spinner"><span class="spinner-ring"></span>กำลังโหลด...</div>';
     callApi('getPendingApprovals', { role: CURRENT_USER.role, department: CURRENT_USER.department }).then(claims => {
       const div = document.getElementById('approvalList');
       if (claims.length === 0) {
-        div.innerHTML = '<p style="color:#888;">ไม่มีรายการรออนุมัติในขณะนี้ 🎉</p>';
+        div.innerHTML = `<div class="empty-state">${ICONS.tray}<p>ไม่มีรายการรออนุมัติในขณะนี้</p></div>`;
         return;
       }
       div.innerHTML = claims.map(c => {
@@ -509,14 +756,20 @@
         const showLimitWarn = usage && usage.overLimit;
         return `
         <div class="claim-row">
-          <div class="claim-title">${c.Name} (${c.Department}) — ${c.CategoryLabel}</div>
-          <div class="claim-meta">จำนวน ${Number(c.Amount).toLocaleString()} บาท · ${formatDate(c.Timestamp)}</div>
-          <div class="claim-meta">${c.Description || ''} ${c.RelationDetail ? '· ความสัมพันธ์: ' + c.RelationDetail : ''}</div>
-          ${c.AttachmentLinks ? `<div class="file-list">📎 ${c.AttachmentLinks.split(',').map(l => `<a href="${l.trim()}" target="_blank">ไฟล์แนบ</a>`).join(', ')}</div>` : ''}
-          ${showLimitWarn ? `<div class="warning-box">⚠️ พนักงานคนนี้เบิกค่ารักษาพยาบาลรวมเกินวงเงิน 15,000/ปี แล้ว (ใช้ไป ${usage.used.toLocaleString()} บาท)</div>` : ''}
-          <div style="margin-top:10px;">
-            <button class="approve" onclick="doDecide('${c.ClaimID}','approve')">✅ อนุมัติ</button>
-            <button class="reject" onclick="doDecide('${c.ClaimID}','reject')">❌ ปฏิเสธ</button>
+          <div class="claim-top">
+            <div class="claim-title">${c.Name} <span style="color:var(--ink-faint); font-weight:400;">· ${c.Department}</span></div>
+            <div class="claim-amount">${Number(c.Amount).toLocaleString()} บาท</div>
+          </div>
+          <div class="claim-meta">
+            <span class="claim-meta-item">${c.CategoryLabel}</span>
+            <span class="claim-meta-item">${ICONS.calendar}${formatDate(c.Timestamp)}</span>
+          </div>
+          ${c.Description || c.RelationDetail ? `<div class="claim-desc">${c.Description || ''}${c.RelationDetail ? ' · ความสัมพันธ์: ' + c.RelationDetail : ''}</div>` : ''}
+          ${c.AttachmentLinks ? `<div class="claim-attachments">${c.AttachmentLinks.split(',').map(l => `<a href="${l.trim()}" target="_blank">${ICONS.paperclip}ไฟล์แนบ</a>`).join('')}</div>` : ''}
+          ${showLimitWarn ? `<div class="warning-box">${ICONS.warning}<span>พนักงานคนนี้เบิกค่ารักษาพยาบาลรวมเกินวงเงิน 15,000/ปี แล้ว (ใช้ไป ${usage.used.toLocaleString()} บาท)</span></div>` : ''}
+          <div class="claim-actions">
+            <button class="btn-approve" onclick="doDecide('${c.ClaimID}','approve')">${ICONS.check}อนุมัติ</button>
+            <button class="btn-reject" onclick="doDecide('${c.ClaimID}','reject')">${ICONS.x}ปฏิเสธ</button>
           </div>
         </div>
       `}).join('');
@@ -524,21 +777,39 @@
   }
 
   function doDecide(claimId, decision) {
-    let note = '';
-    if (decision === 'reject') {
-      note = prompt('ระบุเหตุผลที่ปฏิเสธ (ไม่บังคับ):') || '';
-    }
+    if (decision === 'reject') { openRejectModal(claimId); return; }
+    runDecision(claimId, decision, '');
+  }
+
+  function openRejectModal(claimId) {
+    PENDING_REJECT_ID = claimId;
+    document.getElementById('rejectNote').value = '';
+    document.getElementById('modalOverlay').classList.remove('hidden');
+  }
+  function closeModal() {
+    document.getElementById('modalOverlay').classList.add('hidden');
+    PENDING_REJECT_ID = null;
+  }
+  function confirmReject() {
+    const note = document.getElementById('rejectNote').value.trim();
+    const id = PENDING_REJECT_ID;
+    closeModal();
+    runDecision(id, 'reject', note);
+  }
+
+  function runDecision(claimId, decision, note) {
     callApi('decideClaim', {
       claimId, role: CURRENT_USER.role, decision, approverName: CURRENT_USER.name, note
     })
       .then(res => {
         if (res.success) {
+          showToast(decision === 'approve' ? 'อนุมัติคำขอเรียบร้อยแล้ว' : 'ปฏิเสธคำขอเรียบร้อยแล้ว', decision === 'approve' ? 'success' : '');
           loadApprovals();
         } else {
-          alert('เกิดข้อผิดพลาด: ' + res.error);
+          showToast(res.error, 'danger');
         }
       })
-      .catch(err => alert('เกิดข้อผิดพลาด: ' + err.message));
+      .catch(err => showToast('เกิดข้อผิดพลาด: ' + err.message, 'danger'));
   }
 
   // ---------- BOOT ----------
