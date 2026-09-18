@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      font-family: 'Segoe UI', 'Sarabun', sans-serif;
+      background: #f2f5f9;
+      margin: 0;
+      padding: 0;
+      color: #222;
+    }
+    .app-layout { display: flex; min-height: 100vh; }
+
+    /* ---------- SIDEBAR ---------- */
+    .sidebar {
+      width: 230px;
+      background: #1c3f5f;
+      color: white;
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+    }
+    .sidebar-brand {
+      padding: 20px 18px;
+      border-bottom: 1px solid rgba(255,255,255,0.12);
+    }
+    .sidebar-brand h1 { font-size: 16px; margin: 0 0 4px; }
+    .sidebar-brand p { font-size: 12px; margin: 0; opacity: 0.7; }
+    .sidebar-user {
+      padding: 14px 18px;
+      border-bottom: 1px solid rgba(255,255,255,0.12);
+      font-size: 13px;
+    }
+    .sidebar-user .name { font-weight: 600; margin-bottom: 2px; }
+    .sidebar-user .role { opacity: 0.7; }
+    .sidebar-nav { flex: 1; padding: 10px 0; }
+    .sidebar-nav .nav-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 12px 18px; font-size: 14px; cursor: pointer;
+      color: rgba(255,255,255,0.85);
+      border-left: 3px solid transparent;
+    }
+    .sidebar-nav .nav-item:hover { background: rgba(255,255,255,0.06); }
+    .sidebar-nav .nav-item.active {
+      background: rgba(255,255,255,0.1);
+      border-left-color: #5ba7e0;
+      color: white;
+      font-weight: 600;
+    }
+    .sidebar-logout {
+      padding: 16px 18px;
+      border-top: 1px solid rgba(255,255,255,0.12);
+      font-size: 13px;
+      cursor: pointer;
+      opacity: 0.8;
+    }
+    .sidebar-logout:hover { opacity: 1; }
+
+    /* ---------- TOPBAR (mobile only) ---------- */
+    .topbar {
+      display: none;
+      background: #245c8c;
+      color: white;
+      padding: 14px 16px;
+      align-items: center;
+      gap: 12px;
+    }
+    .topbar .hamburger { font-size: 22px; cursor: pointer; }
+    .topbar .topbar-title { font-size: 16px; font-weight: 600; }
+
+    .main-content { flex: 1; min-width: 0; }
+    .container { max-width: 720px; margin: 0 auto; padding: 16px; }
+
+    .sidebar-overlay {
+      display: none;
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.4);
+      z-index: 10;
+    }
+
+    @media (max-width: 800px) {
+      .sidebar {
+        position: fixed;
+        left: -250px;
+        z-index: 20;
+        transition: left 0.2s ease;
+        box-shadow: 2px 0 10px rgba(0,0,0,0.2);
+      }
+      .sidebar.open { left: 0; }
+      .sidebar-overlay.show { display: block; }
+      .topbar { display: flex; }
+    }
+    .card {
+      background: white;
+      border-radius: 10px;
+      padding: 18px;
+      margin-bottom: 16px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    }
+    label { display: block; font-weight: 600; margin: 12px 0 4px; font-size: 14px; }
+    input, select, textarea {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 15px;
+      font-family: inherit;
+    }
+    textarea { resize: vertical; min-height: 60px; }
+    button {
+      background: #245c8c;
+      color: white;
+      border: none;
+      padding: 11px 20px;
+      border-radius: 6px;
+      font-size: 15px;
+      cursor: pointer;
+      margin-top: 14px;
+    }
+    button:hover { background: #1c4a70; }
+    button.secondary { background: #888; }
+    button.reject { background: #c0392b; }
+    button.approve { background: #27ae60; }
+    button:disabled { background: #aaa; cursor: not-allowed; }
+    .tabs { display: flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
+    .tab-btn {
+      background: #dde5ee; color: #333; padding: 9px 16px; margin-top: 0;
+      border-radius: 20px; font-size: 14px;
+    }
+    .tab-btn.active { background: #245c8c; color: white; }
+    .status-badge {
+      display: inline-block; padding: 3px 10px; border-radius: 12px;
+      font-size: 12px; font-weight: 600;
+    }
+    .status-pending { background: #fff3cd; color: #856404; }
+    .status-approved { background: #d4edda; color: #155724; }
+    .status-rejected { background: #f8d7da; color: #721c24; }
+    .claim-row {
+      border-bottom: 1px solid #eee; padding: 10px 0;
+    }
+    .claim-row:last-child { border-bottom: none; }
+    .claim-title { font-weight: 600; }
+    .claim-meta { font-size: 13px; color: #666; margin-top: 2px; }
+    .error-msg { color: #c0392b; font-size: 14px; margin-top: 8px; }
+    .warning-box {
+      background: #fff3cd; border: 1px solid #ffe08a; border-radius: 6px;
+      padding: 10px; font-size: 13px; margin-top: 10px; color: #6a5000;
+    }
+    .hidden { display: none !important; }
+    .file-list { font-size: 13px; margin-top: 6px; color: #245c8c; }
+    .limit-box {
+      background: #eef4fb; border-radius: 8px; padding: 12px; font-size: 13px; margin-bottom: 14px;
+    }
+    .spinner { text-align: center; padding: 20px; color: #888; }
+    a { color: #245c8c; }
+  </style>
+</head>
+<body>
+
+  <!-- ==================== LOGIN SCREEN ==================== -->
+  <div id="loginScreen" class="container" style="max-width: 380px; margin-top: 60px;">
+    <div class="card">
+      <h2 style="text-align:center; color:#245c8c;">🏢 ระบบเบิกสวัสดิการ</h2>
+      <p style="text-align:center; color:#777; font-size:14px;">Summit Auto Body Industry (สาขาอยุธยา)</p>
+      <label>รหัสพนักงาน</label>
+      <input type="text" id="loginEmployeeId" placeholder="เช่น EMP001">
+      <label>PIN</label>
+      <input type="password" id="loginPin" placeholder="กรอก PIN 4 หลัก">
+      <button onclick="doLogin()" style="width:100%;">เข้าสู่ระบบ</button>
+      <div id="loginError" class="error-msg"></div>
+    </div>
+  </div>
+
+  <!-- ==================== MAIN APP ==================== -->
+  <div id="appScreen" class="hidden app-layout">
+
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-brand">
+        <h1>🏢 ระบบเบิกสวัสดิการ</h1>
+        <p>Summit Auto Body Industry</p>
+      </div>
+      <div class="sidebar-user">
+        <div class="name" id="userNameDisplay"></div>
+      </div>
+      <nav class="sidebar-nav" id="tabBar"></nav>
+      <div class="sidebar-logout" onclick="logout()">ออกจากระบบ ↩</div>
+    </aside>
+
+    <div class="main-content">
+      <div class="topbar">
+        <span class="hamburger" onclick="openSidebar()">☰</span>
+        <span class="topbar-title">🏢 ระบบเบิกสวัสดิการ</span>
+      </div>
+
+      <div class="container">
+        <!-- TAB: ยื่นคำขอเบิก -->
+        <div id="tabSubmit" class="tab-content">
+        <div class="card">
+          <h3>📝 ยื่นคำขอเบิกสวัสดิการ</h3>
+          <div id="limitBox" class="limit-box"></div>
+
+          <label>ประเภทสวัสดิการ</label>
+          <select id="categorySelect" onchange="onCategoryChange()"></select>
+
+          <div id="relationField" class="hidden">
+            <label>ระบุความสัมพันธ์ (เช่น บิดา / มารดา / คู่สมรส / บุตร)</label>
+            <input type="text" id="relationDetail">
+          </div>
+
+          <label>จำนวนเงินที่เบิก (บาท)</label>
+          <input type="number" id="amountInput" min="0" step="1">
+
+          <label>รายละเอียดเพิ่มเติม</label>
+          <textarea id="descInput" placeholder="เช่น ชื่อโรค, วันที่เข้ารับการรักษา"></textarea>
+
+          <label>แนบไฟล์ (ใบเสร็จ / ใบรับรองแพทย์ / เอกสารประกอบ)</label>
+          <input type="file" id="fileInput" multiple accept="image/*,.pdf">
+          <div id="fileList" class="file-list"></div>
+
+          <div id="submitWarning" class="warning-box hidden"></div>
+          <div id="submitError" class="error-msg"></div>
+          <button onclick="doSubmitClaim()" id="submitBtn">ส่งคำขอเบิก</button>
+        </div>
+      </div>
+
+      <!-- TAB: ประวัติของฉัน -->
+      <div id="tabHistory" class="tab-content hidden">
+        <div class="card">
+          <h3>📋 ประวัติการเบิกของฉัน</h3>
+          <div id="historyList"><div class="spinner">กำลังโหลด...</div></div>
+        </div>
+      </div>
+
+        <!-- TAB: รออนุมัติ (approver only) -->
+        <div id="tabApprove" class="tab-content hidden">
+          <div class="card">
+            <h3>✅ รายการรออนุมัติ</h3>
+            <div id="approvalList"><div class="spinner">กำลังโหลด...</div></div>
+          </div>
+        </div>
+      </div> <!-- /.container -->
+    </div> <!-- /.main-content -->
+  </div> <!-- /.app-layout -->
+
+<script>
+  // ⚠️ ตั้งค่าตรงนี้: วาง Web app URL จาก Apps Script deployment (ลงท้ายด้วย /exec)
+  const API_URL = 'https://script.google.com/macros/s/AKfycbyYPeS8Lakd2_wYaBe5yZF7uLNPmhUGgX6OANMTF2u9ldfEwkA8ieDuSyiaWCwcf2T-Ow/exec';
+
+  /**
+   * เรียก Apps Script backend API
+   * ใช้ Content-Type: text/plain เพื่อเลี่ยง CORS preflight (ข้อจำกัดของ Apps Script Web App)
+   */
+  function callApi(action, payload) {
+    return fetch(API_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify(Object.assign({ action: action }, payload))
+    }).then(res => res.json());
+  }
+
+  let CURRENT_USER = null;
+  let CATEGORIES = [];
+  let PENDING_FILES = []; // {base64Data, mimeType, filename}
+
+  // ---------- LOGIN ----------
+  function doLogin() {
+    const id = document.getElementById('loginEmployeeId').value.trim();
+    const pin = document.getElementById('loginPin').value.trim();
+    document.getElementById('loginError').innerText = '';
+    if (!id || !pin) {
+      document.getElementById('loginError').innerText = 'กรุณากรอกรหัสพนักงานและ PIN';
+      return;
+    }
+    callApi('login', { employeeId: id, pin: pin })
+      .then(onLoginResult)
+      .catch(err => document.getElementById('loginError').innerText = 'เกิดข้อผิดพลาด: ' + err.message);
+  }
+
+  function onLoginResult(result) {
+    if (result.error) {
+      document.getElementById('loginError').innerText = result.error;
+      return;
+    }
+    CURRENT_USER = result;
+    sessionStorage.setItem('welfare_user', JSON.stringify(result));
+    initApp();
+  }
+
+  function logout() {
+    sessionStorage.removeItem('welfare_user');
+    CURRENT_USER = null;
+    document.getElementById('appScreen').classList.add('hidden');
+    document.getElementById('loginScreen').classList.remove('hidden');
+  }
+
+  // ---------- APP INIT ----------
+  function initApp() {
+    document.getElementById('loginScreen').classList.add('hidden');
+    document.getElementById('appScreen').classList.remove('hidden');
+    document.getElementById('userNameDisplay').innerHTML =
+      `${CURRENT_USER.name}<div class="role">${CURRENT_USER.department} · ${roleLabel(CURRENT_USER.role)}</div>`;
+
+    buildTabs();
+    loadCategories();
+    loadLimitBox();
+    showTab('submit');
+  }
+
+  function roleLabel(role) {
+    return { employee: 'พนักงาน', supervisor: 'หัวหน้างาน', hr: 'ฝ่ายบุคคล', accounting: 'ฝ่ายบัญชี', admin: 'แอดมิน' }[role] || role;
+  }
+
+  function buildTabs() {
+    const bar = document.getElementById('tabBar');
+    let html = `<div class="nav-item" id="tabBtn-submit" onclick="showTab('submit')">📝 ยื่นคำขอ</div>
+                <div class="nav-item" id="tabBtn-history" onclick="showTab('history')">📋 ประวัติของฉัน</div>`;
+    if (['supervisor','hr','accounting','admin'].indexOf(CURRENT_USER.role) !== -1) {
+      html += `<div class="nav-item" id="tabBtn-approve" onclick="showTab('approve')">✅ รออนุมัติ</div>`;
+    }
+    bar.innerHTML = html;
+  }
+
+  function showTab(name) {
+    ['submit','history','approve'].forEach(t => {
+      const content = document.getElementById('tab' + capitalize(t));
+      const btn = document.getElementById('tabBtn-' + t);
+      if (content) content.classList.toggle('hidden', t !== name);
+      if (btn) btn.classList.toggle('active', t === name);
+    });
+    if (name === 'history') loadHistory();
+    if (name === 'approve') loadApprovals();
+    closeSidebar();
+  }
+  function capitalize(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
+
+  // ---------- SIDEBAR (mobile) ----------
+  function openSidebar() {
+    document.getElementById('sidebar').classList.add('open');
+    document.getElementById('sidebarOverlay').classList.add('show');
+  }
+  function closeSidebar() {
+    document.getElementById('sidebar').classList.remove('open');
+    document.getElementById('sidebarOverlay').classList.remove('show');
+  }
+
+  // ---------- CATEGORIES & LIMIT ----------
+  function loadCategories() {
+    callApi('getCategories', {}).then(cats => {
+      CATEGORIES = cats;
+      const sel = document.getElementById('categorySelect');
+      sel.innerHTML = cats.map(c => `<option value="${c.id}">${c.label}</option>`).join('');
+      onCategoryChange();
+    });
+  }
+
+  function onCategoryChange() {
+    const catId = document.getElementById('categorySelect').value;
+    const isFamily = catId === 'medical_family' || catId === 'childbirth' || catId === 'bereavement';
+    document.getElementById('relationField').classList.toggle('hidden', !isFamily);
+  }
+
+  function loadLimitBox() {
+    callApi('getYearlyMedicalUsage', { employeeId: CURRENT_USER.employeeId }).then(usage => {
+      document.getElementById('limitBox').innerHTML =
+        `💊 วงเงินค่ารักษาพยาบาลปีนี้: ใช้ไปแล้ว <b>${usage.used.toLocaleString()}</b> / ${usage.limit.toLocaleString()} บาท
+         (คงเหลือ <b>${usage.remaining.toLocaleString()}</b> บาท)`;
+    });
+  }
+
+  // ---------- FILE HANDLING ----------
+  document.getElementById('fileInput').addEventListener('change', function(e) {
+    PENDING_FILES = [];
+    const files = Array.from(e.target.files);
+    const listDiv = document.getElementById('fileList');
+    listDiv.innerText = 'กำลังอ่านไฟล์...';
+    let loaded = 0;
+    if (files.length === 0) { listDiv.innerText = ''; return; }
+    files.forEach(file => {
+      const reader = new FileReader();
+      reader.onload = function(evt) {
+        const base64 = evt.target.result.split(',')[1];
+        PENDING_FILES.push({ base64Data: base64, mimeType: file.type, filename: file.name });
+        loaded++;
+        if (loaded === files.length) {
+          listDiv.innerText = '📎 ' + PENDING_FILES.map(f => f.filename).join(', ');
+        }
+      };
+      reader.readAsDataURL(file);
+    });
+  });
+
+  // ---------- SUBMIT CLAIM ----------
+  function doSubmitClaim() {
+    const categoryId = document.getElementById('categorySelect').value;
+    const relationDetail = document.getElementById('relationField').classList.contains('hidden')
+      ? '' : document.getElementById('relationDetail').value;
+    const amount = document.getElementById('amountInput').value;
+    const description = document.getElementById('descInput').value;
+    const errDiv = document.getElementById('submitError');
+    const warnDiv = document.getElementById('submitWarning');
+    errDiv.innerText = '';
+    warnDiv.classList.add('hidden');
+
+    if (!amount || Number(amount) <= 0) {
+      errDiv.innerText = 'กรุณากรอกจำนวนเงินให้ถูกต้อง';
+      return;
+    }
+
+    document.getElementById('submitBtn').disabled = true;
+    document.getElementById('submitBtn').innerText = 'กำลังอัปโหลดไฟล์...';
+
+    uploadAllFiles(PENDING_FILES, 0, [], (attachmentLinks) => {
+      document.getElementById('submitBtn').innerText = 'กำลังส่งคำขอ...';
+      const claimData = {
+        employeeId: CURRENT_USER.employeeId,
+        name: CURRENT_USER.name,
+        department: CURRENT_USER.department,
+        categoryId, relationDetail, amount, description, attachmentLinks
+      };
+      callApi('submitClaim', { claimData })
+        .then(res => {
+          document.getElementById('submitBtn').disabled = false;
+          document.getElementById('submitBtn').innerText = 'ส่งคำขอเบิก';
+          if (!res.success) {
+            errDiv.innerText = res.error;
+            return;
+          }
+          if (res.warning) {
+            warnDiv.innerText = res.warning;
+            warnDiv.classList.remove('hidden');
+          }
+          alert('✅ ส่งคำขอเบิกเรียบร้อยแล้ว รหัส: ' + res.claimId);
+          document.getElementById('amountInput').value = '';
+          document.getElementById('descInput').value = '';
+          document.getElementById('fileInput').value = '';
+          document.getElementById('fileList').innerText = '';
+          PENDING_FILES = [];
+          loadLimitBox();
+        })
+        .catch(err => {
+          document.getElementById('submitBtn').disabled = false;
+          document.getElementById('submitBtn').innerText = 'ส่งคำขอเบิก';
+          errDiv.innerText = 'เกิดข้อผิดพลาด: ' + err.message;
+        });
+    });
+  }
+
+  function uploadAllFiles(files, idx, results, callback) {
+    if (idx >= files.length) { callback(results); return; }
+    callApi('uploadAttachment', { file: files[idx], employeeId: CURRENT_USER.employeeId })
+      .then(res => {
+        if (res.success) results.push(res.url);
+        uploadAllFiles(files, idx + 1, results, callback);
+      })
+      .catch(() => uploadAllFiles(files, idx + 1, results, callback));
+  }
+
+  // ---------- HISTORY ----------
+  function loadHistory() {
+    document.getElementById('historyList').innerHTML = '<div class="spinner">กำลังโหลด...</div>';
+    callApi('getMyClaims', { employeeId: CURRENT_USER.employeeId }).then(claims => {
+      const div = document.getElementById('historyList');
+      if (claims.length === 0) {
+        div.innerHTML = '<p style="color:#888;">ยังไม่มีประวัติการเบิก</p>';
+        return;
+      }
+      div.innerHTML = claims.map(c => `
+        <div class="claim-row">
+          <div class="claim-title">${c.CategoryLabel} — ${Number(c.Amount).toLocaleString()} บาท</div>
+          <div class="claim-meta">${formatDate(c.Timestamp)} · รหัส ${c.ClaimID}</div>
+          <div class="claim-meta">${c.Description || ''}</div>
+          ${statusBadge(c.Status)}
+        </div>
+      `).join('');
+    });
+  }
+
+  function statusBadge(status) {
+    let cls = 'status-pending';
+    if (status === 'อนุมัติเรียบร้อย') cls = 'status-approved';
+    if (status === 'ถูกปฏิเสธ') cls = 'status-rejected';
+    return `<span class="status-badge ${cls}">${status}</span>`;
+  }
+
+  function formatDate(d) {
+    const dt = new Date(d);
+    return dt.toLocaleDateString('th-TH', { year: 'numeric', month: 'short', day: 'numeric' }) +
+      ' ' + dt.toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' });
+  }
+
+  // ---------- APPROVALS ----------
+  function loadApprovals() {
+    document.getElementById('approvalList').innerHTML = '<div class="spinner">กำลังโหลด...</div>';
+    callApi('getPendingApprovals', { role: CURRENT_USER.role, department: CURRENT_USER.department }).then(claims => {
+      const div = document.getElementById('approvalList');
+      if (claims.length === 0) {
+        div.innerHTML = '<p style="color:#888;">ไม่มีรายการรออนุมัติในขณะนี้ 🎉</p>';
+        return;
+      }
+      div.innerHTML = claims.map(c => {
+        const usage = c._medicalUsage;
+        const showLimitWarn = usage && usage.overLimit;
+        return `
+        <div class="claim-row">
+          <div class="claim-title">${c.Name} (${c.Department}) — ${c.CategoryLabel}</div>
+          <div class="claim-meta">จำนวน ${Number(c.Amount).toLocaleString()} บาท · ${formatDate(c.Timestamp)}</div>
+          <div class="claim-meta">${c.Description || ''} ${c.RelationDetail ? '· ความสัมพันธ์: ' + c.RelationDetail : ''}</div>
+          ${c.AttachmentLinks ? `<div class="file-list">📎 ${c.AttachmentLinks.split(',').map(l => `<a href="${l.trim()}" target="_blank">ไฟล์แนบ</a>`).join(', ')}</div>` : ''}
+          ${showLimitWarn ? `<div class="warning-box">⚠️ พนักงานคนนี้เบิกค่ารักษาพยาบาลรวมเกินวงเงิน 15,000/ปี แล้ว (ใช้ไป ${usage.used.toLocaleString()} บาท)</div>` : ''}
+          <div style="margin-top:10px;">
+            <button class="approve" onclick="doDecide('${c.ClaimID}','approve')">✅ อนุมัติ</button>
+            <button class="reject" onclick="doDecide('${c.ClaimID}','reject')">❌ ปฏิเสธ</button>
+          </div>
+        </div>
+      `}).join('');
+    });
+  }
+
+  function doDecide(claimId, decision) {
+    let note = '';
+    if (decision === 'reject') {
+      note = prompt('ระบุเหตุผลที่ปฏิเสธ (ไม่บังคับ):') || '';
+    }
+    callApi('decideClaim', {
+      claimId, role: CURRENT_USER.role, decision, approverName: CURRENT_USER.name, note
+    })
+      .then(res => {
+        if (res.success) {
+          loadApprovals();
+        } else {
+          alert('เกิดข้อผิดพลาด: ' + res.error);
+        }
+      })
+      .catch(err => alert('เกิดข้อผิดพลาด: ' + err.message));
+  }
+
+  // ---------- BOOT ----------
+  window.onload = function() {
+    const saved = sessionStorage.getItem('welfare_user');
+    if (saved) {
+      CURRENT_USER = JSON.parse(saved);
+      initApp();
+    }
+  };
+</script>
+</body>
+</html>
