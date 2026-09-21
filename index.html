@@ -292,12 +292,13 @@
   .claim-meta-item{ display:inline-flex; align-items:center; gap:5px; }
   .claim-meta-item svg{ flex-shrink:0; opacity:0.7; }
   .claim-meta .mono{ font-family:var(--font-mono); }
+  .mono{ font-family:var(--font-mono); }
   .claim-desc{ font-size:13.5px; color:var(--ink-soft); margin-top:8px; }
   .claim-attachments{ margin-top:8px; }
   .claim-attachments a{ font-size:12.5px; display:inline-flex; align-items:center; gap:5px; margin-right:12px; }
   .claim-actions{ margin-top:12px; display:flex; gap:8px; }
 
-  .btn-approve, .btn-reject{
+  .btn-approve, .btn-reject, .btn-neutral{
     display:inline-flex; align-items:center; gap:7px; border:none; border-radius:var(--radius-s);
     padding:9px 16px; font-size:13.5px; font-weight:600; cursor:pointer; color:#fff;
     transition:background .15s ease;
@@ -306,6 +307,10 @@
   .btn-approve:hover{ background:#256944; }
   .btn-reject{ background:var(--danger); }
   .btn-reject:hover{ background:#983025; }
+  .btn-neutral{ background:var(--steel); }
+  .btn-neutral:hover{ background:var(--steel-hover); }
+  .btn-neutral.outline{ background:transparent; color:var(--steel); border:1px solid var(--line); }
+  .btn-neutral.outline:hover{ background:var(--line-soft); }
 
   /* ---------- empty / loading states ---------- */
   .empty-state{ display:flex; flex-direction:column; align-items:center; text-align:center; padding:36px 10px; color:var(--ink-faint); }
@@ -360,6 +365,43 @@
   .csv-badge-error{ background:#fdeaea; color:#c0392b; }
   .csv-summary-row{ display:flex; gap:16px; flex-wrap:wrap; margin:10px 0; font-size:13.5px; }
   .csv-summary-item{ padding:6px 12px; border-radius:8px; background:var(--bg-soft, #f4f6f8); }
+
+  /* ---------- v2: สถานะยกเลิก / ป้ายขั้นอนุมัติ ---------- */
+  .status-cancelled{ background:var(--line-soft); color:var(--ink-faint); border-left-color:var(--ink-faint); }
+  .status-cancelled::before{ background:var(--ink-faint); }
+  .step-pill{ display:inline-flex; align-items:center; gap:5px; font-size:12px; padding:3px 10px;
+    border-radius:20px; background:rgba(31,76,115,0.08); color:var(--steel); font-weight:600; }
+  .step-pill.late{ background:var(--warning-bg); color:#7A5610; }
+
+  /* ---------- v2: nav badge (จำนวนค้างอนุมัติ/คำขอ) ---------- */
+  .nav-badge{ display:inline-flex; align-items:center; justify-content:center; min-width:18px; height:18px;
+    padding:0 5px; border-radius:20px; background:var(--danger); color:#fff; font-size:10.5px; font-weight:700;
+    margin-left:6px; line-height:1; }
+
+  /* ---------- v2: urgency badge (คำขอใบส่งตัว) ---------- */
+  .urgency-badge{ font-size:11px; font-weight:700; padding:3px 10px; border-radius:20px; white-space:nowrap; }
+  .urgency-today{ background:var(--danger-bg); color:#8C2C22; }
+  .urgency-soon{ background:var(--warning-bg); color:#7A5610; }
+  .urgency-planned{ background:var(--line-soft); color:var(--ink-soft); }
+
+  /* ---------- v2: timeline (ดูสถานะใบเบิก) ---------- */
+  .tl-wrap{ margin:6px 0 4px; }
+  .tl-item{ display:flex; gap:12px; position:relative; padding-bottom:20px; }
+  .tl-item:last-child{ padding-bottom:0; }
+  .tl-item::before{ content:""; position:absolute; left:9px; top:22px; bottom:0; width:2px; background:var(--line-soft); }
+  .tl-item:last-child::before{ display:none; }
+  .tl-dot{ flex-shrink:0; width:20px; height:20px; border-radius:50%; display:flex; align-items:center;
+    justify-content:center; font-size:11px; font-weight:700; color:#fff; background:var(--line-soft); z-index:1; }
+  .tl-item.approved .tl-dot{ background:var(--success); }
+  .tl-item.current .tl-dot{ background:var(--steel); box-shadow:0 0 0 3px rgba(31,76,115,0.18); }
+  .tl-item.rejected .tl-dot{ background:var(--danger); }
+  .tl-item.stopped .tl-dot{ background:var(--ink-faint); }
+  .tl-item.waiting .tl-dot{ background:var(--line-soft); color:var(--ink-faint); }
+  .tl-body{ flex:1; padding-top:1px; }
+  .tl-step-name{ font-size:13.5px; font-weight:600; }
+  .tl-item.waiting .tl-step-name{ color:var(--ink-faint); font-weight:500; }
+  .tl-meta{ font-size:12px; color:var(--ink-soft); margin-top:2px; }
+  .tl-note{ font-size:12.5px; color:var(--ink-soft); margin-top:3px; font-style:italic; }
 
   .btn-inline{ width:auto; padding:9px 16px; font-size:13.5px; display:inline-flex; align-items:center; gap:7px; }
 
@@ -653,13 +695,80 @@
 
         <!-- TAB: ใบส่งตัว (HR / admin only) -->
         <div id="tabReferral" class="tab-content hidden">
-          <div class="admin-subtabs">
-            <button class="admin-subtab-btn active" id="refSubBtn-new" onclick="showRefSubTab('new')">ออกใบส่งตัว</button>
-            <button class="admin-subtab-btn" id="refSubBtn-list" onclick="showRefSubTab('list')">ใบที่ออกแล้ว</button>
+          <div class="admin-subtabs" id="refSubTabsBar"></div>
+
+          <!-- พนักงาน: ขอใบส่งตัวออนไลน์ -->
+          <div id="refSubRequest" class="admin-subtab-content hidden">
+            <div class="card">
+              <div class="card-head">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="color:var(--steel)"><path d="M4 21V8.5L12 3l8 5.5V21"/><path d="M9 21v-6h6v6"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="10" y1="10" x2="14" y2="10"/></svg>
+                <h3>ขอใบส่งตัวเข้ารับบริการ</h3>
+              </div>
+              <p style="font-size:13.5px; color:var(--ink-soft); margin:-4px 0 18px;">
+                แจ้งอาการ/เหตุผลไว้ล่วงหน้า ฝ่ายบุคคลจะตรวจสอบและออกใบให้ ไม่ต้องเดินมาแจ้งด้วยตัวเอง
+              </p>
+
+              <div class="form-grid">
+                <div class="field">
+                  <label>โรงพยาบาล</label>
+                  <select id="reqHospital"></select>
+                </div>
+                <div class="field">
+                  <label>วันที่ต้องการเข้ารับบริการ</label>
+                  <input type="date" id="reqPreferredDate">
+                </div>
+              </div>
+
+              <div class="field">
+                <label>กรณีเข้ารับบริการ</label>
+                <div class="radio-stack" id="reqServiceTypes"></div>
+                <input type="text" id="reqServiceDetail" class="hidden" placeholder="ระบุรายละเอียด">
+              </div>
+
+              <div class="field">
+                <label>อาการ / เหตุผลที่ขอใบส่งตัว</label>
+                <textarea id="reqSymptoms" placeholder="เช่น ปวดท้องรุนแรง, มีไข้สูง 2 วัน"></textarea>
+              </div>
+
+              <div class="field">
+                <label>ความเร่งด่วน</label>
+                <div class="radio-stack" id="reqUrgency"></div>
+              </div>
+
+              <div class="field">
+                <label>หมายเหตุเพิ่มเติม (ไม่บังคับ)</label>
+                <textarea id="reqNote" placeholder="ถ้ามีข้อมูลอื่นที่อยากแจ้ง HR"></textarea>
+              </div>
+
+              <div id="reqError" class="error-msg"></div>
+              <button class="btn-primary" id="reqSubmitBtn" onclick="doRequestReferral()" style="width:auto; padding-left:26px; padding-right:26px;">ส่งคำขอ</button>
+            </div>
           </div>
 
-          <!-- ออกใบใหม่ -->
-          <div id="refSubNew" class="admin-subtab-content">
+          <!-- พนักงาน: คำขอของฉัน -->
+          <div id="refSubMyrequests" class="admin-subtab-content hidden">
+            <div class="card">
+              <div class="card-head">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="color:var(--steel)"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg>
+                <h3>คำขอใบส่งตัวของฉัน</h3>
+              </div>
+              <div id="myReferralRequestList"><div class="spinner"><span class="spinner-ring"></span>กำลังโหลด...</div></div>
+            </div>
+          </div>
+
+          <!-- HR: คิวคำขอที่รอออกใบ -->
+          <div id="refSubQueue" class="admin-subtab-content hidden">
+            <div class="card">
+              <div class="card-head">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="color:var(--steel)"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg>
+                <h3>คิวคำขอใบส่งตัว</h3>
+              </div>
+              <div id="referralQueueList"><div class="spinner"><span class="spinner-ring"></span>กำลังโหลด...</div></div>
+            </div>
+          </div>
+
+          <!-- ออกใบใหม่ (HR ออกให้เองโดยตรง) -->
+          <div id="refSubNew" class="admin-subtab-content hidden">
             <div class="card">
               <div class="card-head">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="color:var(--steel)"><path d="M19 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2z"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
@@ -1035,6 +1144,109 @@
     </div>
   </div>
 
+  <!-- ==================== HR: ออกใบจากคำขอที่พนักงานส่งมา ==================== -->
+  <div id="issueReqOverlay" class="modal-overlay hidden" onclick="closeIssueReferralModal()">
+    <div class="modal modal-wide" onclick="event.stopPropagation()">
+      <h4>ออกใบส่งตัว</h4>
+      <span class="modal-sub" id="issueReqSub"></span>
+
+      <div class="form-grid">
+        <div class="field">
+          <label>อายุ (ปี)</label>
+          <input type="number" id="issueAge" min="15" max="99">
+        </div>
+        <div class="field">
+          <label>วันที่เข้ารับบริการ</label>
+          <input type="date" id="issueVisitDate">
+        </div>
+      </div>
+
+      <div class="field">
+        <label>โดยขอใช้สิทธิ์รักษา</label>
+        <div class="radio-stack" id="issuePayerTypes"></div>
+        <input type="text" id="issuePayerDetail" class="hidden" placeholder="ระบุรายละเอียด">
+      </div>
+
+      <div class="form-grid">
+        <div class="field">
+          <label>ชื่อผู้ประสานงานบริษัท</label>
+          <input type="text" id="issueCoordName">
+        </div>
+        <div class="field">
+          <label>โทรศัพท์ผู้ประสานงาน</label>
+          <input type="text" id="issueCoordPhone" placeholder="เช่น 035-xxxxxx ต่อ xxx">
+        </div>
+        <div class="field">
+          <label>ผู้มีอำนาจลงนาม</label>
+          <input type="text" id="issueSignerName">
+        </div>
+        <div class="field">
+          <label>ตำแหน่งผู้ลงนาม</label>
+          <input type="text" id="issueSignerPosition" placeholder="เช่น ผู้จัดการฝ่ายทรัพยากรบุคคล">
+        </div>
+        <div class="field">
+          <label>เล่มที่ (ไม่บังคับ)</label>
+          <input type="text" id="issueBookNo">
+        </div>
+        <div class="field">
+          <label>เลขที่ (ไม่บังคับ)</label>
+          <input type="text" id="issueDocNo">
+        </div>
+      </div>
+
+      <div id="issueReqError" class="error-msg"></div>
+      <div class="modal-actions">
+        <button class="btn-secondary" onclick="closeIssueReferralModal()">ยกเลิก</button>
+        <button class="btn-primary btn-inline" id="issueReqBtn" onclick="submitIssueReferral()">ออกใบส่งตัว</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== HR: ไม่อนุมัติคำขอใบส่งตัว ==================== -->
+  <div id="refReqRejectOverlay" class="modal-overlay hidden" onclick="closeRefReqRejectModal()">
+    <div class="modal" onclick="event.stopPropagation()">
+      <h4>ไม่อนุมัติคำขอใบส่งตัว</h4>
+      <span class="modal-sub" id="refReqRejectSub"></span>
+      <div class="field">
+        <label>เหตุผล</label>
+        <textarea id="refReqRejectReason" rows="3" placeholder="เช่น ข้อมูลไม่ครบ / ให้มาติดต่อ HR โดยตรง"></textarea>
+      </div>
+      <div class="modal-actions">
+        <button class="btn-secondary" onclick="closeRefReqRejectModal()">ปิด</button>
+        <button class="btn-primary" style="width:auto; padding:11px 20px; background:var(--danger);" onclick="confirmRefReqReject()">ยืนยันไม่อนุมัติ</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== ยืนยันรับเอกสารตัวจริงก่อนอนุมัติ ==================== -->
+  <div id="origDocsOverlay" class="modal-overlay hidden" onclick="closeOrigDocsModal()">
+    <div class="modal" onclick="event.stopPropagation()">
+      <h4>ยืนยันก่อนอนุมัติ</h4>
+      <span class="modal-sub">ขั้นนี้ต้องยืนยันว่าได้รับเอกสาร/ใบเสร็จฉบับจริงจากพนักงานแล้ว</span>
+      <label class="checkbox-row" style="margin-top:10px;">
+        <input type="checkbox" id="origDocsCheck">
+        <span>ได้รับเอกสารฉบับจริงจากพนักงานเรียบร้อยแล้ว</span>
+      </label>
+      <div id="origDocsError" class="error-msg"></div>
+      <div class="modal-actions">
+        <button class="btn-secondary" onclick="closeOrigDocsModal()">ยกเลิก</button>
+        <button class="btn-primary btn-inline" onclick="confirmOrigDocsApprove()">ยืนยันอนุมัติ</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== ไทม์ไลน์คำขอเบิก ==================== -->
+  <div id="timelineOverlay" class="modal-overlay hidden" onclick="closeTimelineModal()">
+    <div class="modal modal-wide" onclick="event.stopPropagation()">
+      <h4>สถานะคำขอ <span id="tlClaimId" class="mono" style="font-weight:400; font-size:13px;"></span></h4>
+      <span class="modal-sub" id="tlSub"></span>
+      <div id="tlBody" style="margin-top:14px;"><div class="spinner"><span class="spinner-ring"></span>กำลังโหลด...</div></div>
+      <div class="modal-actions">
+        <button class="btn-secondary" onclick="closeTimelineModal()">ปิด</button>
+      </div>
+    </div>
+  </div>
+
   <!-- ==================== พื้นที่สำหรับพิมพ์ใบส่งตัว ==================== -->
   <div id="printArea"></div>
 
@@ -1147,9 +1359,12 @@
     submit: { title: 'ยื่นคำขอเบิกสวัสดิการ', sub: 'กรอกแบบฟอร์มเพื่อยื่นคำขอเบิกสวัสดิการ' },
     history: { title: 'ประวัติการเบิกของฉัน', sub: 'ตรวจสอบสถานะคำขอที่เคยยื่นทั้งหมด' },
     approve: { title: 'รายการรออนุมัติ', sub: 'ตรวจสอบและอนุมัติคำขอจากพนักงาน' },
-    referral: { title: 'ใบส่งตัวโรงพยาบาล', sub: 'ออกใบส่งตัวให้พนักงานก่อนเข้ารักษา · สำหรับฝ่ายบุคคล' },
+    referral: { title: 'ใบส่งตัวโรงพยาบาล', sub: 'ขอใบส่งตัว หรือติดตามคำขอเข้ารับบริการที่โรงพยาบาล' },
     admin: { title: 'จัดการระบบ', sub: 'เพิ่ม แก้ไข หรือลบข้อมูลพนักงานและแผนก · สำหรับแอดมิน' }
   };
+
+  /** บทบาทที่ออกใบส่งตัวได้เอง (เห็นคิวคำขอ + ออกใบโดยตรง) */
+  const REFERRAL_ISSUER_ROLES = ['hr', 'hr_manager', 'admin'];
 
   // ---------- APP INIT ----------
   function initApp() {
@@ -1166,6 +1381,7 @@
     loadLimitBox();
     restoreSidebarCollapseState();
     showTab('submit');
+    refreshNavBadges();
   }
 
   function roleLabel(role) {
@@ -1180,17 +1396,38 @@
     const bar = document.getElementById('tabBar');
     let html = `<button class="nav-item" id="tabBtn-submit" onclick="showTab('submit')" title="ยื่นคำขอ">${ICONS.edit}<span>ยื่นคำขอ</span></button>
                 <button class="nav-item" id="tabBtn-history" onclick="showTab('history')" title="ประวัติของฉัน">${ICONS.list}<span>ประวัติของฉัน</span></button>`;
-    if (['supervisor','hr','accounting'].indexOf(CURRENT_USER.role) !== -1) {
-      html += `<button class="nav-item" id="tabBtn-approve" onclick="showTab('approve')" title="รออนุมัติ">${ICONS.shield}<span>รออนุมัติ</span></button>`;
+    // เห็นเมนู "รออนุมัติ" ตามสายอนุมัติจริง (ไม่ผูกกับ role ตายตัว — ปรับได้จากชีท ApprovalFlow)
+    if (CURRENT_USER.isApprover) {
+      html += `<button class="nav-item" id="tabBtn-approve" onclick="showTab('approve')" title="รออนุมัติ">${ICONS.shield}<span>รออนุมัติ</span><span class="nav-badge hidden" id="navBadge-approve">0</span></button>`;
     }
-    if (['hr','admin'].indexOf(CURRENT_USER.role) !== -1) {
-      html += `<button class="nav-item" id="tabBtn-referral" onclick="showTab('referral')" title="ใบส่งตัว">${ICONS.hospital}<span>ใบส่งตัว</span></button>`;
-    }
+    // ทุกคนเห็นเมนูใบส่งตัว — พนักงานทั่วไปขอออนไลน์ได้, ฝ่ายบุคคลเห็นคิว+ออกใบเพิ่ม
+    html += `<button class="nav-item" id="tabBtn-referral" onclick="showTab('referral')" title="ใบส่งตัว">${ICONS.hospital}<span>ใบส่งตัว</span><span class="nav-badge hidden" id="navBadge-referral">0</span></button>`;
     if (CURRENT_USER.role === 'admin') {
       html += `<button class="nav-item" id="tabBtn-admin" onclick="showTab('admin')" title="จัดการระบบ">${ICONS.settings}<span>จัดการระบบ</span></button>`;
     }
     bar.innerHTML = html;
   }
+
+  /** ตัวเลขแดงบนเมนู — เตือนว่ามีงานรออยู่ ไม่ต้องเปิดแท็บเข้าไปเช็คเอง */
+  function refreshNavBadges() {
+    if (CURRENT_USER.isApprover) {
+      callApi('getPendingApprovals', {}).then(claims => {
+        setNavBadge('approve', Array.isArray(claims) ? claims.length : 0);
+      }).catch(() => {});
+    }
+    if (REFERRAL_ISSUER_ROLES.indexOf(CURRENT_USER.role) !== -1) {
+      callApi('getReferralRequests', { status: REQUEST_STATUS_PENDING }).then(res => {
+        setNavBadge('referral', res.success ? res.pendingCount : 0);
+      }).catch(() => {});
+    }
+  }
+  function setNavBadge(key, count) {
+    const el = document.getElementById('navBadge-' + key);
+    if (!el) return;
+    el.innerText = count > 99 ? '99+' : count;
+    el.classList.toggle('hidden', !count);
+  }
+  const REQUEST_STATUS_PENDING = 'รอ HR ออกใบ';
 
   function showTab(name) {
     ['submit','history','approve','referral','admin'].forEach(t => {
@@ -1206,7 +1443,13 @@
     }
     if (name === 'history') loadHistory();
     if (name === 'approve') loadApprovals();
-    if (name === 'referral') loadReferralOptions().then(() => showRefSubTab('new'));
+    if (name === 'referral') {
+      loadReferralOptions().then(() => {
+        buildRefSubTabs();
+        const isIssuer = REFERRAL_ISSUER_ROLES.indexOf(CURRENT_USER.role) !== -1;
+        showRefSubTab(isIssuer ? 'queue' : 'request');
+      });
+    }
     if (name === 'admin') showAdminSubTab('users');
     closeSidebar();
   }
@@ -1522,9 +1765,11 @@
   }
 
   // ---------- HISTORY ----------
+  let HISTORY_CACHE = [];
   function loadHistory() {
     document.getElementById('historyList').innerHTML = '<div class="spinner"><span class="spinner-ring"></span>กำลังโหลด...</div>';
-    callApi('getMyClaims', { employeeId: CURRENT_USER.employeeId }).then(claims => {
+    callApi('getMyClaims', {}).then(claims => {
+      HISTORY_CACHE = claims;
       const div = document.getElementById('historyList');
       if (claims.length === 0) {
         div.innerHTML = `<div class="empty-state">${ICONS.tray}<p>ยังไม่มีประวัติการเบิก</p></div>`;
@@ -1541,9 +1786,24 @@
             <span class="claim-meta-item mono">${ICONS.hash}${c.ClaimID}</span>
           </div>
           ${c.Description ? `<div class="claim-desc">${c.Description}</div>` : ''}
-          <div style="margin-top:10px;">${statusBadge(c.Status)}</div>
+          <div style="margin-top:10px; display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
+            ${statusBadge(c.Status)}
+            ${c.Status === 'รออนุมัติ' && c.CurrentStepName ? stepPill(c.CurrentStepName, c._totalSteps, c.CurrentStep, c._waitingDays) : ''}
+          </div>
+          <div class="claim-actions">
+            <button class="btn-neutral outline" onclick="openTimelineModal('${c.ClaimID}')">${ICONS.list}ดูสถานะ</button>
+            ${c._canCancel ? `<button class="btn-neutral outline" onclick="cancelMyClaim('${c.ClaimID}')">${ICONS.x}ยกเลิกคำขอ</button>` : ''}
+          </div>
         </div>
       `).join('');
+    });
+  }
+
+  function cancelMyClaim(claimId) {
+    if (!confirm('ต้องการยกเลิกคำขอนี้ใช่หรือไม่? การยกเลิกไม่สามารถย้อนกลับได้')) return;
+    callApi('cancelClaim', { claimId }).then(res => {
+      if (res.success) { showToast('ยกเลิกคำขอแล้ว', 'success'); loadHistory(); }
+      else showToast(res.error, 'danger');
     });
   }
 
@@ -1551,7 +1811,16 @@
     let cls = 'status-pending';
     if (status === 'อนุมัติเรียบร้อย') cls = 'status-approved';
     if (status === 'ถูกปฏิเสธ') cls = 'status-rejected';
+    if (status === 'ยกเลิกโดยผู้ขอ') cls = 'status-cancelled';
     return `<span class="status-badge ${cls}">${status}</span>`;
+  }
+
+  /** ป้ายบอกขั้นอนุมัติปัจจุบัน — เตือนสีส้มถ้าค้างเกิน 3 วัน */
+  function stepPill(stepName, totalSteps, currentStep, waitingDays) {
+    const late = Number(waitingDays || 0) >= 3;
+    const stepText = (currentStep && totalSteps) ? `ขั้น ${currentStep}/${totalSteps} · ` : '';
+    const dayText = late ? ` · ค้างมา ${waitingDays} วัน` : '';
+    return `<span class="step-pill${late ? ' late' : ''}">${stepText}${stepName}${dayText}</span>`;
   }
 
   function formatDate(d) {
@@ -1561,9 +1830,12 @@
   }
 
   // ---------- APPROVALS ----------
+  let APPROVALS_CACHE = [];
   function loadApprovals() {
     document.getElementById('approvalList').innerHTML = '<div class="spinner"><span class="spinner-ring"></span>กำลังโหลด...</div>';
-    callApi('getPendingApprovals', { role: CURRENT_USER.role, department: CURRENT_USER.department }).then(claims => {
+    callApi('getPendingApprovals', {}).then(claims => {
+      APPROVALS_CACHE = claims;
+      setNavBadge('approve', claims.length);
       const div = document.getElementById('approvalList');
       if (claims.length === 0) {
         div.innerHTML = `<div class="empty-state">${ICONS.tray}<p>ไม่มีรายการรออนุมัติในขณะนี้</p></div>`;
@@ -1585,14 +1857,17 @@
             ${c.ServiceYears ? `<span class="claim-meta-item">อายุงาน ${c.ServiceYears}</span>` : ''}
             ${c.RelationCount ? `<span class="claim-meta-item">${c.RelationCount} คน</span>` : ''}
           </div>
+          <div style="margin-top:6px;">${c._step ? stepPill(c._step.name, c._totalSteps, c._step.step, c._waitingDays) : ''}</div>
           ${c.Description || c.RelationDetail ? `<div class="claim-desc">${c.Description || ''}${c.RelationDetail ? ' · ความสัมพันธ์: ' + c.RelationDetail : ''}</div>` : ''}
           ${c.AttachmentLinks ? `<div class="claim-attachments">${c.AttachmentLinks.split(',').map(l => `<a href="${l.trim()}" target="_blank">${ICONS.paperclip}ไฟล์แนบ</a>`).join('')}</div>` : ''}
           ${docChips(c.DocsProvided)}
           ${c.RulesWarnings ? `<div class="warning-box">${ICONS.warning}<span>${String(c.RulesWarnings).split(' | ').join('<br>')}</span></div>` : ''}
           ${showLimitWarn ? `<div class="warning-box">${ICONS.warning}<span>พนักงานคนนี้เบิกค่ารักษาพยาบาลรวมเกินวงเงิน 15,000/ปี แล้ว (ใช้ไป ${usage.used.toLocaleString()} บาท)</span></div>` : ''}
+          ${c._step && c._step.requireOriginal ? `<div class="warning-box">${ICONS.warning}<span>ขั้นนี้ต้องยืนยันว่าได้รับเอกสาร/ใบเสร็จฉบับจริงก่อนอนุมัติ</span></div>` : ''}
           <div class="claim-actions">
             <button class="btn-approve" onclick="doDecide('${c.ClaimID}','approve')">${ICONS.check}อนุมัติ</button>
             <button class="btn-reject" onclick="doDecide('${c.ClaimID}','reject')">${ICONS.x}ปฏิเสธ</button>
+            <button class="btn-neutral outline" onclick="openTimelineModal('${c.ClaimID}')">${ICONS.list}ไทม์ไลน์</button>
           </div>
         </div>
       `}).join('');
@@ -1614,9 +1889,33 @@
     ).join('') + '</div>';
   }
 
+  let PENDING_DECIDE_ID = null;
   function doDecide(claimId, decision) {
     if (decision === 'reject') { openRejectModal(claimId); return; }
-    runDecision(claimId, decision, '');
+    // ขั้นที่บังคับยืนยันรับเอกสารตัวจริง ต้องเปิด modal ให้ติ๊กยืนยันก่อน
+    const c = APPROVALS_CACHE.find(x => x.ClaimID === claimId);
+    if (c && c._step && c._step.requireOriginal) {
+      PENDING_DECIDE_ID = claimId;
+      document.getElementById('origDocsCheck').checked = false;
+      document.getElementById('origDocsError').innerText = '';
+      document.getElementById('origDocsOverlay').classList.remove('hidden');
+      return;
+    }
+    runDecision(claimId, decision, '', false);
+  }
+
+  function closeOrigDocsModal() {
+    document.getElementById('origDocsOverlay').classList.add('hidden');
+    PENDING_DECIDE_ID = null;
+  }
+  function confirmOrigDocsApprove() {
+    if (!document.getElementById('origDocsCheck').checked) {
+      document.getElementById('origDocsError').innerText = 'กรุณาติ๊กยืนยันก่อนดำเนินการต่อ';
+      return;
+    }
+    const id = PENDING_DECIDE_ID;
+    closeOrigDocsModal();
+    runDecision(id, 'approve', '', true);
   }
 
   function openRejectModal(claimId) {
@@ -1632,22 +1931,61 @@
     const note = document.getElementById('rejectNote').value.trim();
     const id = PENDING_REJECT_ID;
     closeModal();
-    runDecision(id, 'reject', note);
+    runDecision(id, 'reject', note, false);
   }
 
-  function runDecision(claimId, decision, note) {
-    callApi('decideClaim', {
-      claimId, role: CURRENT_USER.role, decision, approverName: CURRENT_USER.name, note
-    })
+  function runDecision(claimId, decision, note, originalDocsReceived) {
+    callApi('decideClaim', { claimId, decision, note, originalDocsReceived: !!originalDocsReceived })
       .then(res => {
         if (res.success) {
           showToast(decision === 'approve' ? 'อนุมัติคำขอเรียบร้อยแล้ว' : 'ปฏิเสธคำขอเรียบร้อยแล้ว', decision === 'approve' ? 'success' : '');
+          if (res.warning) showToast(res.warning, 'danger');
           loadApprovals();
         } else {
           showToast(res.error, 'danger');
         }
       })
       .catch(err => showToast('เกิดข้อผิดพลาด: ' + err.message, 'danger'));
+  }
+
+  // ---------- ไทม์ไลน์คำขอเบิก ----------
+  function openTimelineModal(claimId) {
+    document.getElementById('tlClaimId').innerText = claimId;
+    document.getElementById('tlSub').innerText = '';
+    document.getElementById('tlBody').innerHTML = '<div class="spinner"><span class="spinner-ring"></span>กำลังโหลด...</div>';
+    document.getElementById('timelineOverlay').classList.remove('hidden');
+    callApi('getClaimTimeline', { claimId }).then(res => {
+      const body = document.getElementById('tlBody');
+      if (!res.success) { body.innerHTML = `<div class="error-msg">${res.error}</div>`; return; }
+      document.getElementById('tlSub').innerText = res.waitingDays > 0
+        ? `รออนุมัติมาแล้ว ${res.waitingDays} วัน` : statusStripText(res.status);
+      body.innerHTML = '<div class="tl-wrap">' + res.timeline.map((t, i) => {
+        const iconMap = { approved: '✓', rejected: '✕', current: (i + 1), waiting: (i + 1), stopped: '–' };
+        return `
+        <div class="tl-item ${t.state}">
+          <div class="tl-dot">${iconMap[t.state]}</div>
+          <div class="tl-body">
+            <div class="tl-step-name">${t.stepName}</div>
+            ${t.by ? `<div class="tl-meta">${t.by} · ${t.at}${t.onBehalf ? ' (อนุมัติแทน)' : ''}</div>` : ''}
+            ${t.state === 'current' && t.waitingOn.length ? `<div class="tl-meta">รออนุมัติจาก: ${t.waitingOn.join(', ')}</div>` : ''}
+            ${t.state === 'current' && !t.waitingOn.length ? `<div class="tl-meta" style="color:var(--danger);">ยังไม่มีผู้อนุมัติกำหนดไว้ในขั้นนี้ — แจ้งแอดมิน</div>` : ''}
+            ${t.note ? `<div class="tl-note">"${t.note}"</div>` : ''}
+          </div>
+        </div>`;
+      }).join('') + '</div>' +
+      (res.originalDocsReceived ? '<div class="lookup-hint found" style="margin-top:8px;">รับเอกสารฉบับจริงแล้ว</div>' : '');
+    }).catch(err => {
+      document.getElementById('tlBody').innerHTML = `<div class="error-msg">เกิดข้อผิดพลาด: ${err.message}</div>`;
+    });
+  }
+  function closeTimelineModal() {
+    document.getElementById('timelineOverlay').classList.add('hidden');
+  }
+  function statusStripText(status) {
+    if (status === 'อนุมัติเรียบร้อย') return 'อนุมัติครบทุกขั้นแล้ว';
+    if (status === 'ถูกปฏิเสธ') return 'ไม่ผ่านการอนุมัติ';
+    if (status === 'ยกเลิกโดยผู้ขอ') return 'ยกเลิกโดยผู้ขอ';
+    return status;
   }
 
   // ---------- ADMIN PANEL ----------
@@ -2086,16 +2424,43 @@
   // ใบส่งตัว (REFERRAL / CASHLESS)
   // ==========================================================
   let REF_OPTIONS = null;
-  let REF_SERVICE = null;   // service type id ที่เลือก
-  let REF_PAYER = null;     // payer type id ที่เลือก
+  let REF_SERVICE = null;   // service type id ที่เลือก (ฟอร์ม HR ออกใบตรง)
+  let REF_PAYER = null;     // payer type id ที่เลือก (ฟอร์ม HR ออกใบตรง)
   let REF_LIST = [];
   let REF_TARGET_ID = null;
 
+  let REQ_SERVICE = null;   // service type id ที่เลือก (ฟอร์มพนักงานขอใบส่งตัว)
+  let REQ_URGENCY = 'soon';
+  let MY_REF_REQUESTS = [];
+  let REF_QUEUE = [];
+  let ISSUE_TARGET_REQUEST = null; // คำขอที่กำลังจะออกใบให้ (จาก REF_QUEUE)
+  let ISSUE_PAYER = null;
+  let REF_REJECT_REQUEST_ID = null;
+
+  /** แถบ subtab ของ "ใบส่งตัว" สร้างตามบทบาท — พนักงานทั่วไปเห็นแค่ขอ/ติดตาม, HR เห็นครบทุกแท็บ */
+  function buildRefSubTabs() {
+    const bar = document.getElementById('refSubTabsBar');
+    const isIssuer = REFERRAL_ISSUER_ROLES.indexOf(CURRENT_USER.role) !== -1;
+    let html = `<button class="admin-subtab-btn" id="refSubBtn-request" onclick="showRefSubTab('request')">ขอใบส่งตัว</button>
+                <button class="admin-subtab-btn" id="refSubBtn-myrequests" onclick="showRefSubTab('myrequests')">คำขอของฉัน</button>`;
+    if (isIssuer) {
+      html += `<button class="admin-subtab-btn" id="refSubBtn-queue" onclick="showRefSubTab('queue')">คิวคำขอ<span class="nav-badge hidden" id="navBadge-queue" style="margin-left:6px;">0</span></button>
+                <button class="admin-subtab-btn" id="refSubBtn-new" onclick="showRefSubTab('new')">ออกใบส่งตัวตรง</button>
+                <button class="admin-subtab-btn" id="refSubBtn-list" onclick="showRefSubTab('list')">ใบที่ออกแล้ว</button>`;
+    }
+    bar.innerHTML = html;
+  }
+
+  const REF_SUBTAB_NAMES = ['request', 'myrequests', 'queue', 'new', 'list'];
   function showRefSubTab(name) {
-    ['new','list'].forEach(t => {
-      document.getElementById('refSub' + capitalize(t)).classList.toggle('hidden', t !== name);
-      document.getElementById('refSubBtn-' + t).classList.toggle('active', t === name);
+    REF_SUBTAB_NAMES.forEach(t => {
+      const content = document.getElementById('refSub' + capitalize(t));
+      const btn = document.getElementById('refSubBtn-' + t);
+      if (content) content.classList.toggle('hidden', t !== name);
+      if (btn) btn.classList.toggle('active', t === name);
     });
+    if (name === 'myrequests') loadMyReferralRequests();
+    if (name === 'queue') loadReferralQueue();
     if (name === 'list') loadReferrals();
   }
 
@@ -2103,6 +2468,8 @@
     if (REF_OPTIONS) return Promise.resolve(REF_OPTIONS);
     return callApi('getReferralOptions', {}).then(res => {
       REF_OPTIONS = res;
+
+      // ---- ฟอร์ม HR ออกใบตรง (refSubNew) ----
       document.getElementById('refHospital').innerHTML =
         res.hospitals.map(h => `<option value="${h}">${h}</option>`).join('');
       document.getElementById('refServiceTypes').innerHTML = res.serviceTypes.map(s => `
@@ -2115,18 +2482,42 @@
           <input type="radio" name="refPayer" value="${p.id}" onchange="onRefPayerChange('${p.id}')">
           <span>${p.label}</span>
         </label>`).join('');
-      // ค่าเริ่มต้นที่ใช้บ่อยที่สุด
       const t = document.querySelector('input[name="refService"][value="treatment"]');
       if (t) { t.checked = true; onRefServiceChange('treatment'); }
       const c = document.querySelector('input[name="refPayer"][value="company"]');
       if (c) { c.checked = true; onRefPayerChange('company'); }
-      // ผู้ประสานงาน = HR ที่ล็อกอินอยู่
       if (!document.getElementById('refCoordName').value) {
         document.getElementById('refCoordName').value = CURRENT_USER.name;
       }
       if (!document.getElementById('refVisitDate').value) {
         document.getElementById('refVisitDate').value = new Date().toISOString().slice(0, 10);
       }
+
+      // ---- ฟอร์มพนักงานขอใบส่งตัว (refSubRequest) ----
+      document.getElementById('reqHospital').innerHTML =
+        res.hospitals.map(h => `<option value="${h}">${h}</option>`).join('');
+      document.getElementById('reqServiceTypes').innerHTML = res.serviceTypes.map(s => `
+        <label class="radio-line" id="reqSvc-${s.id}">
+          <input type="radio" name="reqService" value="${s.id}" onchange="onReqServiceChange('${s.id}')">
+          <span>${s.label}</span>
+        </label>`).join('');
+      document.getElementById('reqUrgency').innerHTML = res.urgency.map(u => `
+        <label class="radio-line" id="reqUrg-${u.id}">
+          <input type="radio" name="reqUrgency" value="${u.id}" onchange="onReqUrgencyChange('${u.id}')">
+          <span>${u.label}</span>
+        </label>`).join('');
+      const rt = document.querySelector('input[name="reqService"][value="treatment"]');
+      if (rt) { rt.checked = true; onReqServiceChange('treatment'); }
+      const ru = document.querySelector('input[name="reqUrgency"][value="soon"]');
+      if (ru) { ru.checked = true; onReqUrgencyChange('soon'); }
+
+      // ---- ฟอร์ม HR ออกใบจากคำขอ (modal issueReq) ----
+      document.getElementById('issuePayerTypes').innerHTML = res.payerTypes.map(p => `
+        <label class="radio-line" id="issuePay-${p.id}">
+          <input type="radio" name="issuePayer" value="${p.id}" onchange="onIssuePayerChange('${p.id}')">
+          <span>${p.label}</span>
+        </label>`).join('');
+
       return res;
     });
   }
@@ -2147,6 +2538,30 @@
     REF_OPTIONS.payerTypes.forEach(p =>
       document.getElementById('refPay-' + p.id).classList.toggle('checked', p.id === id));
     document.getElementById('refPayerDetail').classList.toggle('hidden', !opt.needDetail);
+  }
+
+  function onReqServiceChange(id) {
+    REQ_SERVICE = id;
+    const opt = REF_OPTIONS.serviceTypes.find(s => s.id === id);
+    REF_OPTIONS.serviceTypes.forEach(s =>
+      document.getElementById('reqSvc-' + s.id).classList.toggle('checked', s.id === id));
+    const detail = document.getElementById('reqServiceDetail');
+    detail.classList.toggle('hidden', !opt.needDetail);
+    detail.placeholder = 'ระบุรายละเอียด' + (opt.needDetail ? ' (' + opt.label + ')' : '');
+  }
+
+  function onReqUrgencyChange(id) {
+    REQ_URGENCY = id;
+    REF_OPTIONS.urgency.forEach(u =>
+      document.getElementById('reqUrg-' + u.id).classList.toggle('checked', u.id === id));
+  }
+
+  function onIssuePayerChange(id) {
+    ISSUE_PAYER = id;
+    const opt = REF_OPTIONS.payerTypes.find(p => p.id === id);
+    REF_OPTIONS.payerTypes.forEach(p =>
+      document.getElementById('issuePay-' + p.id).classList.toggle('checked', p.id === id));
+    document.getElementById('issuePayerDetail').classList.toggle('hidden', !opt.needDetail);
   }
 
   function doLookupEmployee() {
@@ -2227,6 +2642,233 @@
       .forEach(id => document.getElementById(id).value = '');
     document.getElementById('refLookupHint').className = 'lookup-hint';
     document.getElementById('refLookupHint').innerText = 'พิมพ์รหัสพนักงานแล้วกดค้นหา ระบบจะเติมชื่อและแผนกให้';
+  }
+
+  // ---------- แปลงสถานะคำขอ/ใบส่งตัว เป็นป้ายสี ----------
+  function requestStatusBadge(status) {
+    let cls = 'status-pending';
+    if (status === 'ออกใบแล้ว') cls = 'status-approved';
+    if (status === 'ไม่อนุมัติ') cls = 'status-rejected';
+    if (status === 'ยกเลิกโดยพนักงาน') cls = 'status-cancelled';
+    return `<span class="status-badge ${cls}">${status}</span>`;
+  }
+  function urgencyBadge(label) {
+    let cls = 'urgency-soon';
+    // เช็ค "ไม่เร่งด่วน/นัดล่วงหน้า" ก่อน เพราะคำว่า "ด่วน" เป็นส่วนหนึ่งของ "ไม่เร่งด่วน" ด้วย (เช็คสลับกันจะจับผิดคำ)
+    if (String(label).indexOf('นัดล่วงหน้า') !== -1 || String(label).indexOf('ไม่เร่งด่วน') !== -1) cls = 'urgency-planned';
+    else if (String(label).indexOf('ด่วน') !== -1) cls = 'urgency-today';
+    return `<span class="urgency-badge ${cls}">${label}</span>`;
+  }
+
+  // ---------- พนักงาน: ส่งคำขอใบส่งตัว ----------
+  function doRequestReferral() {
+    const errDiv = document.getElementById('reqError');
+    const btn = document.getElementById('reqSubmitBtn');
+    errDiv.innerText = '';
+
+    const data = {
+      symptoms: document.getElementById('reqSymptoms').value.trim(),
+      serviceTypeId: REQ_SERVICE,
+      serviceDetail: document.getElementById('reqServiceDetail').value.trim(),
+      hospital: document.getElementById('reqHospital').value,
+      preferredDate: document.getElementById('reqPreferredDate').value,
+      urgency: REQ_URGENCY,
+      note: document.getElementById('reqNote').value.trim()
+    };
+
+    btn.disabled = true;
+    btn.innerText = 'กำลังส่งคำขอ...';
+    callApi('requestReferral', { requestData: data }).then(res => {
+      btn.disabled = false;
+      btn.innerText = 'ส่งคำขอ';
+      if (!res.success) { errDiv.innerText = res.error; return; }
+      showToast(res.message || 'ส่งคำขอเรียบร้อยแล้ว', 'success');
+      ['reqSymptoms','reqServiceDetail','reqPreferredDate','reqNote'].forEach(id => document.getElementById(id).value = '');
+      showRefSubTab('myrequests');
+      document.getElementById('refSubBtn-myrequests').classList.add('active');
+      document.getElementById('refSubBtn-request').classList.remove('active');
+    }).catch(err => {
+      btn.disabled = false;
+      btn.innerText = 'ส่งคำขอ';
+      errDiv.innerText = 'เกิดข้อผิดพลาด: ' + err.message;
+    });
+  }
+
+  // ---------- พนักงาน: คำขอของฉัน ----------
+  function loadMyReferralRequests() {
+    const div = document.getElementById('myReferralRequestList');
+    div.innerHTML = '<div class="spinner"><span class="spinner-ring"></span>กำลังโหลด...</div>';
+    callApi('getMyReferralRequests', {}).then(res => {
+      if (!res.success) { div.innerHTML = `<div class="error-msg">${res.error}</div>`; return; }
+      MY_REF_REQUESTS = res.requests;
+      if (!MY_REF_REQUESTS.length) {
+        div.innerHTML = `<div class="empty-state">${ICONS.tray}<p>ยังไม่เคยขอใบส่งตัว</p></div>`;
+        return;
+      }
+      div.innerHTML = MY_REF_REQUESTS.map(r => `
+        <div class="claim-row">
+          <div class="claim-top">
+            <div class="claim-title">${r.serviceTypeLabel}</div>
+            ${requestStatusBadge(r.status)}
+          </div>
+          <div class="claim-meta">
+            <span class="claim-meta-item">${ICONS.calendar}ส่งคำขอ ${formatDate(r.timestamp)}</span>
+            <span class="claim-meta-item mono">${ICONS.hash}${r.requestId}</span>
+            <span class="claim-meta-item">${r.hospital}</span>
+          </div>
+          ${r.symptoms ? `<div class="claim-desc">อาการ: ${r.symptoms}</div>` : ''}
+          ${r.status === 'รอ HR ออกใบ' ? `<div style="margin-top:8px;">${urgencyBadge(r.urgency)}</div>` : ''}
+          ${r.status === 'ออกใบแล้ว' ? `<div class="claim-desc">ออกใบเลขที่ <b class="mono">${r.referralId}</b> แล้ว — แวะรับเอกสารที่ฝ่ายบุคคลได้เลย</div>` : ''}
+          ${r.status === 'ไม่อนุมัติ' && r.hrNote ? `<div class="warning-box">${ICONS.warning}<span>เหตุผล: ${r.hrNote}</span></div>` : ''}
+          ${r.status === 'รอ HR ออกใบ' ? `
+            <div class="claim-actions">
+              <button class="btn-neutral outline" onclick="cancelMyReferralRequest('${r.requestId}')">${ICONS.x}ยกเลิกคำขอ</button>
+            </div>` : ''}
+        </div>
+      `).join('');
+    });
+  }
+
+  function cancelMyReferralRequest(requestId) {
+    if (!confirm('ต้องการยกเลิกคำขอใบส่งตัวนี้ใช่หรือไม่?')) return;
+    callApi('cancelReferralRequest', { requestId }).then(res => {
+      if (res.success) { showToast('ยกเลิกคำขอแล้ว', 'success'); loadMyReferralRequests(); refreshNavBadges(); }
+      else showToast(res.error, 'danger');
+    });
+  }
+
+  // ---------- HR: คิวคำขอที่รอออกใบ ----------
+  function loadReferralQueue() {
+    const div = document.getElementById('referralQueueList');
+    div.innerHTML = '<div class="spinner"><span class="spinner-ring"></span>กำลังโหลด...</div>';
+    callApi('getReferralRequests', {}).then(res => {
+      if (!res.success) { div.innerHTML = `<div class="error-msg">${res.error}</div>`; return; }
+      REF_QUEUE = res.requests;
+      setNavBadge('queue', res.pendingCount);
+      setNavBadge('referral', res.pendingCount);
+      if (!REF_QUEUE.length) {
+        div.innerHTML = `<div class="empty-state">${ICONS.tray}<p>ยังไม่มีคำขอใบส่งตัวเข้ามา</p></div>`;
+        return;
+      }
+      // เรียงให้รายการที่รอดำเนินการขึ้นก่อน
+      const sorted = REF_QUEUE.slice().sort((a, b) => {
+        if (a.status === 'รอ HR ออกใบ' && b.status !== 'รอ HR ออกใบ') return -1;
+        if (b.status === 'รอ HR ออกใบ' && a.status !== 'รอ HR ออกใบ') return 1;
+        return new Date(b.timestamp) - new Date(a.timestamp);
+      });
+      div.innerHTML = sorted.map(r => `
+        <div class="claim-row">
+          <div class="claim-top">
+            <div class="claim-title">${r.name} <span style="color:var(--ink-faint); font-weight:400;">· ${r.department}</span></div>
+            ${requestStatusBadge(r.status)}
+          </div>
+          <div class="claim-meta">
+            <span class="claim-meta-item">${r.serviceTypeLabel}</span>
+            <span class="claim-meta-item">${ICONS.calendar}ส่งคำขอ ${formatDate(r.timestamp)}</span>
+            <span class="claim-meta-item mono">${ICONS.hash}${r.requestId}</span>
+            <span class="claim-meta-item">${r.hospital}</span>
+          </div>
+          ${r.symptoms ? `<div class="claim-desc">อาการ: ${r.symptoms}${r.serviceDetail ? ' · ' + r.serviceDetail : ''}</div>` : (r.serviceDetail ? `<div class="claim-desc">${r.serviceDetail}</div>` : '')}
+          ${r.note ? `<div class="claim-desc">หมายเหตุ: ${r.note}</div>` : ''}
+          <div style="margin-top:8px; display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
+            ${r.status === 'รอ HR ออกใบ' ? urgencyBadge(r.urgency) : ''}
+            ${r.status === 'ออกใบแล้ว' ? `<span class="lookup-hint found">ออกโดย ${r.decidedByName} · เลขที่ ${r.referralId}</span>` : ''}
+            ${r.status === 'ไม่อนุมัติ' ? `<span class="lookup-hint">${r.decidedByName}: ${r.hrNote || '-'}</span>` : ''}
+          </div>
+          ${r.status === 'รอ HR ออกใบ' ? `
+            <div class="claim-actions">
+              <button class="btn-approve" onclick="openIssueReferralModal('${r.requestId}')">${ICONS.check}ออกใบ</button>
+              <button class="btn-reject" onclick="openRefReqRejectModal('${r.requestId}')">${ICONS.x}ไม่อนุมัติ</button>
+            </div>` : ''}
+        </div>
+      `).join('');
+    });
+  }
+
+  // ---------- HR: ออกใบจากคำขอ ----------
+  function openIssueReferralModal(requestId) {
+    const r = REF_QUEUE.find(x => x.requestId === requestId);
+    if (!r) return;
+    ISSUE_TARGET_REQUEST = r;
+    document.getElementById('issueReqSub').innerText =
+      `${r.name} (${r.employeeId}) · ${r.department} · ${r.serviceTypeLabel}`;
+    document.getElementById('issueAge').value = '';
+    document.getElementById('issueVisitDate').value = r.preferredDate
+      ? new Date(r.preferredDate).toISOString().slice(0, 10) : new Date().toISOString().slice(0, 10);
+    document.getElementById('issuePayerDetail').value = '';
+    document.getElementById('issueCoordName').value = CURRENT_USER.name;
+    document.getElementById('issueCoordPhone').value = '';
+    document.getElementById('issueSignerName').value = '';
+    document.getElementById('issueSignerPosition').value = '';
+    document.getElementById('issueBookNo').value = '';
+    document.getElementById('issueDocNo').value = '';
+    document.getElementById('issueReqError').innerText = '';
+    const c = document.querySelector('input[name="issuePayer"][value="company"]');
+    if (c) { c.checked = true; onIssuePayerChange('company'); }
+    document.getElementById('issueReqOverlay').classList.remove('hidden');
+  }
+  function closeIssueReferralModal() {
+    document.getElementById('issueReqOverlay').classList.add('hidden');
+    ISSUE_TARGET_REQUEST = null;
+  }
+  function submitIssueReferral() {
+    if (!ISSUE_TARGET_REQUEST) return;
+    const errDiv = document.getElementById('issueReqError');
+    const btn = document.getElementById('issueReqBtn');
+    errDiv.innerText = '';
+
+    const referralData = {
+      age: document.getElementById('issueAge').value,
+      visitDate: document.getElementById('issueVisitDate').value,
+      payerTypeId: ISSUE_PAYER,
+      payerDetail: document.getElementById('issuePayerDetail').value.trim(),
+      coordinatorName: document.getElementById('issueCoordName').value.trim(),
+      coordinatorPhone: document.getElementById('issueCoordPhone').value.trim(),
+      authorizedSignerName: document.getElementById('issueSignerName').value.trim(),
+      authorizedSignerPosition: document.getElementById('issueSignerPosition').value.trim(),
+      bookNo: document.getElementById('issueBookNo').value.trim(),
+      docNo: document.getElementById('issueDocNo').value.trim()
+    };
+
+    btn.disabled = true;
+    btn.innerText = 'กำลังออกใบ...';
+    callApi('issueFromRequest', { requestId: ISSUE_TARGET_REQUEST.requestId, referralData }).then(res => {
+      btn.disabled = false;
+      btn.innerText = 'ออกใบส่งตัว';
+      if (!res.success) { errDiv.innerText = res.error; return; }
+      showToast('ออกใบส่งตัวเรียบร้อย · ' + res.referralId, 'success');
+      closeIssueReferralModal();
+      loadReferralQueue();
+      refreshNavBadges();
+      if (res.referral) printReferralData(res.referral);
+    }).catch(err => {
+      btn.disabled = false;
+      btn.innerText = 'ออกใบส่งตัว';
+      errDiv.innerText = 'เกิดข้อผิดพลาด: ' + err.message;
+    });
+  }
+
+  // ---------- HR: ไม่อนุมัติคำขอ ----------
+  function openRefReqRejectModal(requestId) {
+    const r = REF_QUEUE.find(x => x.requestId === requestId);
+    REF_REJECT_REQUEST_ID = requestId;
+    document.getElementById('refReqRejectSub').innerText = r ? `${r.name} · ${r.requestId}` : requestId;
+    document.getElementById('refReqRejectReason').value = '';
+    document.getElementById('refReqRejectOverlay').classList.remove('hidden');
+  }
+  function closeRefReqRejectModal() {
+    document.getElementById('refReqRejectOverlay').classList.add('hidden');
+    REF_REJECT_REQUEST_ID = null;
+  }
+  function confirmRefReqReject() {
+    const reason = document.getElementById('refReqRejectReason').value.trim();
+    if (!reason) { showToast('กรุณาระบุเหตุผล', 'danger'); return; }
+    const id = REF_REJECT_REQUEST_ID;
+    callApi('rejectReferralRequest', { requestId: id, reason }).then(res => {
+      closeRefReqRejectModal();
+      if (res.success) { showToast('บันทึกแล้ว', 'success'); loadReferralQueue(); refreshNavBadges(); }
+      else showToast(res.error, 'danger');
+    });
   }
 
   // ---------- รายการใบส่งตัว ----------
