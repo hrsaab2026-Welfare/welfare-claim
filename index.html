@@ -462,6 +462,29 @@
   .exclusion-box label{ display:flex; gap:8px; align-items:flex-start; font-size:13.5px; color:var(--ink); font-weight:600; }
   .exclusion-box input{ width:auto; margin:2px 0 0; accent-color:var(--steel); }
 
+  /* ---------- Flow ขั้นตอนอนุมัติ (ใต้ฟอร์มยื่นคำขอ) ---------- */
+  .flow-box{ border:1px solid var(--line); border-radius:var(--radius-s); background:var(--surface); padding:14px 16px; margin-bottom:16px; }
+  .flow-title{ font-size:14px; font-weight:700; margin-bottom:2px; }
+  .flow-sub{ font-size:12.5px; color:var(--ink-soft); margin-bottom:12px; }
+  .flow-list{ list-style:none; margin:0; padding:0; }
+  .flow-step{ position:relative; display:flex; gap:12px; padding-bottom:14px; }
+  .flow-step:last-child{ padding-bottom:0; }
+  .flow-step::before{ content:''; position:absolute; left:13px; top:28px; bottom:0; width:2px; background:var(--line); }
+  .flow-step:last-child::before{ display:none; }
+  .flow-num{ flex-shrink:0; width:28px; height:28px; border-radius:50%; background:var(--steel); color:#fff; font-size:13px; font-weight:700; display:flex; align-items:center; justify-content:center; z-index:1; }
+  .flow-step.last .flow-num{ background:var(--success); }
+  .flow-step.nobody .flow-num{ background:var(--danger); }
+  .flow-step.skipped .flow-num{ background:var(--line); color:var(--ink-faint); }
+  .flow-body{ flex:1; min-width:0; padding-top:2px; }
+  .flow-name{ font-size:14px; font-weight:600; }
+  .flow-who{ font-size:13px; color:var(--ink-soft); margin-top:1px; }
+  .flow-act{ display:inline-block; margin-top:4px; font-size:12px; font-weight:600; color:var(--steel); background:#EAF1F6; padding:1px 8px; border-radius:20px; }
+  .flow-step.last .flow-act{ color:var(--success); background:var(--success-bg); }
+  .flow-step.nobody .flow-act{ color:var(--danger); background:var(--danger-bg); }
+  .flow-step.skipped .flow-name, .flow-step.skipped .flow-who{ color:var(--ink-faint); }
+  .flow-step.skipped .flow-act{ color:var(--ink-faint); background:var(--line-soft); font-weight:500; }
+  .flow-note{ margin-top:12px; padding-top:10px; border-top:1px dashed var(--line); font-size:12.5px; color:var(--warning); }
+
   .block-box{
     border:1px solid #EFC9C4; background:var(--danger-bg); color:var(--danger);
     border-radius:var(--radius-s); padding:12px 14px; margin-bottom:14px; font-size:13.5px;
@@ -671,6 +694,8 @@
           </div>
 
           <div id="exclusionBox" class="exclusion-box hidden"></div>
+
+          <div id="flowBox" class="flow-box hidden"></div>
 
           <div id="blockBox" class="block-box hidden"></div>
           <div id="submitWarning" class="warning-box hidden"></div>
@@ -1575,8 +1600,60 @@
       renderEligibility(res);
       renderDocChecklist(res.requiredDocs);
       if (res.amountLocked) document.getElementById('amountInput').value = res.amount;
+      loadApprovalFlowPreview(document.getElementById('categorySelect').value, res.amount);
       document.getElementById('amountNote').innerText = res.amountBreakdown || '';
     }).catch(err => showToast('ตรวจสิทธิ์ไม่สำเร็จ: ' + err.message, 'danger'));
+  }
+
+  // ---------- FLOW ขั้นตอนอนุมัติ (พรีวิวใต้ฟอร์ม) ----------
+  let FLOW_KEY = '';
+  function flowEsc(t) {
+    return String(t == null ? '' : t).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  }
+
+  /** ดึงสายอนุมัติของใบนี้จาก server (ยิงซ้ำเฉพาะเมื่อประเภท/ยอดเงินเปลี่ยน) */
+  function loadApprovalFlowPreview(categoryId, amount) {
+    const key = categoryId + '|' + Number(amount || 0);
+    if (key === FLOW_KEY) return;
+    FLOW_KEY = key;
+    callApi('previewApprovalFlow', { categoryId: categoryId, amount: Number(amount || 0) })
+      .then(res => {
+        if (key !== FLOW_KEY) return;   // มีการเปลี่ยนค่าใหม่แล้ว ทิ้งผลเก่า
+        if (!res.success) { FLOW_KEY = ''; return; }
+        renderApprovalFlow(res);
+      })
+      .catch(() => { FLOW_KEY = ''; });
+  }
+
+  function renderApprovalFlow(res) {
+    const box = document.getElementById('flowBox');
+    const steps = res.steps || [];
+    if (!steps.length) {
+      box.innerHTML = '<div class="flow-title">ขั้นตอนการอนุมัติ</div>' +
+        '<div class="flow-sub" style="margin-bottom:0">รายการนี้ไม่มีขั้นตอนอนุมัติ ระบบจะอนุมัติให้อัตโนมัติ</div>';
+      box.classList.remove('hidden');
+      return;
+    }
+    const lastIdx = steps.map(s => s.state !== 'skipped').lastIndexOf(true);
+    const items = steps.map((s, i) => {
+      const cls = s.state === 'skipped' ? 'skipped' : s.state === 'nobody' ? 'nobody' : (i === lastIdx ? 'last' : '');
+      const who = s.state === 'nobody' ? 'ยังไม่ได้กำหนดผู้อนุมัติ กรุณาแจ้งฝ่ายบุคคล'
+                : s.state === 'skipped' ? '' : flowEsc(s.approvers.join(', '));
+      return `<li class="flow-step ${cls}">
+        <div class="flow-num">${s.no == null ? '–' : s.no}</div>
+        <div class="flow-body">
+          <div class="flow-name">${flowEsc(s.name)}</div>
+          ${who ? `<div class="flow-who">${who}</div>` : ''}
+          <span class="flow-act">${flowEsc(s.action)}</span>
+        </div>
+      </li>`;
+    }).join('');
+    const note = res.needOriginalDocs
+      ? '<div class="flow-note">ต้องส่งเอกสารตัวจริงให้ฝ่ายทรัพยากรบุคคลด้วย ใบเบิกจึงจะผ่านขั้นตรวจรับเอกสาร</div>' : '';
+    box.innerHTML = '<div class="flow-title">ขั้นตอนการอนุมัติ</div>' +
+      '<div class="flow-sub">หลังกดส่งคำขอ ใบเบิกจะเดินตามลำดับนี้ ทีละขั้น</div>' +
+      `<ol class="flow-list">${items}</ol>${note}`;
+    box.classList.remove('hidden');
   }
 
   function renderEligibility(e) {
