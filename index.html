@@ -71,52 +71,48 @@
   }
   .btn-secondary:hover{ background:var(--line-soft); }
 
-  /* ---------- login screen ---------- */
-  .login-shell{ display:flex; min-height:100vh; }
-  .login-brandpanel{
-    flex:0 0 42%; min-height:100vh; background:var(--steel-dark); color:#fff;
-    display:flex; align-items:center; position:relative; overflow:hidden;
+  /* ---------- login screen (centered card style) ---------- */
+  .login-shell{
+    min-height:100vh; display:flex; align-items:center; justify-content:center;
+    padding:24px;
+    background:
+      radial-gradient(circle at 15% 15%, rgba(181,101,29,0.18), transparent 45%),
+      linear-gradient(135deg, var(--steel-darker), var(--steel-dark) 55%, var(--steel-hover));
   }
-  .login-brandpanel::before{
-    content:""; position:absolute; inset:0;
-    background-image:
-      linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px);
-    background-size:34px 34px;
-    mask-image:linear-gradient(to bottom right, black, transparent 75%);
+  .login-card{
+    position:relative; width:100%; max-width:400px; background:var(--surface);
+    border-radius:16px; padding:40px 36px 36px; text-align:center;
+    box-shadow:0 24px 60px rgba(0,0,0,0.35), 0 2px 8px rgba(0,0,0,0.15);
+    overflow:hidden;
   }
-  .login-brandpanel::after{
-    content:""; position:absolute; top:0; left:0; right:0; height:4px; background:var(--copper);
+  .login-card::before{
+    content:""; position:absolute; top:0; left:0; right:0; height:4px;
+    background:linear-gradient(90deg, var(--copper), var(--steel));
   }
-  .login-brandpanel-inner{ position:relative; padding:56px; max-width:460px; }
-  .brand-mark{
-    width:52px; height:52px; border-radius:var(--radius-s); background:var(--copper);
-    color:#fff; font-family:var(--font-mono); font-weight:600; font-size:15px;
-    display:flex; align-items:center; justify-content:center; letter-spacing:0.5px; margin-bottom:28px;
+  .login-icon{
+    width:56px; height:56px; border-radius:14px; background:var(--steel-dark); color:#fff;
+    display:flex; align-items:center; justify-content:center; margin:0 auto 20px;
+    box-shadow:0 6px 16px rgba(18,42,62,0.35);
   }
-  .login-brandpanel-inner h1{ font-size:26px; line-height:1.35; margin-bottom:10px; color:#fff; }
-  .login-brandpanel-inner .tagline{ color:rgba(255,255,255,0.62); font-size:14.5px; margin-bottom:40px; }
-  .brand-meta{ border-top:1px solid rgba(255,255,255,0.14); padding-top:20px; }
-  .brand-meta-row{
-    display:flex; justify-content:space-between; font-size:13.5px;
-    color:rgba(255,255,255,0.75); padding:7px 0;
+  .login-card h2{ font-size:21px; margin-bottom:6px; }
+  .login-card .login-sub{
+    color:var(--ink-soft); font-size:13.5px; margin-bottom:26px; display:block;
   }
-  .brand-meta-row span:last-child{ font-family:var(--font-mono); color:#fff; }
+  .login-card .field{ text-align:left; }
+  .login-card .btn-primary{ margin-top:8px; background:var(--steel-dark); }
+  .login-card .btn-primary:hover{ background:var(--steel-darker); }
 
-  .login-formpanel{ flex:1; display:flex; align-items:center; justify-content:center; padding:32px; }
-  .login-form-inner{ width:100%; max-width:340px; }
-  .login-form-inner h2{ font-size:22px; margin-bottom:6px; }
-  .login-sub{ color:var(--ink-soft); font-size:14px; margin-bottom:28px; display:block; }
-  .login-form-inner .btn-primary{ margin-top:6px; }
+  .pw-wrap{ position:relative; }
+  .pw-wrap input{ padding-right:42px; }
+  .pw-toggle{
+    position:absolute; right:10px; top:50%; transform:translateY(-50%);
+    width:26px; height:26px; border:none; background:none; padding:0; cursor:pointer;
+    color:var(--ink-faint); display:flex; align-items:center; justify-content:center;
+  }
+  .pw-toggle:hover{ color:var(--ink-soft); }
 
-  @media (max-width:800px){
-    .login-shell{ flex-direction:column; }
-    .login-brandpanel{ flex:0 0 auto; min-height:0; padding:0; }
-    .login-brandpanel-inner{ padding:32px 24px; max-width:none; }
-    .login-brandpanel-inner h1{ font-size:21px; }
-    .login-brandpanel-inner .tagline{ margin-bottom:0; }
-    .brand-meta{ display:none; }
-    .login-formpanel{ padding:32px 24px 48px; }
+  @media (max-width:480px){
+    .login-card{ padding:32px 22px 28px; border-radius:14px; }
   }
 
   /* ---------- app shell ---------- */
@@ -485,32 +481,28 @@
 
   <!-- ==================== LOGIN SCREEN ==================== -->
   <div id="loginScreen" class="login-shell">
-    <div class="login-brandpanel">
-      <div class="login-brandpanel-inner">
-        <div class="brand-mark">SAB</div>
-        <h1>ระบบเบิกสวัสดิการพนักงาน</h1>
-        <p class="tagline">Summit Auto Body Industry — สาขาอยุธยา</p>
-        <div class="brand-meta">
-          <div class="brand-meta-row"><span>ขั้นตอนอนุมัติ</span><span>3 ขั้น</span></div>
-          <div class="brand-meta-row"><span>วงเงินรักษาพยาบาล</span><span>15,000 / ปี</span></div>
+    <div class="login-card">
+      <div class="login-icon">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+      </div>
+      <h2>ระบบเบิกสวัสดิการพนักงาน</h2>
+      <span class="login-sub">Summit Auto Body Industry — สาขาอยุธยา<br>เข้าสู่ระบบเพื่อดำเนินการต่อ</span>
+      <div class="field">
+        <label for="loginEmployeeId">Username</label>
+        <input type="text" id="loginEmployeeId" placeholder="รหัสพนักงาน เช่น EMP001" autocomplete="username">
+      </div>
+      <div class="field">
+        <label for="loginPin">Password</label>
+        <div class="pw-wrap">
+          <input type="password" id="loginPin" placeholder="กรอก Password" autocomplete="current-password">
+          <button type="button" class="pw-toggle" onclick="toggleLoginPw()" aria-label="แสดง/ซ่อนรหัสผ่าน" tabindex="-1">
+            <svg id="pwIconShow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            <svg id="pwIconHide" class="hidden" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.94 10.94 0 0 1 12 20c-7 0-11-8-11-8a21.62 21.62 0 0 1 5.06-6.06M9.9 4.24A10.94 10.94 0 0 1 12 4c7 0 11 8 11 8a21.6 21.6 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+          </button>
         </div>
       </div>
-    </div>
-    <div class="login-formpanel">
-      <div class="login-form-inner">
-        <h2>เข้าสู่ระบบ</h2>
-        <span class="login-sub">กรอกชื่อผู้ใช้งานและรหัสผ่านเพื่อดำเนินการต่อ</span>
-        <div class="field">
-          <label for="loginEmployeeId">ชื่อผู้ใช้งาน (Username)</label>
-          <input type="text" id="loginEmployeeId" placeholder="รหัสพนักงาน เช่น EMP001" autocomplete="username">
-        </div>
-        <div class="field">
-          <label for="loginPin">รหัสผ่าน (Password)</label>
-          <input type="password" id="loginPin" placeholder="กรอกรหัสผ่าน" autocomplete="current-password">
-        </div>
-        <button class="btn-primary" onclick="doLogin()">เข้าสู่ระบบ</button>
-        <div id="loginError" class="error-msg"></div>
-      </div>
+      <button class="btn-primary" onclick="doLogin()">เข้าสู่ระบบ</button>
+      <div id="loginError" class="error-msg"></div>
     </div>
   </div>
 
@@ -1018,6 +1010,16 @@
   }
 
   // ---------- LOGIN ----------
+  function toggleLoginPw() {
+    const input = document.getElementById('loginPin');
+    const show = document.getElementById('pwIconShow');
+    const hide = document.getElementById('pwIconHide');
+    const isPw = input.type === 'password';
+    input.type = isPw ? 'text' : 'password';
+    show.classList.toggle('hidden', isPw);
+    hide.classList.toggle('hidden', !isPw);
+  }
+
   function doLogin() {
     const id = document.getElementById('loginEmployeeId').value.trim();
     const pin = document.getElementById('loginPin').value.trim();
