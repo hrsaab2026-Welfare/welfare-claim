@@ -988,16 +988,25 @@
   /**
    * เรียก Apps Script backend API
    * ใช้ Content-Type: text/plain เพื่อเลี่ยง CORS preflight (ข้อจำกัดของ Apps Script Web App)
+   * แนบ AUTH_TOKEN ไปทุกครั้งอัตโนมัติ — backend จะยึดสิทธิ์ (role/employeeId) จาก token นี้เท่านั้น
    */
   function callApi(action, payload) {
     return fetch(API_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-      body: JSON.stringify(Object.assign({ action: action }, payload))
-    }).then(res => res.json());
+      body: JSON.stringify(Object.assign({ action: action, token: AUTH_TOKEN }, payload))
+    }).then(res => res.json()).then(res => {
+      if (res && res.error === 'SESSION_EXPIRED') {
+        showToast('เซสชันหมดอายุ กรุณาเข้าสู่ระบบใหม่', 'danger');
+        logout();
+        throw new Error('SESSION_EXPIRED');
+      }
+      return res;
+    });
   }
 
   let CURRENT_USER = null;
+  let AUTH_TOKEN = null;
   let CATEGORIES = [];
   let PENDING_REJECT_ID = null;
 
@@ -1044,13 +1053,16 @@
       return;
     }
     CURRENT_USER = result;
+    AUTH_TOKEN = result.token;
     sessionStorage.setItem('welfare_user', JSON.stringify(result));
     initApp();
   }
 
   function logout() {
+    if (AUTH_TOKEN) { callApi('logout', {}).catch(() => {}); }
     sessionStorage.removeItem('welfare_user');
     CURRENT_USER = null;
+    AUTH_TOKEN = null;
     document.getElementById('appScreen').classList.add('hidden');
     document.getElementById('loginScreen').classList.remove('hidden');
   }
@@ -1088,7 +1100,7 @@
     const bar = document.getElementById('tabBar');
     let html = `<button class="nav-item" id="tabBtn-submit" onclick="showTab('submit')" title="ยื่นคำขอ">${ICONS.edit}<span>ยื่นคำขอ</span></button>
                 <button class="nav-item" id="tabBtn-history" onclick="showTab('history')" title="ประวัติของฉัน">${ICONS.list}<span>ประวัติของฉัน</span></button>`;
-    if (['supervisor','hr','accounting','admin'].indexOf(CURRENT_USER.role) !== -1) {
+    if (['supervisor','hr','accounting'].indexOf(CURRENT_USER.role) !== -1) {
       html += `<button class="nav-item" id="tabBtn-approve" onclick="showTab('approve')" title="รออนุมัติ">${ICONS.shield}<span>รออนุมัติ</span></button>`;
     }
     if (['hr','admin'].indexOf(CURRENT_USER.role) !== -1) {
@@ -2111,6 +2123,7 @@
     const saved = sessionStorage.getItem('welfare_user');
     if (saved) {
       CURRENT_USER = JSON.parse(saved);
+      AUTH_TOKEN = CURRENT_USER.token;
       initApp();
     }
   };
