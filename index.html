@@ -343,6 +343,23 @@
 
   .card-head-row{ display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; margin-bottom:20px; }
   .card-head-row .card-head{ margin-bottom:0; }
+  .csv-step{ display:flex; gap:12px; padding:12px 0; border-bottom:1px solid var(--line-soft); }
+  .csv-step:last-of-type{ border-bottom:none; }
+  .csv-step-num{ flex-shrink:0; width:24px; height:24px; border-radius:50%; background:var(--steel); color:#fff;
+    display:flex; align-items:center; justify-content:center; font-size:12.5px; font-weight:700; }
+  .csv-step-body{ flex:1; font-size:13.5px; line-height:1.6; }
+  .csv-preview-table{ width:100%; border-collapse:collapse; font-size:12.5px; margin-top:8px; }
+  .csv-preview-table th, .csv-preview-table td{ border:1px solid var(--line-soft); padding:6px 8px; text-align:left; white-space:nowrap; }
+  .csv-preview-table th{ background:var(--bg-soft, #f4f6f8); }
+  .csv-result-row{ display:flex; align-items:center; gap:8px; padding:6px 4px; font-size:13px; border-bottom:1px solid var(--line-soft); }
+  .csv-result-row:last-child{ border-bottom:none; }
+  .csv-badge{ font-size:11px; font-weight:700; padding:2px 8px; border-radius:20px; flex-shrink:0; min-width:64px; text-align:center; }
+  .csv-badge-created{ background:#e3f7ea; color:#1f8a4c; }
+  .csv-badge-updated{ background:#e6f0fb; color:#1f5aa8; }
+  .csv-badge-skipped{ background:#fff4e0; color:#a6690c; }
+  .csv-badge-error{ background:#fdeaea; color:#c0392b; }
+  .csv-summary-row{ display:flex; gap:16px; flex-wrap:wrap; margin:10px 0; font-size:13.5px; }
+  .csv-summary-item{ padding:6px 12px; border-radius:8px; background:var(--bg-soft, #f4f6f8); }
 
   .btn-inline{ width:auto; padding:9px 16px; font-size:13.5px; display:inline-flex; align-items:center; gap:7px; }
 
@@ -768,10 +785,16 @@
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="color:var(--steel)"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
                   <h3>รายชื่อพนักงาน</h3>
                 </div>
-                <button class="btn-primary btn-inline" onclick="openUserModal()">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-                  เพิ่มพนักงาน
-                </button>
+                <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                  <button class="btn-secondary btn-inline" onclick="openCsvImportModal()">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                    นำเข้าจาก CSV
+                  </button>
+                  <button class="btn-primary btn-inline" onclick="openUserModal()">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                    เพิ่มพนักงาน
+                  </button>
+                </div>
               </div>
               <div id="adminUsersTableWrap"><div class="spinner"><span class="spinner-ring"></span>กำลังโหลด...</div></div>
             </div>
@@ -864,9 +887,11 @@
         <label for="userFormRole">บทบาท</label>
         <select id="userFormRole">
           <option value="employee">พนักงาน</option>
-          <option value="supervisor">หัวหน้างาน</option>
-          <option value="hr">ฝ่ายบุคคล</option>
-          <option value="accounting">ฝ่ายบัญชี</option>
+          <option value="supervisor">หัวหน้าส่วน</option>
+          <option value="manager">ผู้จัดการฝ่าย</option>
+          <option value="hr">เจ้าหน้าที่ฝ่ายบุคคล</option>
+          <option value="hr_manager">ผู้จัดการฝ่ายบุคคล</option>
+          <option value="accounting">ผู้จัดการฝ่ายบัญชี</option>
           <option value="admin">แอดมิน</option>
         </select>
       </div>
@@ -882,6 +907,57 @@
       <div class="modal-actions">
         <button class="btn-secondary" onclick="closeUserModal()">ยกเลิก</button>
         <button class="btn-primary btn-inline" onclick="saveUserForm()">บันทึก</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== ADMIN: นำเข้าพนักงานจาก CSV ==================== -->
+  <div id="csvImportModalOverlay" class="modal-overlay hidden" onclick="closeCsvImportModal()">
+    <div class="modal modal-wide" onclick="event.stopPropagation()">
+      <h4>นำเข้ารายชื่อพนักงานจาก CSV</h4>
+      <span class="modal-sub">เพิ่ม/อัปเดตพนักงานได้ทีละหลายรายการในครั้งเดียว</span>
+
+      <div class="csv-step">
+        <div class="csv-step-num">1</div>
+        <div class="csv-step-body">
+          <b>ดาวน์โหลดไฟล์ตัวอย่าง</b> กรอกข้อมูลตามคอลัมน์ที่กำหนด แล้วบันทึกเป็น .csv
+          <div style="margin-top:8px;">
+            <button type="button" class="btn-secondary btn-inline" onclick="downloadCsvTemplate()">
+              ⬇️ ดาวน์โหลดไฟล์ตัวอย่าง (CSV)
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="csv-step">
+        <div class="csv-step-num">2</div>
+        <div class="csv-step-body">
+          <b>เลือกไฟล์ CSV ที่กรอกแล้ว</b>
+          <div style="margin-top:8px;">
+            <input type="file" id="csvFileInput" accept=".csv,text/csv" onchange="handleCsvFileSelect(event)">
+          </div>
+          <div id="csvParseInfo" class="lookup-hint" style="margin-top:6px;"></div>
+        </div>
+      </div>
+
+      <div class="csv-step">
+        <div class="csv-step-num">3</div>
+        <div class="csv-step-body">
+          <label class="checkbox-row" style="margin:0;">
+            <input type="checkbox" id="csvOverwriteExisting">
+            <span>เขียนทับข้อมูลเดิม ถ้ารหัสพนักงานซ้ำกับที่มีอยู่แล้วในระบบ</span>
+          </label>
+          <div class="lookup-hint" style="margin-top:4px;">ถ้าไม่ติ๊ก ระบบจะข้ามแถวที่รหัสซ้ำ (ไม่แก้ไขข้อมูลเดิม)</div>
+        </div>
+      </div>
+
+      <div id="csvPreviewWrap"></div>
+      <div id="csvImportError" class="error-msg"></div>
+      <div id="csvImportResultWrap"></div>
+
+      <div class="modal-actions">
+        <button class="btn-secondary" onclick="closeCsvImportModal()">ปิด</button>
+        <button class="btn-primary btn-inline" id="csvImportBtn" onclick="runCsvImport()" disabled>นำเข้าข้อมูล</button>
       </div>
     </div>
   </div>
@@ -1093,7 +1169,11 @@
   }
 
   function roleLabel(role) {
-    return { employee: 'พนักงาน', supervisor: 'หัวหน้างาน', hr: 'ฝ่ายบุคคล', accounting: 'ฝ่ายบัญชี', admin: 'แอดมิน' }[role] || role;
+    return {
+      employee: 'พนักงาน', supervisor: 'หัวหน้าส่วน', manager: 'ผู้จัดการฝ่าย',
+      hr: 'เจ้าหน้าที่ฝ่ายบุคคล', hr_manager: 'ผู้จัดการฝ่ายบุคคล',
+      accounting: 'ผู้จัดการฝ่ายบัญชี', admin: 'แอดมิน'
+    }[role] || role;
   }
 
   function buildTabs() {
@@ -1689,6 +1769,234 @@
     document.getElementById('confirmDeleteText').innerText =
       `ต้องการลบพนักงานรหัส ${employeeId} ใช่หรือไม่? การลบไม่สามารถย้อนกลับได้`;
     document.getElementById('confirmDeleteOverlay').classList.remove('hidden');
+  }
+
+  // ---- นำเข้าพนักงานจาก CSV ----
+  let CSV_IMPORT_ROWS = [];       // แถวข้อมูลที่ parse แล้ว พร้อมส่งเข้า backend
+  let CSV_IMPORT_LINE_ERRORS = []; // ข้อผิดพลาดที่ตรวจพบตอน parse ฝั่งหน้าเว็บ (ก่อนส่งขึ้นระบบ)
+
+  /** หัวคอลัมน์ที่รองรับ (ไทย/อังกฤษ ตัวพิมพ์เล็ก-ใหญ่ไม่สำคัญ) -> ชื่อฟิลด์ที่ backend ต้องการ */
+  const CSV_HEADER_MAP = {
+    'รหัสพนักงาน': 'employeeId', 'employeeid': 'employeeId', 'employee_id': 'employeeId', 'id': 'employeeId',
+    'ชื่อ-นามสกุล': 'name', 'ชื่อ': 'name', 'ชื่อสกุล': 'name', 'name': 'name',
+    'แผนก': 'department', 'department': 'department',
+    'ตำแหน่ง': 'position', 'position': 'position',
+    'ฝ่าย': 'division', 'division': 'division',
+    'costcenter': 'costCenter', 'cost center': 'costCenter',
+    'เบอร์โทรแผนก': 'deptPhone', 'deptphone': 'deptPhone',
+    'เบอร์มือถือ': 'mobile', 'mobile': 'mobile', 'เบอร์โทรศัพท์มือถือ': 'mobile',
+    'อีเมล': 'email', 'email': 'email',
+    'เพศ': 'gender', 'gender': 'gender',
+    'บทบาท': 'role', 'role': 'role',
+    'รหัสผ่าน': 'pin', 'password': 'pin', 'pin': 'pin',
+    'สถานะ': 'active', 'active': 'active'
+  };
+  /** คำในภาษาไทยของบทบาท -> role id ที่ระบบใช้จริง */
+  const CSV_ROLE_MAP = {
+    'พนักงาน': 'employee',
+    'หัวหน้าส่วน': 'supervisor', 'หัวหน้างาน': 'supervisor', 'supervisor': 'supervisor',
+    'ผู้จัดการฝ่าย': 'manager', 'manager': 'manager',
+    'เจ้าหน้าที่ฝ่ายบุคคล': 'hr', 'ฝ่ายบุคคล': 'hr', 'hr': 'hr',
+    'ผู้จัดการฝ่ายบุคคล': 'hr_manager', 'hr_manager': 'hr_manager',
+    'ผู้จัดการฝ่ายบัญชี': 'accounting', 'ฝ่ายบัญชี': 'accounting', 'accounting': 'accounting',
+    'แอดมิน': 'admin', 'ผู้ดูแลระบบ': 'admin', 'admin': 'admin'
+  };
+
+  function openCsvImportModal() {
+    CSV_IMPORT_ROWS = [];
+    CSV_IMPORT_LINE_ERRORS = [];
+    document.getElementById('csvFileInput').value = '';
+    document.getElementById('csvOverwriteExisting').checked = false;
+    document.getElementById('csvParseInfo').innerHTML = '';
+    document.getElementById('csvPreviewWrap').innerHTML = '';
+    document.getElementById('csvImportError').innerText = '';
+    document.getElementById('csvImportResultWrap').innerHTML = '';
+    document.getElementById('csvImportBtn').disabled = true;
+    document.getElementById('csvImportModalOverlay').classList.remove('hidden');
+  }
+  function closeCsvImportModal() {
+    document.getElementById('csvImportModalOverlay').classList.add('hidden');
+  }
+
+  /** สร้างไฟล์ตัวอย่างให้ดาวน์โหลด พร้อม 1 แถวตัวอย่าง */
+  function downloadCsvTemplate() {
+    const headers = ['รหัสพนักงาน', 'ชื่อ-นามสกุล', 'แผนก', 'ตำแหน่ง', 'ฝ่าย', 'CostCenter',
+      'เบอร์โทรแผนก', 'เบอร์มือถือ', 'อีเมล', 'เพศ', 'วันที่เริ่มงาน(YYYY-MM-DD)', 'บทบาท', 'รหัสผ่าน', 'สถานะ'];
+    const example = ['EMP101', 'สมชาย ใจดี', 'Production', 'ช่างเทคนิค', 'ฝ่ายผลิต', 'CC-01',
+      '035-123456', '0812345678', 'somchai@example.com', 'ชาย', '2026-01-15', 'พนักงาน', '1234', 'ใช้งาน'];
+    const csv = '\ufeff' + headers.join(',') + '\r\n' + example.map(csvEscape_).join(',') + '\r\n';
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'ตัวอย่างนำเข้าพนักงาน.csv';
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  }
+  function csvEscape_(v) {
+    const s = (v === null || v === undefined) ? '' : String(v);
+    return /[",\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s;
+  }
+
+  function handleCsvFileSelect(evt) {
+    const file = evt.target.files[0];
+    document.getElementById('csvImportError').innerText = '';
+    document.getElementById('csvImportResultWrap').innerHTML = '';
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = e => {
+      try {
+        parseCsvAndPreview(e.target.result);
+      } catch (err) {
+        document.getElementById('csvImportError').innerText = 'อ่านไฟล์ไม่สำเร็จ: ' + err.message;
+        document.getElementById('csvImportBtn').disabled = true;
+      }
+    };
+    reader.onerror = () => {
+      document.getElementById('csvImportError').innerText = 'อ่านไฟล์ไม่สำเร็จ กรุณาลองใหม่';
+    };
+    reader.readAsText(file, 'UTF-8');
+  }
+
+  /** parser CSV แบบง่าย รองรับ comma คั่นและข้อความที่ครอบด้วย "..." (รวมกรณีมี comma อยู่ในเครื่องหมายคำพูด) */
+  function parseCsvLines_(text) {
+    const rows = [];
+    let row = [], field = '', inQuotes = false;
+    // ตัด BOM ถ้ามี
+    if (text.charCodeAt(0) === 0xFEFF) text = text.slice(1);
+    for (let i = 0; i < text.length; i++) {
+      const c = text[i], next = text[i + 1];
+      if (inQuotes) {
+        if (c === '"' && next === '"') { field += '"'; i++; }
+        else if (c === '"') { inQuotes = false; }
+        else { field += c; }
+      } else {
+        if (c === '"') inQuotes = true;
+        else if (c === ',') { row.push(field); field = ''; }
+        else if (c === '\r') { /* ข้าม */ }
+        else if (c === '\n') { row.push(field); rows.push(row); row = []; field = ''; }
+        else field += c;
+      }
+    }
+    if (field.length || row.length) { row.push(field); rows.push(row); }
+    return rows.filter(r => r.length > 1 || (r.length === 1 && r[0].trim() !== ''));
+  }
+
+  function parseCsvAndPreview(text) {
+    const lines = parseCsvLines_(text);
+    const infoDiv = document.getElementById('csvParseInfo');
+    const previewDiv = document.getElementById('csvPreviewWrap');
+    const importBtn = document.getElementById('csvImportBtn');
+
+    if (lines.length < 2) {
+      infoDiv.innerHTML = '';
+      document.getElementById('csvImportError').innerText = 'ไฟล์นี้ไม่มีข้อมูล (ต้องมีอย่างน้อยหัวตาราง 1 แถว + ข้อมูล 1 แถว)';
+      importBtn.disabled = true;
+      return;
+    }
+
+    const rawHeaders = lines[0].map(h => h.trim());
+    const fieldKeys = rawHeaders.map(h => CSV_HEADER_MAP[h.trim().toLowerCase()] || null);
+    const unmapped = rawHeaders.filter((h, i) => !fieldKeys[i]);
+
+    CSV_IMPORT_ROWS = [];
+    CSV_IMPORT_LINE_ERRORS = [];
+
+    for (let i = 1; i < lines.length; i++) {
+      const cells = lines[i];
+      if (cells.every(c => String(c).trim() === '')) continue; // ข้ามบรรทัดว่าง
+      const obj = {};
+      fieldKeys.forEach((key, idx) => { if (key) obj[key] = (cells[idx] || '').trim(); });
+
+      if (obj.role) obj.role = CSV_ROLE_MAP[obj.role.trim().toLowerCase()] || CSV_ROLE_MAP[obj.role.trim()] || obj.role.trim();
+      if (obj.active !== undefined) {
+        const a = String(obj.active).trim().toLowerCase();
+        obj.active = !(a === 'false' || a === '0' || a === 'ระงับ' || a === 'inactive');
+      }
+
+      const lineNo = i + 1;
+      if (!obj.employeeId || !obj.name || !obj.department) {
+        CSV_IMPORT_LINE_ERRORS.push('บรรทัด ' + lineNo + ': ข้อมูลไม่ครบ (ต้องมีรหัสพนักงาน/ชื่อ/แผนก)');
+        continue;
+      }
+      CSV_IMPORT_ROWS.push(obj);
+    }
+
+    let info = `พบข้อมูล ${CSV_IMPORT_ROWS.length} รายการที่พร้อมนำเข้า`;
+    if (CSV_IMPORT_LINE_ERRORS.length) info += ` · ข้าม ${CSV_IMPORT_LINE_ERRORS.length} แถวเพราะข้อมูลไม่ครบ`;
+    if (unmapped.length) info += ` · ไม่รู้จักคอลัมน์: ${unmapped.join(', ')} (จะถูกข้าม)`;
+    infoDiv.innerHTML = info;
+
+    if (CSV_IMPORT_LINE_ERRORS.length) {
+      infoDiv.innerHTML += '<br>' + CSV_IMPORT_LINE_ERRORS.slice(0, 10).map(e => '⚠️ ' + e).join('<br>');
+    }
+
+    if (!CSV_IMPORT_ROWS.length) {
+      previewDiv.innerHTML = '';
+      importBtn.disabled = true;
+      return;
+    }
+
+    const previewRows = CSV_IMPORT_ROWS.slice(0, 5);
+    previewDiv.innerHTML = `<div class="admin-table-scroll"><table class="csv-preview-table">
+      <thead><tr><th>รหัสพนักงาน</th><th>ชื่อ</th><th>แผนก</th><th>ตำแหน่ง</th><th>บทบาท</th></tr></thead>
+      <tbody>${previewRows.map(r => `<tr>
+        <td>${r.employeeId}</td><td>${r.name}</td><td>${r.department}</td>
+        <td>${r.position || '-'}</td><td>${roleLabel(r.role || 'employee')}</td>
+      </tr>`).join('')}</tbody>
+    </table></div>${CSV_IMPORT_ROWS.length > 5 ? `<div class="lookup-hint" style="margin-top:6px;">...และอีก ${CSV_IMPORT_ROWS.length - 5} รายการ</div>` : ''}`;
+
+    importBtn.disabled = false;
+  }
+
+  function runCsvImport() {
+    if (!CSV_IMPORT_ROWS.length) return;
+    const btn = document.getElementById('csvImportBtn');
+    const errDiv = document.getElementById('csvImportError');
+    const resultWrap = document.getElementById('csvImportResultWrap');
+    errDiv.innerText = '';
+    resultWrap.innerHTML = '';
+    btn.disabled = true;
+    btn.innerText = 'กำลังนำเข้า...';
+
+    callApi('importUsersBulk', {
+      rows: CSV_IMPORT_ROWS,
+      overwriteExisting: document.getElementById('csvOverwriteExisting').checked
+    }).then(res => {
+      btn.disabled = false;
+      btn.innerText = 'นำเข้าข้อมูล';
+      if (!res.success) { errDiv.innerText = res.error; return; }
+
+      const s = res.summary;
+      resultWrap.innerHTML = `
+        <div class="csv-summary-row">
+          <span class="csv-summary-item">ทั้งหมด ${s.total}</span>
+          <span class="csv-summary-item" style="color:#1f8a4c;">เพิ่มใหม่ ${s.created}</span>
+          <span class="csv-summary-item" style="color:#1f5aa8;">อัปเดต ${s.updated}</span>
+          <span class="csv-summary-item" style="color:#a6690c;">ข้าม ${s.skipped}</span>
+          <span class="csv-summary-item" style="color:#c0392b;">ผิดพลาด ${s.errors}</span>
+        </div>
+        <div class="admin-table-scroll" style="max-height:260px; overflow-y:auto;">
+          ${res.results.map(r => `
+            <div class="csv-result-row">
+              <span class="csv-badge csv-badge-${r.status}">${
+                r.status === 'created' ? 'เพิ่มใหม่' : r.status === 'updated' ? 'อัปเดต' :
+                r.status === 'skipped' ? 'ข้าม' : 'ผิดพลาด'
+              }</span>
+              <span class="mono">${r.employeeId || '-'}</span>
+              <span>${r.name || ''}</span>
+              <span style="color:var(--muted, #7a8894); margin-left:auto; text-align:right;">${r.message}</span>
+            </div>
+          `).join('')}
+        </div>`;
+
+      if (s.created || s.updated) {
+        showToast(`นำเข้าสำเร็จ: เพิ่มใหม่ ${s.created} · อัปเดต ${s.updated} รายการ`, 'success');
+        loadAdminUsers();
+      }
+    }).catch(err => {
+      btn.disabled = false;
+      btn.innerText = 'นำเข้าข้อมูล';
+      errDiv.innerText = 'เกิดข้อผิดพลาด: ' + err.message;
+    });
   }
 
   // ---- Departments ----
