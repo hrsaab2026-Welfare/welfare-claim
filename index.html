@@ -485,6 +485,9 @@
   .flow-step.skipped .flow-act{ color:var(--ink-faint); background:var(--line-soft); font-weight:500; }
   .flow-note{ margin-top:12px; padding-top:10px; border-top:1px dashed var(--line); font-size:12.5px; color:var(--warning); }
 
+  .pdf-box{ border:1px solid #BFDCCB; background:var(--success-bg); color:var(--success); border-radius:var(--radius-s); padding:12px 14px; margin-bottom:14px; font-size:13.5px; }
+  .pdf-box a{ color:var(--success); font-weight:700; }
+
   .block-box{
     border:1px solid #EFC9C4; background:var(--danger-bg); color:var(--danger);
     border-radius:var(--radius-s); padding:12px 14px; margin-bottom:14px; font-size:13.5px;
@@ -699,6 +702,7 @@
 
           <div id="blockBox" class="block-box hidden"></div>
           <div id="submitWarning" class="warning-box hidden"></div>
+          <div id="pdfLinkBox" class="pdf-box hidden"></div>
           <div id="submitError" class="error-msg"></div>
           <button class="btn-primary" onclick="doSubmitClaim()" id="submitBtn" style="width:auto; padding-left:26px; padding-right:26px;">ส่งคำขอเบิก</button>
         </div>
@@ -1754,6 +1758,7 @@
     const errDiv = document.getElementById('submitError');
     const btn = document.getElementById('submitBtn');
     errDiv.innerText = '';
+    document.getElementById('pdfLinkBox').classList.add('hidden');
 
     // ตรวจครั้งสุดท้ายรวมเอกสารแนบ (server จะตรวจซ้ำอีกรอบอยู่ดี)
     btn.disabled = true;
@@ -1799,6 +1804,11 @@
             w.classList.remove('hidden');
           }
           showToast('ส่งคำขอเบิก ' + Number(res.amount).toLocaleString() + ' บาท เรียบร้อย · ' + res.claimId, 'success');
+          if (res.formPdfUrl) {
+            const pb = document.getElementById('pdfLinkBox');
+            pb.innerHTML = 'สร้างใบเบิกสวัสดิการ (PDF) เรียบร้อยแล้ว · <a href="' + res.formPdfUrl + '" target="_blank" rel="noopener">เปิดใบเบิก PDF</a> — พิมพ์เก็บไว้หรือแนบพร้อมเอกสารตัวจริงได้';
+            pb.classList.remove('hidden');
+          }
           resetClaimForm();
           loadLimitBox();
         });
@@ -1869,11 +1879,30 @@
           </div>
           <div class="claim-actions">
             <button class="btn-neutral outline" onclick="openTimelineModal('${c.ClaimID}')">${ICONS.list}ดูสถานะ</button>
+            ${c.FormPdfLink
+              ? `<a class="btn-neutral outline" href="${c.FormPdfLink}" target="_blank" rel="noopener" style="text-decoration:none;">${ICONS.paperclip}ใบเบิก PDF</a>`
+              : `<button class="btn-neutral outline" onclick="makeClaimPdf('${c.ClaimID}', this)">${ICONS.paperclip}สร้างใบเบิก PDF</button>`}
             ${c._canCancel ? `<button class="btn-neutral outline" onclick="cancelMyClaim('${c.ClaimID}')">${ICONS.x}ยกเลิกคำขอ</button>` : ''}
           </div>
         </div>
       `).join('');
     });
+  }
+
+  /** สร้างใบเบิก PDF ย้อนหลัง (ใบที่ยื่นก่อนมีระบบนี้) แล้วเปิดให้ทันที */
+  function makeClaimPdf(claimId, btn) {
+    const win = window.open('', '_blank');   // เปิดแท็บไว้ก่อนกัน popup blocker
+    btn.disabled = true;
+    callApi('getClaimFormPdf', { claimId }).then(res => {
+      btn.disabled = false;
+      if (res.success) {
+        if (win) win.location = res.url; else window.open(res.url, '_blank');
+        loadHistory();
+      } else {
+        if (win) win.close();
+        showToast(res.error || 'สร้าง PDF ไม่สำเร็จ', 'danger');
+      }
+    }).catch(err => { btn.disabled = false; if (win) win.close(); showToast(err.message, 'danger'); });
   }
 
   function cancelMyClaim(claimId) {
