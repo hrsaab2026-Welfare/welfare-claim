@@ -465,6 +465,16 @@
   /* ---------- Flow ขั้นตอนอนุมัติ (ใต้ฟอร์มยื่นคำขอ) ---------- */
   .flow-box{ border:1px solid var(--line); border-radius:var(--radius-s); background:var(--surface); padding:14px 16px; margin-bottom:16px; }
   .flow-title{ font-size:14px; font-weight:700; margin-bottom:2px; }
+  .flow-head{ display:flex; align-items:center; justify-content:space-between; gap:12px; width:100%; background:none; border:none; padding:0; cursor:pointer; text-align:left; color:inherit; font:inherit; }
+  .flow-head:focus-visible{ outline:2px solid var(--copper); outline-offset:4px; border-radius:var(--radius-s); }
+  .flow-head-text{ min-width:0; }
+  .flow-summary{ font-size:12.5px; color:var(--ink-soft); }
+  .flow-summary .flow-warn{ color:var(--danger); font-weight:600; }
+  .flow-chev{ flex-shrink:0; display:flex; align-items:center; gap:6px; font-size:12.5px; font-weight:600; color:var(--steel); }
+  .flow-chev svg{ transition:transform .2s ease; }
+  .flow-box.open .flow-chev svg{ transform:rotate(180deg); }
+  .flow-content{ display:none; margin-top:12px; padding-top:12px; border-top:1px solid var(--line-soft); }
+  .flow-box.open .flow-content{ display:block; }
   .flow-sub{ font-size:12.5px; color:var(--ink-soft); margin-bottom:12px; }
   .flow-list{ list-style:none; margin:0; padding:0; }
   .flow-step{ position:relative; display:flex; gap:12px; padding-bottom:14px; }
@@ -1629,15 +1639,30 @@
       .catch(() => { FLOW_KEY = ''; });
   }
 
+  /** จำสถานะพับ/กางไว้ในเบราว์เซอร์ (ค่าเริ่มต้น = พับ เพื่อไม่ให้ฟอร์มรก) */
+  function flowIsOpen() { try { return localStorage.getItem('welfare_flow_open') === '1'; } catch (e) { return false; } }
+  function toggleFlowBox() {
+    const box = document.getElementById('flowBox');
+    const open = box.classList.toggle('open');
+    box.querySelector('.flow-head').setAttribute('aria-expanded', open ? 'true' : 'false');
+    try { localStorage.setItem('welfare_flow_open', open ? '1' : '0'); } catch (e) {}
+  }
+
   function renderApprovalFlow(res) {
     const box = document.getElementById('flowBox');
     const steps = res.steps || [];
+    const chevron = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>';
+
     if (!steps.length) {
+      box.classList.remove('open');
       box.innerHTML = '<div class="flow-title">ขั้นตอนการอนุมัติ</div>' +
         '<div class="flow-sub" style="margin-bottom:0">รายการนี้ไม่มีขั้นตอนอนุมัติ ระบบจะอนุมัติให้อัตโนมัติ</div>';
       box.classList.remove('hidden');
       return;
     }
+
+    const active = steps.filter(s => s.state !== 'skipped');
+    const missing = steps.filter(s => s.state === 'nobody').length;
     const lastIdx = steps.map(s => s.state !== 'skipped').lastIndexOf(true);
     const items = steps.map((s, i) => {
       const cls = s.state === 'skipped' ? 'skipped' : s.state === 'nobody' ? 'nobody' : (i === lastIdx ? 'last' : '');
@@ -1654,9 +1679,26 @@
     }).join('');
     const note = res.needOriginalDocs
       ? '<div class="flow-note">ต้องส่งเอกสารตัวจริงให้ฝ่ายทรัพยากรบุคคลด้วย ใบเบิกจึงจะผ่านขั้นตรวจรับเอกสาร</div>' : '';
-    box.innerHTML = '<div class="flow-title">ขั้นตอนการอนุมัติ</div>' +
-      '<div class="flow-sub">หลังกดส่งคำขอ ใบเบิกจะเดินตามลำดับนี้ ทีละขั้น</div>' +
-      `<ol class="flow-list">${items}</ol>${note}`;
+
+    // สรุปบรรทัดเดียว เห็นได้แม้พับอยู่
+    const lastName = lastIdx >= 0 ? steps[lastIdx].name : '';
+    const summary = 'ผ่านการอนุมัติ ' + active.length + ' ขั้น · ขั้นสุดท้าย: ' + flowEsc(lastName) +
+      (missing ? ' <span class="flow-warn">· มี ' + missing + ' ขั้นยังไม่มีผู้อนุมัติ</span>' : '');
+
+    const open = flowIsOpen();
+    box.classList.toggle('open', open);
+    box.innerHTML =
+      `<button type="button" class="flow-head" onclick="toggleFlowBox()" aria-expanded="${open}" aria-controls="flowContent">
+         <span class="flow-head-text">
+           <span class="flow-title" style="display:block;">ขั้นตอนการอนุมัติ</span>
+           <span class="flow-summary">${summary}</span>
+         </span>
+         <span class="flow-chev">${chevron}</span>
+       </button>
+       <div class="flow-content" id="flowContent">
+         <div class="flow-sub">หลังกดส่งคำขอ ใบเบิกจะเดินตามลำดับนี้ ทีละขั้น</div>
+         <ol class="flow-list">${items}</ol>${note}
+       </div>`;
     box.classList.remove('hidden');
   }
 
