@@ -562,6 +562,38 @@
   .form-grid .full{ grid-column:1 / -1; }
   @media (max-width:700px){ .form-grid{ grid-template-columns:1fr; } }
 
+  /* ---------- dashboard ---------- */
+  .dash-kpi-grid{ display:grid; grid-template-columns:repeat(auto-fit, minmax(150px,1fr)); gap:12px; margin-bottom:22px; }
+  .dash-kpi{ background:var(--surface); border:1px solid var(--line); border-radius:var(--radius-m); padding:14px 16px; }
+  .dash-kpi-label{ font-size:12px; color:var(--ink-faint); margin-bottom:6px; }
+  .dash-kpi-value{ font-size:22px; font-weight:700; color:var(--ink); line-height:1.2; }
+  .dash-kpi-sub{ font-size:12px; color:var(--ink-soft); margin-top:3px; }
+  .dash-kpi.warn .dash-kpi-value{ color:#7A5610; }
+  .dash-kpi.danger .dash-kpi-value{ color:var(--danger); }
+  .dash-kpi.success .dash-kpi-value{ color:var(--success); }
+  .dash-aging-row{ display:flex; gap:10px; flex-wrap:wrap; margin-bottom:22px; }
+  .dash-aging-pill{ display:flex; align-items:center; gap:7px; padding:8px 14px; border-radius:999px; font-size:13px; font-weight:600; }
+  .dash-aging-pill svg{ flex-shrink:0; }
+  .dash-aging-pill.fresh{ background:var(--success-bg); color:var(--success); }
+  .dash-aging-pill.warn{ background:var(--warning-bg); color:#7A5610; }
+  .dash-aging-pill.alert{ background:var(--danger-bg); color:var(--danger); }
+  .dash-section-title{ font-size:14px; font-weight:700; margin:24px 0 12px; color:var(--ink); }
+  .dash-bar-row{ display:flex; align-items:center; gap:10px; margin-bottom:9px; font-size:13px; }
+  .dash-bar-label{ width:130px; flex-shrink:0; color:var(--ink-soft); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .dash-bar-track{ flex:1; height:9px; background:var(--line-soft); border-radius:5px; overflow:hidden; }
+  .dash-bar-fill{ display:block; height:100%; background:var(--steel); border-radius:5px; }
+  .dash-bar-value{ width:104px; text-align:right; flex-shrink:0; font-weight:600; font-variant-numeric:tabular-nums; }
+  .dash-days-badge{ display:inline-block; padding:2px 9px; border-radius:999px; font-size:12px; font-weight:700; white-space:nowrap; }
+  .dash-days-badge.warn{ background:var(--warning-bg); color:#7A5610; }
+  .dash-days-badge.alert{ background:var(--danger-bg); color:var(--danger); }
+  .dash-filter-row{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
+  .dash-filter-row input[type=date]{ max-width:152px; }
+  .dash-updated{ margin-top:18px; font-size:12px; color:var(--ink-faint); }
+  @media (max-width:700px){
+    .dash-bar-label{ width:84px; }
+    .dash-bar-value{ width:78px; }
+  }
+
   .lookup-row{ display:flex; gap:8px; }
   .lookup-row input{ flex:1; }
   .lookup-row button{ flex-shrink:0; }
@@ -964,6 +996,50 @@
                 <button class="btn-secondary" onclick="loadReferrals()">ค้นหา</button>
               </div>
               <div id="referralList"><div class="spinner"><span class="spinner-ring"></span>กำลังโหลด...</div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB: แดชบอร์ด (HR/บัญชี/ผจก./แอดมิน) -->
+        <div id="tabDashboard" class="tab-content hidden">
+          <div class="admin-subtabs">
+            <button class="admin-subtab-btn active" id="dashSubBtn-overview" onclick="showDashSubTab('overview')">ภาพรวม</button>
+            <button class="admin-subtab-btn" id="dashSubBtn-search" onclick="showDashSubTab('search')">ค้นหา / Export</button>
+          </div>
+
+          <div id="dashSubOverview" class="admin-subtab-content">
+            <div class="card">
+              <div class="card-head-row">
+                <div class="card-head">${ICONS.chart}<h3>ภาพรวมทั้งระบบ</h3></div>
+                <div class="dash-filter-row">
+                  <input type="date" id="dashFrom" title="จากวันที่">
+                  <input type="date" id="dashTo" title="ถึงวันที่">
+                  <button class="btn-secondary btn-inline" onclick="loadDashboardOverview()">กรองวันที่</button>
+                </div>
+              </div>
+              <div id="dashOverviewBody"><div class="spinner"><span class="spinner-ring"></span>กำลังโหลด...</div></div>
+            </div>
+          </div>
+
+          <div id="dashSubSearch" class="admin-subtab-content hidden">
+            <div class="card">
+              <div class="card-head">${ICONS.list}<h3>ค้นหารายการคำขอเบิก & Export</h3></div>
+              <div class="form-grid" style="margin-bottom:6px;">
+                <div class="field"><label>จากวันที่</label><input type="date" id="dashSearchFrom"></div>
+                <div class="field"><label>ถึงวันที่</label><input type="date" id="dashSearchTo"></div>
+                <div class="field"><label>สถานะ</label><select id="dashSearchStatus"><option value="">ทั้งหมด</option></select></div>
+                <div class="field"><label>ประเภทสวัสดิการ</label><select id="dashSearchCategory"><option value="">ทั้งหมด</option></select></div>
+                <div class="field full">
+                  <label>ค้นหา (ชื่อ / รหัสพนักงาน / รายละเอียด / เลขที่คำขอ)</label>
+                  <input type="text" id="dashSearchKeyword" placeholder="พิมพ์แล้วกด Enter หรือกดค้นหา" onkeypress="if(event.key==='Enter')runDashSearch()">
+                </div>
+              </div>
+              <div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:18px;">
+                <button class="btn-primary btn-inline" onclick="runDashSearch()">${ICONS.list}ค้นหา</button>
+                <button class="btn-secondary btn-inline" onclick="exportDashClaims()">${ICONS.download}Export คำขอเบิก (CSV)</button>
+                <button class="btn-secondary btn-inline" onclick="exportDashReferrals()">${ICONS.download}Export ใบส่งตัว (CSV)</button>
+              </div>
+              <div id="dashSearchResultWrap"></div>
             </div>
           </div>
         </div>
@@ -1372,6 +1448,8 @@
     hospital: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21V8.5L12 3l8 5.5V21"/><path d="M9 21v-6h6v6"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="10" y1="10" x2="14" y2="10"/></svg>',
     printer: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 3 18 3 18 9"/><rect x="4" y="9" width="16" height="8" rx="1.5"/><rect x="7" y="17" width="10" height="4"/></svg>',
     trash: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>',
+    chart: '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="20" x2="20" y2="20"/><rect x="6" y="12" width="3.2" height="8"/><rect x="12" y="7" width="3.2" height="13"/><rect x="18" y="4" width="3.2" height="16"/></svg>',
+    download: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>',
     checkCircle: '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><polyline points="8 12.3 10.8 15 16 9.5"/></svg>',
     alertCircle: '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><line x1="12" y1="7.5" x2="12" y2="13"/><circle cx="12" cy="16.3" r="0.9" fill="currentColor" stroke="none"/></svg>',
     infoCircle: '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><line x1="12" y1="11" x2="12" y2="16.5"/><circle cx="12" cy="7.7" r="0.9" fill="currentColor" stroke="none"/></svg>'
@@ -1565,11 +1643,14 @@
     history: { title: 'ประวัติการเบิกของฉัน', sub: 'ตรวจสอบสถานะคำขอที่เคยยื่นทั้งหมด' },
     approve: { title: 'รายการรออนุมัติ', sub: 'ตรวจสอบและอนุมัติคำขอจากพนักงาน' },
     referral: { title: 'ใบส่งตัวโรงพยาบาล', sub: 'ขอใบส่งตัว หรือติดตามคำขอเข้ารับบริการที่โรงพยาบาล' },
+    dashboard: { title: 'แดชบอร์ด', sub: 'ภาพรวมคำขอเบิกสวัสดิการและใบส่งตัวทั้งบริษัท สำหรับ HR / บัญชี / ผู้จัดการ' },
     admin: { title: 'จัดการระบบ', sub: 'เพิ่ม แก้ไข หรือลบข้อมูลพนักงานและแผนก · สำหรับแอดมิน' }
   };
 
   /** บทบาทที่ออกใบส่งตัวได้เอง (เห็นคิวคำขอ + ออกใบโดยตรง) */
   const REFERRAL_ISSUER_ROLES = ['hr', 'hr_manager', 'admin'];
+  /** บทบาทที่เห็นเมนูแดชบอร์ด — ตรงกับ REPORT_VIEW_ROLES ฝั่ง Reports.gs */
+  const DASHBOARD_ROLES = ['hr', 'hr_manager', 'accounting', 'manager', 'admin'];
 
   // ---------- APP INIT ----------
   function initApp() {
@@ -1615,6 +1696,9 @@
     }
     // ทุกคนเห็นเมนูใบส่งตัว — พนักงานทั่วไปขอออนไลน์ได้, ฝ่ายบุคคลเห็นคิว+ออกใบเพิ่ม
     html += `<button class="nav-item" id="tabBtn-referral" onclick="showTab('referral')" title="ใบส่งตัว">${ICONS.hospital}<span>ใบส่งตัว</span><span class="nav-badge hidden" id="navBadge-referral">0</span></button>`;
+    if (DASHBOARD_ROLES.indexOf(CURRENT_USER.role) !== -1) {
+      html += `<button class="nav-item" id="tabBtn-dashboard" onclick="showTab('dashboard')" title="แดชบอร์ด">${ICONS.chart}<span>แดชบอร์ด</span></button>`;
+    }
     if (CURRENT_USER.role === 'admin') {
       html += `<button class="nav-item" id="tabBtn-admin" onclick="showTab('admin')" title="จัดการระบบ">${ICONS.settings}<span>จัดการระบบ</span></button>`;
     }
@@ -1643,7 +1727,7 @@
   const REQUEST_STATUS_PENDING = 'รอ HR ออกใบ';
 
   function showTab(name) {
-    ['submit','history','approve','referral','admin'].forEach(t => {
+    ['submit','history','approve','referral','dashboard','admin'].forEach(t => {
       const content = document.getElementById('tab' + capitalize(t));
       const btn = document.getElementById('tabBtn-' + t);
       if (content) content.classList.toggle('hidden', t !== name);
@@ -1663,6 +1747,7 @@
         showRefSubTab(isIssuer ? 'queue' : 'request');
       });
     }
+    if (name === 'dashboard') showDashSubTab('overview');
     if (name === 'admin') showAdminSubTab('users');
     closeSidebar();
   }
@@ -2336,6 +2421,217 @@
     if (name === 'users') loadAdminUsers();
     if (name === 'depts') loadAdminDepts();
   }
+
+  // ==================== DASHBOARD ====================
+  const DASH_AGING_WARN_DAYS = 3;
+  const DASH_AGING_ALERT_DAYS = 7;
+  let DASH_STATUS_OPTIONS = [];
+  let DASH_CATEGORY_OPTIONS = [];
+
+  function showDashSubTab(name) {
+    ['overview', 'search'].forEach(t => {
+      document.getElementById('dashSub' + capitalize(t)).classList.toggle('hidden', t !== name);
+      document.getElementById('dashSubBtn-' + t).classList.toggle('active', t === name);
+    });
+    if (name === 'overview') loadDashboardOverview();
+    if (name === 'search') loadDashSearchOptions();
+  }
+
+  function loadDashboardOverview() {
+    const body = document.getElementById('dashOverviewBody');
+    body.innerHTML = '<div class="spinner"><span class="spinner-ring"></span>กำลังโหลด...</div>';
+    const filters = {};
+    const from = document.getElementById('dashFrom').value;
+    const to = document.getElementById('dashTo').value;
+    if (from) filters.from = from;
+    if (to) filters.to = to;
+    callApi('getDashboard', { filters }).then(res => {
+      if (!res.success) { body.innerHTML = `<div class="error-msg">${res.error}</div>`; return; }
+      DASH_STATUS_OPTIONS = res.statusOptions || [];
+      DASH_CATEGORY_OPTIONS = res.categoryOptions || [];
+      body.innerHTML = renderDashboardOverview_(res);
+    }).catch(err => { body.innerHTML = `<div class="error-msg">${err.message}</div>`; });
+  }
+
+  function renderDashboardOverview_(d) {
+    const s = d.summary;
+    const money = n => Number(n || 0).toLocaleString();
+    let html = `<div class="dash-kpi-grid">
+      <div class="dash-kpi warn">
+        <div class="dash-kpi-label">รอดำเนินการ</div>
+        <div class="dash-kpi-value">${s.pendingCount}</div>
+        <div class="dash-kpi-sub">${money(s.pendingAmount)} บาท</div>
+      </div>
+      <div class="dash-kpi success">
+        <div class="dash-kpi-label">อนุมัติแล้ว</div>
+        <div class="dash-kpi-value">${s.approvedCount}</div>
+        <div class="dash-kpi-sub">${money(s.approvedAmount)} บาท</div>
+      </div>
+      <div class="dash-kpi">
+        <div class="dash-kpi-label">อนุมัติเดือนนี้</div>
+        <div class="dash-kpi-value">${s.approvedThisMonthCount}</div>
+        <div class="dash-kpi-sub">${money(s.approvedThisMonthAmount)} บาท</div>
+      </div>
+      <div class="dash-kpi danger">
+        <div class="dash-kpi-label">ไม่อนุมัติ</div>
+        <div class="dash-kpi-value">${s.rejectedCount}</div>
+      </div>
+      <div class="dash-kpi">
+        <div class="dash-kpi-label">เฉลี่ยวันอนุมัติ</div>
+        <div class="dash-kpi-value">${s.avgApprovalDays !== null && s.avgApprovalDays !== undefined ? s.avgApprovalDays : '-'}</div>
+        <div class="dash-kpi-sub">วัน / ใบ</div>
+      </div>
+      <div class="dash-kpi">
+        <div class="dash-kpi-label">คำขอทั้งหมด</div>
+        <div class="dash-kpi-value">${s.totalClaims}</div>
+      </div>
+    </div>`;
+
+    html += `<div class="dash-aging-row">
+      <span class="dash-aging-pill fresh">${ICONS.check} ปกติ ${d.aging.fresh}</span>
+      <span class="dash-aging-pill warn">${ICONS.warning} เริ่มช้า (${DASH_AGING_WARN_DAYS}+ วัน) ${d.aging.warn}</span>
+      <span class="dash-aging-pill alert">${ICONS.warning} วิกฤต (${DASH_AGING_ALERT_DAYS}+ วัน) ${d.aging.alert}</span>
+    </div>`;
+
+    if (d.stuckClaims && d.stuckClaims.length) {
+      html += `<div class="dash-section-title">ใบที่ค้างอนุมัตินาน</div>
+      <div class="admin-table-scroll"><table class="admin-table">
+        <thead><tr><th>เลขที่คำขอ</th><th>ชื่อ</th><th>แผนก</th><th>จำนวนเงิน</th><th>ค้างมา</th><th>รออยู่ที่</th><th>วันที่ยื่น</th></tr></thead>
+        <tbody>${d.stuckClaims.map(c => `
+          <tr>
+            <td class="mono">${c.claimId}</td>
+            <td>${c.name}</td>
+            <td>${c.department}</td>
+            <td>${money(c.amount)}</td>
+            <td><span class="dash-days-badge ${c.days >= DASH_AGING_ALERT_DAYS ? 'alert' : 'warn'}">${c.days} วัน</span></td>
+            <td>${c.waitingOn || '-'}</td>
+            <td>${c.submittedAt}</td>
+          </tr>`).join('')}</tbody>
+      </table></div>`;
+    } else {
+      html += `<div class="empty-state" style="margin-top:16px;">${ICONS.tray}<p>ไม่มีรายการค้างอนุมัตินาน ทุกอย่างไหลลื่นดี</p></div>`;
+    }
+
+    html += renderDashBarSection_('แยกตามแผนก (ยอดอนุมัติแล้ว)', d.byDepartment);
+    html += renderDashBarSection_('แยกตามประเภทสวัสดิการ (ยอดอนุมัติแล้ว)', d.byCategory);
+
+    if (d.referral) {
+      html += `<div class="dash-section-title">ใบส่งตัวโรงพยาบาล</div>
+      <div class="dash-kpi-grid">
+        <div class="dash-kpi"><div class="dash-kpi-label">ใบส่งตัวที่ยังเปิดอยู่</div><div class="dash-kpi-value">${d.referral.issuedOpen}</div></div>
+        <div class="dash-kpi"><div class="dash-kpi-label">ปิดงานเดือนนี้</div><div class="dash-kpi-value">${d.referral.closedThisMonth}</div></div>
+        <div class="dash-kpi"><div class="dash-kpi-label">ยอดใบแจ้งหนี้สะสม</div><div class="dash-kpi-value" style="font-size:17px;">${money(d.referral.invoiceTotal)} บาท</div></div>
+        <div class="dash-kpi warn"><div class="dash-kpi-label">คำขอออกใบค้าง</div><div class="dash-kpi-value">${d.referral.pendingRequests}</div></div>
+      </div>`;
+    }
+
+    html += `<div class="dash-updated">ข้อมูล ณ ${d.generatedAt}</div>`;
+    return html;
+  }
+
+  function renderDashBarSection_(title, rows) {
+    if (!rows || !rows.length) return '';
+    const max = Math.max.apply(null, rows.map(r => r.amount).concat([1]));
+    return `<div class="dash-section-title">${title}</div>
+      <div class="dash-bars">${rows.map(r => `
+        <div class="dash-bar-row">
+          <span class="dash-bar-label" title="${r.name}">${r.name}</span>
+          <span class="dash-bar-track"><span class="dash-bar-fill" style="width:${Math.max(2, Math.round(r.amount / max * 100))}%"></span></span>
+          <span class="dash-bar-value">${Number(r.amount).toLocaleString()} บ.</span>
+        </div>`).join('')}</div>`;
+  }
+
+  function loadDashSearchOptions() {
+    const statusSel = document.getElementById('dashSearchStatus');
+    const catSel = document.getElementById('dashSearchCategory');
+    if (!DASH_STATUS_OPTIONS.length) {
+      // ยังไม่เคยเปิดแท็บภาพรวมมาก่อน — ดึง dashboard เบาๆ ครั้งเดียวเพื่อเอาตัวเลือกมาใช้
+      callApi('getDashboard', { filters: {} }).then(res => {
+        if (!res.success) return;
+        DASH_STATUS_OPTIONS = res.statusOptions || [];
+        DASH_CATEGORY_OPTIONS = res.categoryOptions || [];
+        fillDashSearchOptions_();
+      });
+      return;
+    }
+    fillDashSearchOptions_();
+  }
+  function fillDashSearchOptions_() {
+    const statusSel = document.getElementById('dashSearchStatus');
+    const catSel = document.getElementById('dashSearchCategory');
+    if (statusSel.options.length <= 1) {
+      statusSel.innerHTML = '<option value="">ทั้งหมด</option>' +
+        DASH_STATUS_OPTIONS.map(s => `<option value="${s}">${s}</option>`).join('');
+    }
+    if (catSel.options.length <= 1) {
+      catSel.innerHTML = '<option value="">ทั้งหมด</option>' +
+        DASH_CATEGORY_OPTIONS.map(c => `<option value="${c.id}">${c.label}</option>`).join('');
+    }
+  }
+
+  function collectDashFilters_() {
+    const filters = {};
+    const from = document.getElementById('dashSearchFrom').value;
+    const to = document.getElementById('dashSearchTo').value;
+    const status = document.getElementById('dashSearchStatus').value;
+    const categoryId = document.getElementById('dashSearchCategory').value;
+    const keyword = document.getElementById('dashSearchKeyword').value.trim();
+    if (from) filters.from = from;
+    if (to) filters.to = to;
+    if (status) filters.status = status;
+    if (categoryId) filters.categoryId = categoryId;
+    if (keyword) filters.keyword = keyword;
+    return filters;
+  }
+
+  function runDashSearch() {
+    const wrap = document.getElementById('dashSearchResultWrap');
+    wrap.innerHTML = '<div class="spinner"><span class="spinner-ring"></span>กำลังค้นหา...</div>';
+    callApi('searchClaims', { filters: collectDashFilters_() }).then(res => {
+      if (!res.success) { wrap.innerHTML = `<div class="error-msg">${res.error}</div>`; return; }
+      if (!res.claims.length) { wrap.innerHTML = `<div class="empty-state">${ICONS.tray}<p>ไม่พบรายการที่ตรงกับเงื่อนไข</p></div>`; return; }
+      wrap.innerHTML = `<div class="admin-table-scroll"><table class="admin-table">
+        <thead><tr><th>เลขที่คำขอ</th><th>วันที่ยื่น</th><th>ชื่อ</th><th>แผนก</th><th>ประเภท</th><th>จำนวนเงิน</th><th>สถานะ</th><th>ขั้นปัจจุบัน</th></tr></thead>
+        <tbody>${res.claims.map(c => `
+          <tr>
+            <td class="mono">${c.claimId}</td>
+            <td>${c.submittedAt}</td>
+            <td>${c.name}</td>
+            <td>${c.department}</td>
+            <td>${c.category}</td>
+            <td>${Number(c.amount).toLocaleString()}</td>
+            <td>${statusBadge(c.status)}</td>
+            <td>${c.currentStep || '-'}${c.waitingDays !== '' ? ' (' + c.waitingDays + ' วัน)' : ''}</td>
+          </tr>`).join('')}</tbody>
+      </table></div>
+      <div class="dash-updated">พบ ${res.count} รายการ (แสดงสูงสุด 500 รายการล่าสุด — ใช้ Export CSV ถ้าต้องการทั้งหมด)</div>`;
+    }).catch(err => { wrap.innerHTML = `<div class="error-msg">${err.message}</div>`; });
+  }
+
+  function exportDashClaims() {
+    showToast('กำลังเตรียมไฟล์ CSV...', '');
+    callApi('exportClaims', { filters: collectDashFilters_() }).then(res => {
+      if (!res.success) { showToast(res.error, 'danger'); return; }
+      downloadCsvString_(res.csv, res.filename);
+      showToast(`Export คำขอเบิกแล้ว ${res.count} รายการ`, 'success');
+    });
+  }
+  function exportDashReferrals() {
+    showToast('กำลังเตรียมไฟล์ CSV...', '');
+    callApi('exportReferrals', { filters: collectDashFilters_() }).then(res => {
+      if (!res.success) { showToast(res.error, 'danger'); return; }
+      downloadCsvString_(res.csv, res.filename);
+      showToast(`Export ใบส่งตัวแล้ว ${res.count} รายการ`, 'success');
+    });
+  }
+  function downloadCsvString_(csv, filename) {
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = filename || 'export.csv';
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  }
+
 
   // ---- Users ----
   function loadAdminUsers() {
