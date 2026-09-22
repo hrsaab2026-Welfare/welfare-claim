@@ -646,7 +646,7 @@
           </button>
         </div>
       </div>
-      <button class="btn-primary" onclick="doLogin()">เข้าสู่ระบบ</button>
+      <button class="btn-primary" id="loginBtn" onclick="doLogin()">เข้าสู่ระบบ</button>
       <div id="loginError" class="error-msg"></div>
     </div>
   </div>
@@ -1529,9 +1529,15 @@
       document.getElementById('loginError').innerText = 'กรุณากรอกชื่อผู้ใช้งานและรหัสผ่าน';
       return;
     }
+    const btn = document.getElementById('loginBtn');
+    btn.disabled = true;
+    btn.innerText = 'กำลังเข้าสู่ระบบ...';
     callApi('login', { employeeId: id, pin: pin })
-      .then(onLoginResult)
-      .catch(err => document.getElementById('loginError').innerText = 'เกิดข้อผิดพลาด: ' + err.message);
+      .then(res => { btn.disabled = false; btn.innerText = 'เข้าสู่ระบบ'; onLoginResult(res); })
+      .catch(err => {
+        btn.disabled = false; btn.innerText = 'เข้าสู่ระบบ';
+        document.getElementById('loginError').innerText = 'เกิดข้อผิดพลาด: ' + err.message;
+      });
   }
 
   function onLoginResult(result) {
@@ -1576,11 +1582,19 @@
     document.getElementById('headerAvatar').innerText = CURRENT_USER.name.trim().charAt(0).toUpperCase();
 
     buildTabs();
-    loadCategories();
-    loadLimitBox();
+    // ใช้ข้อมูลที่แนบมากับผลลัพธ์ login ไปเลย (rules / medicalUsage / จำนวนค้างอนุมัติ)
+    // แทนการยิง API แยกอีก 3-4 รอบตอนเปิดแอป — ถ้า backend เวอร์ชันเก่ายังไม่แนบมาให้ ก็ fallback
+    // ไปยิงแยกเหมือนเดิมอัตโนมัติ ไม่มีอะไรพัง
+    loadCategories(CURRENT_USER.rules);
+    loadLimitBox(CURRENT_USER.medicalUsage);
     restoreSidebarCollapseState();
     showTab('submit');
-    refreshNavBadges();
+    if (CURRENT_USER.pendingApprovalsCount !== undefined || CURRENT_USER.referralPendingCount !== undefined) {
+      setNavBadge('approve', CURRENT_USER.pendingApprovalsCount || 0);
+      setNavBadge('referral', CURRENT_USER.referralPendingCount || 0);
+    } else {
+      refreshNavBadges();
+    }
   }
 
   function roleLabel(role) {
@@ -1681,15 +1695,19 @@
   let ELIG = null;             // ผลตรวจสิทธิ์ล่าสุดจาก server
   let DOC_FILES = {};          // { docId: [{base64Data, mimeType, filename}] }
 
-  function loadCategories() {
+  function loadCategories(preloaded) {
+    if (preloaded && preloaded.success) { applyRules_(preloaded); return; }
     callApi('getWelfareRules', {}).then(res => {
       if (!res.success) { showToast('โหลดกฎสวัสดิการไม่สำเร็จ: ' + res.error, 'danger'); return; }
-      RULES = res;
-      CATEGORIES = res.categories;
-      const sel = document.getElementById('categorySelect');
-      sel.innerHTML = res.categories.map(c => `<option value="${c.id}">${c.label}</option>`).join('');
-      onCategoryChange();
+      applyRules_(res);
     });
+  }
+  function applyRules_(res) {
+    RULES = res;
+    CATEGORIES = res.categories;
+    const sel = document.getElementById('categorySelect');
+    sel.innerHTML = res.categories.map(c => `<option value="${c.id}">${c.label}</option>`).join('');
+    onCategoryChange();
   }
 
   function onCategoryChange() {
@@ -1938,21 +1956,23 @@
     });
   }
 
-  function loadLimitBox() {
-    callApi('getYearlyMedicalUsage', { employeeId: CURRENT_USER.employeeId }).then(usage => {
-      const pct = usage.limit > 0 ? Math.min(100, Math.round((usage.used / usage.limit) * 100)) : 0;
-      const over = usage.used > usage.limit;
-      document.getElementById('limitBox').innerHTML = `
-        <div class="limit-head">${ICONS.pulse}<span>วงเงินค่ารักษาพยาบาลปีนี้</span></div>
-        <div class="limit-figures">
-          <span class="limit-used">${usage.used.toLocaleString()}</span>
-          <span class="limit-sep">/</span>
-          <span class="limit-total">${usage.limit.toLocaleString()} บาท</span>
-        </div>
-        <div class="limit-track"><div class="limit-fill${over ? ' over' : ''}" style="width:${pct}%"></div></div>
-        <div class="limit-remaining">คงเหลือ ${usage.remaining.toLocaleString()} บาท</div>
-      `;
-    });
+  function loadLimitBox(preloaded) {
+    if (preloaded) { renderLimitBox_(preloaded); return; }
+    callApi('getYearlyMedicalUsage', { employeeId: CURRENT_USER.employeeId }).then(renderLimitBox_);
+  }
+  function renderLimitBox_(usage) {
+    const pct = usage.limit > 0 ? Math.min(100, Math.round((usage.used / usage.limit) * 100)) : 0;
+    const over = usage.used > usage.limit;
+    document.getElementById('limitBox').innerHTML = `
+      <div class="limit-head">${ICONS.pulse}<span>วงเงินค่ารักษาพยาบาลปีนี้</span></div>
+      <div class="limit-figures">
+        <span class="limit-used">${usage.used.toLocaleString()}</span>
+        <span class="limit-sep">/</span>
+        <span class="limit-total">${usage.limit.toLocaleString()} บาท</span>
+      </div>
+      <div class="limit-track"><div class="limit-fill${over ? ' over' : ''}" style="width:${pct}%"></div></div>
+      <div class="limit-remaining">คงเหลือ ${usage.remaining.toLocaleString()} บาท</div>
+    `;
   }
 
   // ---------- SUBMIT CLAIM ----------
