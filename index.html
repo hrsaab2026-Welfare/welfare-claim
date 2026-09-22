@@ -1010,7 +1010,7 @@
           <div id="dashSubOverview" class="admin-subtab-content">
             <div class="card">
               <div class="card-head-row">
-                <div class="card-head">${ICONS.chart}<h3>ภาพรวมทั้งระบบ</h3></div>
+                <div class="card-head"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="20" x2="20" y2="20"/><rect x="6" y="12" width="3.2" height="8"/><rect x="12" y="7" width="3.2" height="13"/><rect x="18" y="4" width="3.2" height="16"/></svg><h3>ภาพรวมทั้งระบบ</h3></div>
                 <div class="dash-filter-row">
                   <input type="date" id="dashFrom" title="จากวันที่">
                   <input type="date" id="dashTo" title="ถึงวันที่">
@@ -1023,7 +1023,7 @@
 
           <div id="dashSubSearch" class="admin-subtab-content hidden">
             <div class="card">
-              <div class="card-head">${ICONS.list}<h3>ค้นหารายการคำขอเบิก & Export</h3></div>
+              <div class="card-head"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="4.5" cy="6" r="1"/><line x1="8.5" y1="6" x2="20" y2="6"/><circle cx="4.5" cy="12" r="1"/><line x1="8.5" y1="12" x2="20" y2="12"/><circle cx="4.5" cy="18" r="1"/><line x1="8.5" y1="18" x2="20" y2="18"/></svg><h3>ค้นหารายการคำขอเบิก &amp; Export</h3></div>
               <div class="form-grid" style="margin-bottom:6px;">
                 <div class="field"><label>จากวันที่</label><input type="date" id="dashSearchFrom"></div>
                 <div class="field"><label>ถึงวันที่</label><input type="date" id="dashSearchTo"></div>
@@ -1035,9 +1035,9 @@
                 </div>
               </div>
               <div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:18px;">
-                <button class="btn-primary btn-inline" onclick="runDashSearch()">${ICONS.list}ค้นหา</button>
-                <button class="btn-secondary btn-inline" onclick="exportDashClaims()">${ICONS.download}Export คำขอเบิก (CSV)</button>
-                <button class="btn-secondary btn-inline" onclick="exportDashReferrals()">${ICONS.download}Export ใบส่งตัว (CSV)</button>
+                <button class="btn-primary btn-inline" onclick="runDashSearch()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="4.5" cy="6" r="1"/><line x1="8.5" y1="6" x2="20" y2="6"/><circle cx="4.5" cy="12" r="1"/><line x1="8.5" y1="12" x2="20" y2="12"/><circle cx="4.5" cy="18" r="1"/><line x1="8.5" y1="18" x2="20" y2="18"/></svg>ค้นหา</button>
+                <button class="btn-secondary btn-inline" onclick="exportDashClaims()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Export คำขอเบิก (CSV)</button>
+                <button class="btn-secondary btn-inline" onclick="exportDashReferrals()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Export ใบส่งตัว (CSV)</button>
               </div>
               <div id="dashSearchResultWrap"></div>
             </div>
