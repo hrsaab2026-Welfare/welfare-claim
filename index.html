@@ -1535,7 +1535,7 @@
     }).then(res => res.json()).then(res => {
       if (res && res.error === 'SESSION_EXPIRED') {
         showToast('เซสชันหมดอายุ กรุณาเข้าสู่ระบบใหม่', 'danger');
-        logout();
+        forceLogout_();
         throw new Error('SESSION_EXPIRED');
       }
       return res;
@@ -1696,8 +1696,21 @@
     initApp();
   }
 
-  function logout() {
+  async function logout() {
+    const ok = await showConfirm({
+      kind: 'info',
+      title: 'ออกจากระบบ',
+      message: `ต้องการออกจากระบบตอนนี้ใช่หรือไม่?${CURRENT_USER ? ' (' + CURRENT_USER.name + ')' : ''}`,
+      confirmText: 'ออกจากระบบ'
+    });
+    if (!ok) return;
     if (AUTH_TOKEN) { callApi('logout', {}).catch(() => {}); }
+    forceLogout_();
+    showToast('ออกจากระบบแล้ว', 'info');
+  }
+
+  /** ล้างเซสชันทันทีไม่ถามยืนยัน — ใช้ตอนเซสชันหมดอายุ (ผู้ใช้ไม่ได้เป็นคนสั่ง จึงไม่ต้องถาม) */
+  function forceLogout_() {
     sessionStorage.removeItem('welfare_user');
     CURRENT_USER = null;
     AUTH_TOKEN = null;
