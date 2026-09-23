@@ -9,6 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600&family=IBM+Plex+Sans+Thai:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <style>
   :root{
     --ink:#16212B; --ink-soft:#647486; --ink-faint:#93A0AC;
@@ -432,68 +433,55 @@
   }
   @keyframes spin{ to{ transform:rotate(360deg); } }
 
-  /* ---------- toast ---------- */
-  .toast-container{
-    position:fixed; top:18px; right:18px; z-index:70;
-    display:flex; flex-direction:column; gap:10px;
-    width:min(380px, calc(100vw - 32px));
-    pointer-events:none;
-  }
-  .toast{
-    position:relative; overflow:hidden; pointer-events:auto;
-    display:flex; align-items:flex-start; gap:10px;
-    background:var(--surface); color:var(--ink);
-    border:1px solid var(--line); border-left:3px solid var(--steel);
-    border-radius:var(--radius-m); padding:13px 34px 14px 14px;
-    box-shadow:0 12px 28px rgba(12,20,28,0.16), 0 2px 8px rgba(12,20,28,0.06);
-    opacity:0; transform:translateX(18px) scale(0.98);
-    transition:opacity .25s ease, transform .25s ease;
-  }
-  .toast.show{ opacity:1; transform:translateX(0) scale(1); }
-  .toast.hide{ opacity:0; transform:translateX(18px) scale(0.97); }
-  .toast-icon{
-    flex-shrink:0; width:26px; height:26px; border-radius:50%; margin-top:1px;
-    display:flex; align-items:center; justify-content:center;
-    background:#E9ECF2; color:var(--steel);
-  }
-  .toast.success{ border-left-color:var(--success); }
-  .toast.success .toast-icon{ background:var(--success-bg); color:var(--success); }
-  .toast.danger{ border-left-color:var(--danger); }
-  .toast.danger .toast-icon{ background:var(--danger-bg); color:var(--danger); }
-  .toast.warning{ border-left-color:var(--warning); }
-  .toast.warning .toast-icon{ background:var(--warning-bg); color:var(--warning); }
-  .toast-body{ flex:1; min-width:0; padding-top:1px; }
-  .toast-title{ display:block; font-size:13px; font-weight:700; margin-bottom:2px; letter-spacing:.1px; }
-  .toast-msg{ display:block; font-size:13px; color:var(--ink-soft); line-height:1.45; word-break:break-word; }
-  .toast-close{
-    position:absolute; top:9px; right:9px; background:none; border:none; cursor:pointer;
-    color:var(--ink-faint); padding:4px; border-radius:5px; display:flex;
-    transition:background .15s ease, color .15s ease;
-  }
-  .toast-close:hover{ background:var(--line-soft); color:var(--ink); }
-  .toast-progress{
-    position:absolute; left:0; bottom:0; height:2.5px; width:100%;
-    background:var(--steel); transform:scaleX(1); transform-origin:left;
-    animation:toastProgress linear forwards;
-  }
-  .toast.success .toast-progress{ background:var(--success); }
-  .toast.danger .toast-progress{ background:var(--danger); }
-  .toast.warning .toast-progress{ background:var(--warning); }
-  @keyframes toastProgress{ from{ transform:scaleX(1); } to{ transform:scaleX(0); } }
-  @media (max-width:520px){
-    .toast-container{ left:10px; right:10px; top:10px; width:auto; }
-  }
+  /* ---------- SweetAlert2 theme (แทน toast/confirm dialog เดิมทั้งระบบ) ---------- */
+  /* ปรับ class เริ่มต้นของ library ให้เข้าธีม navy/gold */
+  .swal2-popup{ font-family:var(--font-ui) !important; border-radius:var(--radius-m) !important; box-shadow:0 14px 40px rgba(22,33,43,0.20) !important; padding:30px 26px 26px !important; }
+  .swal2-title{ color:var(--ink) !important; font-size:19px !important; font-weight:700 !important; padding:6px 0 4px !important; }
+  .swal2-html-container{ color:var(--ink-soft) !important; font-size:14px !important; line-height:1.55 !important; }
+  .swal2-actions{ gap:10px !important; margin-top:22px !important; }
+  .swal2-icon{ border-width:2.5px !important; margin:14px auto 18px !important; }
+  .swal2-icon.swal2-success{ border-color:var(--success) !important; color:var(--success) !important; }
+  .swal2-icon.swal2-success [class^=swal2-success-line]{ background-color:var(--success) !important; }
+  .swal2-icon.swal2-error{ border-color:var(--danger) !important; color:var(--danger) !important; }
+  .swal2-icon.swal2-error [class^=swal2-x-mark-line]{ background-color:var(--danger) !important; }
+  .swal2-icon.swal2-warning{ border-color:var(--warning) !important; color:var(--warning) !important; }
+  .swal2-icon.swal2-info{ border-color:var(--info) !important; color:var(--info) !important; }
+  .swal2-icon.swal2-question{ border-color:var(--steel) !important; color:var(--steel) !important; }
+  .swal2-timer-progress-bar{ background:var(--steel) !important; }
+  .swal2-input, .swal2-textarea{ border-radius:var(--radius-s) !important; border:1px solid var(--line) !important; font-family:inherit !important; font-size:14px !important; box-shadow:none !important; height:auto !important; padding:10px 12px !important; }
+  .swal2-input:focus, .swal2-textarea:focus{ border-color:var(--info) !important; box-shadow:0 0 0 3px var(--info-bg) !important; }
+  .swal2-validation-message{ border-radius:var(--radius-s) !important; font-size:13px !important; background:var(--danger-bg) !important; color:var(--danger) !important; }
+  .swal2-timer-progress-bar-container{ display:none; } /* toast แบบ auto-dismiss ใช้ .app-swal-* คุมเอง ไม่ต้องโชว์แถบซ้ำ */
 
-  /* ---------- confirm dialog ---------- */
-  .confirm-modal-icon{
-    width:52px; height:52px; border-radius:50%; margin-bottom:16px;
-    display:flex; align-items:center; justify-content:center;
-    background:var(--danger-bg); color:var(--danger);
-    box-shadow:0 0 0 7px rgba(178,58,46,0.07);
+  /* custom class ที่ fireAlert()/showToast()/showConfirm() ผูกไว้ (ปิด buttonsStyling default ของ SweetAlert2 100%) */
+  .app-swal-popup{ font-family:var(--font-ui) !important; border-radius:var(--radius-m) !important; box-shadow:var(--shadow-card) !important; }
+  .app-swal-title{ color:var(--ink) !important; font-size:18px !important; font-weight:700 !important; padding-top:4px !important; }
+  .app-swal-text{ color:var(--ink-soft) !important; font-size:13.5px !important; }
+  .app-swal-confirm{
+    background:var(--steel) !important; color:#fff !important; border:none !important; padding:10px 22px !important;
+    border-radius:var(--radius-s) !important; font-size:14px !important; font-weight:600 !important;
+    font-family:inherit !important; cursor:pointer !important; margin:0 6px !important; box-shadow:none !important;
   }
-  .confirm-modal-icon svg{ width:22px; height:22px; }
-  .confirm-modal-icon.warning{ background:var(--warning-bg); color:var(--warning); box-shadow:0 0 0 7px rgba(156,107,21,0.07); }
-  .confirm-modal-icon.info{ background:#E9ECF2; color:var(--steel); box-shadow:0 0 0 7px rgba(27,42,65,0.07); }
+  .app-swal-confirm:hover{ opacity:.9; }
+  .app-swal-confirm:focus{ box-shadow:0 0 0 3px var(--info-bg) !important; }
+  .app-swal-confirm-danger{ background:var(--danger) !important; } /* ใช้เวลาต้อง confirm การลบ/ยกเลิก/ล้างข้อมูล */
+  .app-swal-confirm-danger:hover{ opacity:.9; }
+  .app-swal-cancel{
+    background:#fff !important; color:var(--ink) !important; border:1px solid var(--line) !important; padding:10px 22px !important;
+    border-radius:var(--radius-s) !important; font-size:14px !important; font-weight:600 !important;
+    font-family:inherit !important; cursor:pointer !important; margin:0 6px !important; box-shadow:none !important;
+  }
+  .app-swal-cancel:hover{ background:var(--line-soft) !important; }
+  .app-swal-deny{
+    background:#fff !important; color:var(--danger) !important; border:1px solid var(--danger) !important; padding:10px 22px !important;
+    border-radius:var(--radius-s) !important; font-size:14px !important; font-weight:600 !important;
+    font-family:inherit !important; cursor:pointer !important; margin:0 6px !important; box-shadow:none !important;
+  }
+  .app-swal-deny:hover{ background:var(--danger-bg) !important; }
+  /* toast mode (มุมขวาบน แทน .toast-container เดิม) */
+  .app-swal-popup.swal2-toast{ padding:12px 16px !important; box-shadow:var(--shadow-card) !important; }
+  .app-swal-popup.swal2-toast .swal2-title{ font-size:13.5px !important; }
+  .app-swal-popup.swal2-toast .app-swal-text{ font-size:12.5px !important; }
 
   /* ---------- admin panel ---------- */
   .admin-subtabs{ display:flex; gap:0; margin-bottom:18px; border-bottom:1px solid var(--line); }
@@ -1476,17 +1464,7 @@
   </div>
 
   <!-- ==================== ยืนยันการทำรายการ (แทน confirm() ของเบราว์เซอร์) ==================== -->
-  <div id="globalConfirmOverlay" class="modal-overlay hidden" onclick="if(event.target===this) resolveGlobalConfirm(false)">
-    <div class="modal" onclick="event.stopPropagation()">
-      <div class="confirm-modal-icon" id="globalConfirmIcon"></div>
-      <h4 id="globalConfirmTitle">ยืนยันการทำรายการ</h4>
-      <span class="modal-sub" id="globalConfirmMsg"></span>
-      <div class="modal-actions">
-        <button class="btn-secondary" id="globalConfirmCancelBtn">ยกเลิก</button>
-        <button class="btn-reject" id="globalConfirmOkBtn">ยืนยัน</button>
-      </div>
-    </div>
-  </div>
+  <!-- globalConfirmOverlay ถูกแทนที่ด้วย SweetAlert2 (showConfirm() เรียก fireAlert() แทน) -->
 
   <!-- ==================== ปิดงานใบส่งตัว ==================== -->
   <div id="refCloseOverlay" class="modal-overlay hidden" onclick="closeRefCloseModal()">
@@ -1715,113 +1693,75 @@
   let CATEGORIES = [];
   let PENDING_REJECT_ID = null;
 
-  // ---------- TOAST ----------
-  const TOAST_META = {
-    success: { title: 'สำเร็จ', icon: ICONS.checkCircle },
-    danger:  { title: 'เกิดข้อผิดพลาด', icon: ICONS.alertCircle },
-    warning: { title: 'คำเตือน', icon: ICONS.warning },
-    info:    { title: 'แจ้งเตือน', icon: ICONS.infoCircle }
-  };
-  function ensureToastContainer_() {
-    let c = document.getElementById('toastContainer');
-    if (!c) {
-      c = document.createElement('div');
-      c.id = 'toastContainer';
-      c.className = 'toast-container';
-      c.setAttribute('aria-live', 'polite');
-      document.body.appendChild(c);
+  // ---------- SWEETALERT2 (แทนระบบ toast/confirm เดิมทั้งระบบ) ----------
+  // ต้องโหลด CDN sweetalert2@11 ใน <head> ก่อนบล็อกนี้เสมอ
+  Swal = Swal.mixin({
+    buttonsStyling: false,
+    customClass: {
+      popup: 'app-swal-popup',
+      title: 'app-swal-title',
+      htmlContainer: 'app-swal-text',
+      confirmButton: 'app-swal-confirm',
+      cancelButton: 'app-swal-cancel',
+      denyButton: 'app-swal-deny'
     }
-    return c;
+  });
+
+  /** wrapper รอบ Swal.fire ให้ธีม navy เป็นค่า default อัตโนมัติ —
+   *  ส่ง confirmButtonColor: true (ค่าอะไรก็ได้) มาเมื่อต้องการปุ่มยืนยันสีแดง (เช่น ยืนยันลบ/ยกเลิก) */
+  function fireAlert(opts) {
+    const merged = Object.assign({ reverseButtons: true }, opts);
+    if (merged.confirmButtonColor) {
+      merged.customClass = {
+        popup: 'app-swal-popup', title: 'app-swal-title', htmlContainer: 'app-swal-text',
+        confirmButton: 'app-swal-confirm app-swal-confirm-danger',
+        cancelButton: 'app-swal-cancel', denyButton: 'app-swal-deny'
+      };
+      delete merged.confirmButtonColor;
+    }
+    return Swal.fire(merged);
   }
+
+  // ---------- TOAST (เรียก fireAlert แบบ toast:true มุมขวาบน แทน .toast-container เดิม) ----------
+  const TOAST_META = {
+    success: { title: 'สำเร็จ', icon: 'success' },
+    danger:  { title: 'เกิดข้อผิดพลาด', icon: 'error' },
+    warning: { title: 'คำเตือน', icon: 'warning' },
+    info:    { title: 'แจ้งเตือน', icon: 'info' }
+  };
   function showToast(message, type, opts) {
     opts = opts || {};
     const kind = TOAST_META[type] ? type : 'info';
     const meta = TOAST_META[kind];
-    const duration = opts.duration || 4200;
-    const container = ensureToastContainer_();
-
-    const toast = document.createElement('div');
-    toast.className = 'toast ' + kind;
-    toast.setAttribute('role', kind === 'danger' ? 'alert' : 'status');
-    toast.innerHTML =
-      '<span class="toast-icon">' + meta.icon + '</span>' +
-      '<span class="toast-body">' +
-        '<span class="toast-title">' + (opts.title || meta.title) + '</span>' +
-        '<span class="toast-msg"></span>' +
-      '</span>' +
-      '<button type="button" class="toast-close" aria-label="ปิดการแจ้งเตือน">' + ICONS.x + '</button>' +
-      '<span class="toast-progress"></span>';
-    toast.querySelector('.toast-msg').textContent = message;
-    container.appendChild(toast);
-
-    const progress = toast.querySelector('.toast-progress');
-    progress.style.animationDuration = duration + 'ms';
-
-    let remaining = duration, startedAt = Date.now(), timer;
-    const close = () => {
-      clearTimeout(timer);
-      toast.classList.remove('show');
-      toast.classList.add('hide');
-      setTimeout(() => toast.remove(), 220);
-    };
-    toast._close = close;
-    toast.querySelector('.toast-close').onclick = close;
-    toast.addEventListener('mouseenter', () => {
-      clearTimeout(timer);
-      remaining -= (Date.now() - startedAt);
-      progress.style.animationPlayState = 'paused';
+    return fireAlert({
+      toast: true,
+      position: 'top-end',
+      icon: meta.icon,
+      title: opts.title || meta.title,
+      text: message,
+      showConfirmButton: false,
+      timer: opts.duration || 4200,
+      timerProgressBar: true
     });
-    toast.addEventListener('mouseleave', () => {
-      startedAt = Date.now();
-      progress.style.animationPlayState = 'running';
-      timer = setTimeout(close, Math.max(remaining, 400));
-    });
-
-    requestAnimationFrame(() => toast.classList.add('show'));
-    timer = setTimeout(close, duration);
-
-    const all = container.querySelectorAll('.toast');
-    if (all.length > 4 && all[0]._close) all[0]._close();
-
-    return toast;
   }
 
-  // ---------- CONFIRM DIALOG (แทน confirm() ของเบราว์เซอร์) ----------
-  let GLOBAL_CONFIRM_RESOLVE = null;
+  // ---------- CONFIRM DIALOG (แทน confirm() ของเบราว์เซอร์ / modal เดิม) ----------
   function showConfirm(opts) {
     opts = opts || {};
-    const overlay = document.getElementById('globalConfirmOverlay');
-    const iconBox = document.getElementById('globalConfirmIcon');
     const kind = opts.kind === 'warning' || opts.kind === 'info' ? opts.kind : 'danger';
-    iconBox.className = 'confirm-modal-icon' + (kind !== 'danger' ? ' ' + kind : '');
-    iconBox.innerHTML = kind === 'warning' ? ICONS.warning : kind === 'info' ? ICONS.infoCircle : ICONS.alertCircle;
-    document.getElementById('globalConfirmTitle').textContent = opts.title || 'ยืนยันการทำรายการ';
-    document.getElementById('globalConfirmMsg').textContent = opts.message || '';
-    const okBtn = document.getElementById('globalConfirmOkBtn');
-    const cancelBtn = document.getElementById('globalConfirmCancelBtn');
-    okBtn.textContent = opts.confirmText || 'ยืนยัน';
-    cancelBtn.textContent = opts.cancelText || 'ยกเลิก';
-    okBtn.className = kind === 'info' ? 'btn-neutral' : 'btn-reject';
-
-    overlay.classList.remove('hidden');
-    okBtn.focus();
-
-    return new Promise(resolve => {
-      GLOBAL_CONFIRM_RESOLVE = resolve;
-      okBtn.onclick = () => { overlay.classList.add('hidden'); resolve(true); GLOBAL_CONFIRM_RESOLVE = null; };
-      cancelBtn.onclick = () => { overlay.classList.add('hidden'); resolve(false); GLOBAL_CONFIRM_RESOLVE = null; };
-    });
+    const iconMap = { danger: 'warning', warning: 'warning', info: 'question' };
+    const fireOpts = {
+      icon: iconMap[kind],
+      title: opts.title || 'ยืนยันการทำรายการ',
+      text: opts.message || '',
+      showCancelButton: true,
+      confirmButtonText: opts.confirmText || 'ยืนยัน',
+      cancelButtonText: opts.cancelText || 'ยกเลิก'
+    };
+    if (kind !== 'info') fireOpts.confirmButtonColor = true; // -> ปุ่มยืนยันสีแดง ผ่าน fireAlert()
+    return fireAlert(fireOpts).then(res => !!res.isConfirmed);
   }
-  function resolveGlobalConfirm(val) {
-    if (!GLOBAL_CONFIRM_RESOLVE) return;
-    document.getElementById('globalConfirmOverlay').classList.add('hidden');
-    GLOBAL_CONFIRM_RESOLVE(val);
-    GLOBAL_CONFIRM_RESOLVE = null;
-  }
-  document.addEventListener('keydown', e => {
-    if (e.key !== 'Escape') return;
-    if (GLOBAL_CONFIRM_RESOLVE) resolveGlobalConfirm(false);
-  });
+
 
   // ---------- LOGIN ----------
   function toggleLoginPw() {
