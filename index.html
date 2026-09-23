@@ -68,6 +68,7 @@
   .btn-secondary{
     background:var(--surface); color:var(--ink); border:1px solid var(--line);
     padding:11px 18px; border-radius:var(--radius-s); font-size:14.5px; font-weight:600; cursor:pointer;
+    transition:background .15s ease, border-color .15s ease;
   }
   .btn-secondary:hover{ background:var(--line-soft); }
 
@@ -378,12 +379,14 @@
 
   /* ---------- confirm dialog ---------- */
   .confirm-modal-icon{
-    width:44px; height:44px; border-radius:50%; margin-bottom:14px;
+    width:52px; height:52px; border-radius:50%; margin-bottom:16px;
     display:flex; align-items:center; justify-content:center;
     background:var(--danger-bg); color:var(--danger);
+    box-shadow:0 0 0 7px rgba(178,58,46,0.07);
   }
-  .confirm-modal-icon.warning{ background:var(--warning-bg); color:var(--warning); }
-  .confirm-modal-icon.info{ background:#EAF1F6; color:var(--steel); }
+  .confirm-modal-icon svg{ width:22px; height:22px; }
+  .confirm-modal-icon.warning{ background:var(--warning-bg); color:var(--warning); box-shadow:0 0 0 7px rgba(156,107,21,0.07); }
+  .confirm-modal-icon.info{ background:#EAF1F6; color:var(--steel); box-shadow:0 0 0 7px rgba(31,76,115,0.07); }
 
   /* ---------- admin panel ---------- */
   .admin-subtabs{ display:flex; gap:0; margin-bottom:18px; border-bottom:1px solid var(--line); }
@@ -478,12 +481,21 @@
 
   /* ---------- modal ---------- */
   .modal-overlay{
-    position:fixed; inset:0; background:rgba(12,20,28,0.5); z-index:40;
+    position:fixed; inset:0; background:rgba(10,17,24,0.58); z-index:40;
     display:flex; align-items:center; justify-content:center; padding:20px;
+    backdrop-filter:blur(3px); -webkit-backdrop-filter:blur(3px);
+    animation:modalOverlayIn .18s ease;
   }
-  .modal{ background:var(--surface); border-radius:var(--radius-m); padding:24px; width:100%; max-width:380px; }
-  .modal h4{ font-size:16px; margin-bottom:5px; }
-  .modal-sub{ font-size:13px; color:var(--ink-soft); display:block; margin-bottom:14px; }
+  @keyframes modalOverlayIn{ from{ opacity:0; } to{ opacity:1; } }
+  .modal{
+    background:var(--surface); border-radius:14px; padding:28px;
+    width:100%; max-width:380px;
+    box-shadow:0 28px 64px rgba(10,17,24,0.30), 0 6px 18px rgba(10,17,24,0.14);
+    animation:modalIn .22s cubic-bezier(.2,.9,.25,1);
+  }
+  @keyframes modalIn{ from{ opacity:0; transform:translateY(10px) scale(.96); } to{ opacity:1; transform:translateY(0) scale(1); } }
+  .modal h4{ font-size:17.5px; margin-bottom:7px; letter-spacing:-.1px; }
+  .modal-sub{ font-size:13.5px; color:var(--ink-soft); display:block; margin-bottom:16px; line-height:1.6; }
   /* ---------- rules engine: สิทธิ์ / เอกสาร / คำเตือน ---------- */
   .elig-box{
     border:1px solid var(--line); border-left:3px solid var(--steel); border-radius:var(--radius-s);
@@ -554,7 +566,7 @@
   .block-box ul{ margin:5px 0 0; padding-left:18px; }
   .block-box li{ margin-bottom:3px; }
 
-  .modal-actions{ display:flex; justify-content:flex-end; gap:10px; margin-top:16px; }
+  .modal-actions{ display:flex; justify-content:flex-end; gap:10px; margin-top:22px; }
   .modal-wide{ max-width:560px; }
 
   /* ---------- ใบส่งตัว (referral) ---------- */
