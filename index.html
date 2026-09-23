@@ -878,7 +878,6 @@
           <button class="hdr-icon-btn theme-toggle-btn" onclick="toggleTheme()" title="สลับโหมดมืด/สว่าง" aria-label="สลับโหมดมืด/สว่าง">
             <span class="theme-toggle-icon" style="display:flex"></span>
           </button>
-          <div class="chu-avatar" id="headerAvatar"></div>
           <button class="hdr-icon-btn" onclick="logout()" title="ออกจากระบบ" aria-label="ออกจากระบบ">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
           </button>
@@ -1852,7 +1851,6 @@
     document.getElementById('headerUserName').innerText = CURRENT_USER.name;
     document.getElementById('headerUserRole').innerText = `${CURRENT_USER.department} · ${roleLabel(CURRENT_USER.role)}`;
     document.querySelector('.hdr-pill').title = `${CURRENT_USER.department} · ${roleLabel(CURRENT_USER.role)}`;
-    document.getElementById('headerAvatar').innerText = CURRENT_USER.name.trim().charAt(0).toUpperCase();
 
     buildTabs();
     // ใช้ข้อมูลที่แนบมากับผลลัพธ์ login ไปเลย (rules / medicalUsage / จำนวนค้างอนุมัติ)
