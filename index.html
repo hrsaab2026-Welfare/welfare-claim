@@ -32,14 +32,33 @@
   :root{--sb-w:264px;--sb-w-min:76px;--sb-line:rgba(255,255,255,.09);--sb-muted:#9FB0BC;}
   .app{display:grid;grid-template-columns:var(--sb-w) minmax(0,1fr);min-height:100vh;transition:grid-template-columns .24s cubic-bezier(.4,0,.2,1);}
   .main{min-width:0;display:flex;flex-direction:column;min-height:100vh;}
-  .wrap{width:100%;max-width:760px;margin:0 auto;padding:32px 28px 24px;flex:1;}
-  .page-head{margin:0 0 20px;}
-  .page-head h2{margin:0;font-size:1.35rem;font-weight:700;color:var(--navy);}
-  .page-head p{margin:4px 0 0;font-size:.88rem;color:var(--ink-soft);}
+  .wrap{width:100%;max-width:760px;margin:0 auto;padding:24px 28px 24px;flex:1;}
+  /* ---- App header: สูง 76px เท่า sidebar brand เส้นขอบล่างต่อเนื่องเป็นเส้นเดียว ---- */
+  .app-header{position:sticky;top:0;z-index:40;height:76px;background:rgba(255,255,255,.92);border-bottom:1px solid var(--border);
+    -webkit-backdrop-filter:saturate(1.4) blur(8px);backdrop-filter:saturate(1.4) blur(8px);}
+  .ah-inner{display:flex;align-items:center;gap:14px;height:100%;width:100%;max-width:760px;margin:0 auto;padding:0 28px;}
+  .ah-text{flex:1;min-width:0;}
+  .ah-text h1{margin:0;font-size:1.2rem;font-weight:700;line-height:1.3;color:var(--navy);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .ah-text p{margin:2px 0 0;font-size:.8rem;color:var(--ink-soft);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .ah-chip{display:inline-flex;align-items:center;gap:8px;flex-shrink:0;padding:7px 13px;border:1px solid var(--border);border-radius:20px;
+    background:var(--surface-2);font-size:.78rem;font-weight:500;color:var(--ink);white-space:nowrap;}
+  .ah-chip[hidden]{display:none;}
+  .ah-chip i{width:8px;height:8px;border-radius:50%;background:var(--success);}
+  .ah-chip.locked i{background:var(--gold);}
+  .ah-chip:not(.status) i{display:none;}
+  .ah-progress{position:absolute;left:0;right:0;bottom:-1px;height:3px;overflow:hidden;}
+  .ah-progress i{display:block;width:0;height:100%;background:var(--gold);transition:width .3s cubic-bezier(.4,0,.2,1);}
+  .app-header[data-view="hr"] .ah-progress{display:none;}
+  .menu-btn{display:none;width:40px;height:40px;flex-shrink:0;align-items:center;justify-content:center;border:1px solid var(--border-strong);
+    border-radius:var(--radius-md);background:#fff;color:var(--navy);cursor:pointer;}
+  .menu-btn:hover{background:var(--surface-2);}
+  .menu-btn:focus-visible{outline:2px solid var(--gold);outline-offset:2px;}
+  .menu-btn svg{width:20px;height:20px;}
+  #formCard{scroll-margin-top:92px;}
 
   .sidebar{position:sticky;top:0;align-self:start;height:100vh;height:100dvh;display:flex;flex-direction:column;
     background:var(--navy);color:#fff;overflow:hidden;z-index:60;}
-  .sb-brand{display:flex;align-items:center;gap:12px;min-height:76px;padding:0 18px;border-bottom:1px solid var(--sb-line);}
+  .sb-brand{display:flex;align-items:center;gap:12px;height:76px;flex-shrink:0;padding:0 18px;border-bottom:1px solid var(--sb-line);}
   .seal{width:38px;height:38px;border-radius:9px;background:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 0 0 3px rgba(217,154,43,.35);}
   .sb-title{min-width:0;line-height:1.3;}
   .sb-title strong{display:block;font-size:.98rem;font-weight:700;white-space:nowrap;}
@@ -68,8 +87,6 @@
   .sb-toggle svg{width:20px;height:20px;flex-shrink:0;transition:transform .24s;}
   .nav-item:focus-visible,.sb-toggle:focus-visible,.icon-btn:focus-visible{outline:2px solid var(--gold);outline-offset:2px;}
 
-  .topbar{display:none;position:sticky;top:0;z-index:50;align-items:center;gap:12px;padding:10px 14px;background:var(--navy-2);border-bottom:3px solid var(--gold);color:#fff;}
-  .topbar strong{font-size:1rem;font-weight:700;}
   .icon-btn{width:40px;height:40px;border-radius:var(--radius-md);border:1px solid rgba(255,255,255,.2);background:transparent;color:#fff;
     display:inline-flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;}
   .icon-btn:hover{background:rgba(255,255,255,.08);}
@@ -94,7 +111,9 @@
   }
   @media (max-width:899px){
     .app{display:block;}
-    .topbar{display:flex;}
+    .app-header{height:64px;}
+    .ah-inner{padding:0 16px;}
+    .menu-btn{display:inline-flex;}
     .wrap{padding:20px 16px 24px;}
     #formCard{scroll-margin-top:80px;}
     .sidebar{position:fixed;top:0;left:0;bottom:0;width:min(84vw,300px);height:auto;transform:translateX(-102%);visibility:hidden;
@@ -105,7 +124,8 @@
     .sb-close{display:inline-flex;}
     .sb-foot{display:none;}
   }
-  @media (prefers-reduced-motion:reduce){.app,.sidebar,.scrim,.nav-item,.sb-toggle svg{transition:none !important;}}
+  @media (max-width:560px){.ah-chip{display:none;}}
+  @media (prefers-reduced-motion:reduce){.ah-progress i,.app,.sidebar,.scrim,.nav-item,.sb-toggle svg{transition:none !important;}}
 
   .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-md);padding:24px 22px;margin-bottom:16px;box-shadow:var(--shadow-sm);}
   .view{display:none;} .view.active{display:block;}
@@ -296,12 +316,15 @@
 </aside>
 
 <main class="main" id="main">
-<div class="topbar">
-  <button class="icon-btn" id="menuBtn" aria-label="เปิดเมนู" aria-expanded="false" aria-controls="sidebar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
-  <strong>ระบบขอใบส่งตัว</strong>
-</div>
+<header class="app-header" id="appHeader" data-view="employee">
+  <div class="ah-inner">
+    <button class="menu-btn" id="menuBtn" aria-label="เปิดเมนู" aria-expanded="false" aria-controls="sidebar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+    <div class="ah-text"><h1 id="pageTitle">ขอใบส่งตัว</h1><p id="pageDesc"></p></div>
+    <div class="ah-chip" id="headChip" hidden></div>
+  </div>
+  <div class="ah-progress" aria-hidden="true"><i id="headProgress"></i></div>
+</header>
 <div class="wrap">
-  <div class="page-head"><h2 id="pageTitle">ขอใบส่งตัว</h2><p id="pageDesc"></p></div>
 
   <!-- ================= EMPLOYEE VIEW ================= -->
   <div class="view active" id="view-employee">
@@ -482,6 +505,7 @@
   const TOTAL_STEPS = 3;
 
   function updateStepUI(){
+    setHeadProgress(Math.round(currentStep / TOTAL_STEPS * 100));
     document.querySelectorAll('.form-step').forEach(s => s.classList.toggle('active', Number(s.dataset.step) === currentStep));
     document.querySelectorAll('.step-dot').forEach(d => {
       const n = Number(d.dataset.step);
@@ -534,6 +558,7 @@
   const hrItem = document.querySelector('.nav-item[data-tab="hr"]');
   const hrBadge = document.getElementById('hrBadge');
   const isDesktop = () => window.matchMedia('(min-width:900px)').matches;
+  let currentView = 'employee';
 
   function showView(name){
     document.querySelectorAll('.nav-item').forEach(n => {
@@ -543,6 +568,9 @@
     document.getElementById('pageTitle').textContent = VIEWS[name].title;
     document.getElementById('pageDesc').textContent = VIEWS[name].desc;
     document.title = VIEWS[name].title + ' — Summit Auto Body Industry';
+    currentView = name;
+    document.getElementById('appHeader').dataset.view = name;
+    syncHeaderChip();
     window.scrollTo(0, 0);
     if (name === 'hr' && HR_CODE) tryAutoUnlock();
   }
@@ -568,6 +596,7 @@
   // สถานะ 🔒 + จำนวนรอออกใบ บนเมนูฝ่ายบุคคล
   function syncHrNav(count){
     hrItem.classList.toggle('locked', !HR_CODE);
+    syncHeaderChip();
     if (!HR_CODE) count = 0;
     if (typeof count === 'number') {
       hrBadge.textContent = count > 99 ? '99+' : count;
@@ -575,6 +604,20 @@
       hrItem.setAttribute('aria-label', 'รายการคำขอ' + (!HR_CODE ? ' (ล็อกอยู่)' : count > 0 ? ' รอออกใบ ' + count + ' รายการ' : ''));
     }
   }
+  // chip มุมขวาของ header: หน้าพนักงาน = โรงพยาบาลปลายทาง / หน้า HR = สถานะปลดล็อก
+  function syncHeaderChip(){
+    const chip = document.getElementById('headChip');
+    let text = '', locked = false;
+    if (currentView === 'hr') { locked = !HR_CODE; text = locked ? 'ล็อกอยู่' : 'ปลดล็อกแล้ว'; }
+    else if (FORM_OPTIONS && FORM_OPTIONS.hospitals && FORM_OPTIONS.hospitals[0]) text = 'ส่งตัวไป ' + FORM_OPTIONS.hospitals[0];
+    chip.hidden = !text;
+    chip.classList.toggle('status', currentView === 'hr');
+    chip.classList.toggle('locked', locked);
+    chip.innerHTML = '<i></i>' + escapeHtml(text);
+  }
+  // เส้นทองใต้ header = ความคืบหน้าของฟอร์ม
+  function setHeadProgress(pct){ document.getElementById('headProgress').style.width = pct + '%'; }
+  setHeadProgress(Math.round(100 / TOTAL_STEPS));
   syncHrNav(0);
   if (HR_CODE) callApi('listReferralRequests', { accessCode: HR_CODE, filters: {} }).then(res => {
     if (res.error === 'WRONG_CODE') return lockHr();
@@ -622,6 +665,7 @@
     if (!res.success) return;
     FORM_OPTIONS = res;
     document.getElementById('companyLabel').textContent = res.companyName;
+    syncHeaderChip();
     renderOptionList('serviceList', res.serviceTypes, 'service');
     renderOptionList('payerList', res.payerTypes, 'payer');
   }).catch(() => showToast('เชื่อมต่อระบบไม่สำเร็จ ลองรีเฟรชหน้าเว็บ', 'err'));
@@ -689,6 +733,7 @@
       document.getElementById('stepperBar').style.display = 'none';
       document.getElementById('successCard').style.display = 'block';
       document.getElementById('successReqId').textContent = res.requestId;
+      setHeadProgress(100);
     }).catch(() => {
       btn.disabled = false; btn.textContent = 'ส่งคำขอใบส่งตัว';
       showToast('เชื่อมต่อระบบไม่สำเร็จ กรุณาลองใหม่', 'err');
