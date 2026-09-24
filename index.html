@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>ระบบขอใบส่งตัว — Summit Auto Body Industry</title>
+<title>ระบบขอใบส่งตัว — Summit Auto Body Industry Co.Ltd. (Branch 2)</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
@@ -54,8 +54,11 @@
   .menu-btn:hover{background:var(--surface-2);}
   .menu-btn:focus-visible{outline:2px solid var(--gold);outline-offset:2px;}
   .menu-btn svg{width:20px;height:20px;}
-  .ah-icon{width:44px;height:44px;flex-shrink:0;display:flex;align-items:center;justify-content:center;border-radius:11px;background:var(--navy);color:var(--gold);}
-  .ah-icon svg{width:22px;height:22px;}
+  .ah-icon{width:46px;height:46px;flex-shrink:0;display:flex;align-items:center;justify-content:center;border-radius:12px;
+    background:linear-gradient(145deg,#F7F9FC,#E7EEF6);border:1px solid #D6E0EC;box-shadow:inset 0 1px 0 #fff;color:var(--navy);}
+  .ah-icon svg{width:24px;height:24px;}
+  .ah-icon .acc{stroke:var(--gold-deep);stroke-width:2;}
+  .nav-item .acc{stroke:var(--gold);}
   @media (max-width:559px){.ah-icon{display:none;}}
   #formCard{scroll-margin-top:92px;}
 
@@ -298,12 +301,12 @@
   <nav class="sb-nav" aria-label="เมนูหลัก">
     <div class="sb-group-label">สำหรับพนักงาน</div>
     <button class="nav-item" data-tab="employee" data-label="ขอใบส่งตัว" aria-current="page">
-      <svg class="ni-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H7a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V7z"/><path d="M14 3v4h4"/><path d="M12 11v6M9 14h6"/></svg>
+      <svg class="ni-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 21h16"/><path d="M6 21V9l6-5 6 5v12"/><path d="M10.5 21v-3.5h3V21"/><path class="acc" d="M12 10.5v4M10 12.5h4"/></svg>
       <span class="ni-label">ขอใบส่งตัว</span>
     </button>
     <div class="sb-group-label">สำหรับฝ่ายบุคคล</div>
     <button class="nav-item locked" data-tab="hr" data-label="รายการคำขอ">
-      <svg class="ni-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="4" width="12" height="17" rx="1.5"/><path d="M9 4h6v2.5H9z"/><path d="M9.5 13.5l2 2 3.5-4"/></svg>
+      <svg class="ni-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="4" width="12" height="17" rx="1.6"/><path d="M9 4h6v2.6H9z"/><path class="acc" d="M9.5 13.5l2 2 3.5-4"/></svg>
       <span class="ni-label">รายการคำขอ</span>
       <span class="ni-lock" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></span>
       <span class="ni-badge" id="hrBadge"></span>
@@ -322,7 +325,7 @@
 <header class="app-header" id="appHeader" data-view="employee">
   <div class="ah-inner">
     <button class="menu-btn" id="menuBtn" aria-label="เปิดเมนู" aria-expanded="false" aria-controls="sidebar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
-    <div class="ah-icon" id="headIcon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V7z"/><path d="M14 3v4h4"/><path d="M12 11v6M9 14h6"/></svg></div>
+    <div class="ah-icon" id="headIcon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21h16"/><path d="M6 21V9l6-5 6 5v12"/><path d="M10.5 21v-3.5h3V21"/><path class="acc" d="M12 10.5v4M10 12.5h4"/></svg></div>
     <div class="ah-text"><h1 id="pageTitle">ขอใบส่งตัว</h1><p id="pageDesc"></p></div>
     <div class="ah-chip" id="headChip" hidden></div>
   </div>
@@ -353,8 +356,8 @@
             <input type="number" id="f_age" min="15" max="80" placeholder="เช่น 32">
           </div>
           <div>
-            <label>รหัสพนักงาน (ถ้ามี)</label>
-            <input type="text" id="f_empid" placeholder="ไม่บังคับ">
+            <label>รหัสพนักงาน *</label>
+            <input type="text" id="f_empid" placeholder="เช่น 10245">
           </div>
         </div>
         <div class="row2">
@@ -363,8 +366,8 @@
             <input type="text" id="f_dept" placeholder="เช่น ผลิต 2">
           </div>
           <div>
-            <label>ฝ่าย</label>
-            <input type="text" id="f_division" placeholder="ไม่บังคับ">
+            <label>ฝ่าย *</label>
+            <input type="text" id="f_division" placeholder="เช่น ฝ่ายผลิต">
           </div>
         </div>
         <label>เบอร์โทรติดต่อกลับ *</label>
@@ -372,7 +375,11 @@
       </div>
 
       <div class="form-step" data-step="2">
-        <div class="section-title"><span class="step-num">2</span><span class="txt">เข้ารับบริการในโรงพยาบาล — กรณี</span></div>
+        <div class="section-title"><span class="step-num">2</span><span class="txt">ผู้เข้ารับบริการ</span></div>
+        <div class="opt-list" id="patientList"></div>
+        <div class="hint">กรณีใช้กับบุคคลในครอบครัว ต้องเป็นบิดา มารดา คู่สมรส หรือบุตรที่ถูกต้องตามกฎหมายเท่านั้น</div>
+
+        <div class="section-title"><span class="txt">เข้ารับบริการในโรงพยาบาล — กรณี</span></div>
         <div class="opt-list" id="serviceList"></div>
 
         <label style="margin-top:14px;">อาการ / รายละเอียดเบื้องต้น</label>
@@ -455,7 +462,7 @@
   </div>
 </div>
 
-<footer>© Summit Auto Body Industry — ระบบขอใบส่งตัว</footer>
+<footer>© Summit Auto Body Industry Co.Ltd. (Branch 2) — ระบบขอใบส่งตัว</footer>
 </main>
 </div>
 
@@ -526,10 +533,16 @@
     if (n === 1) {
       if (!document.getElementById('f_name').value.trim()) return 'กรุณากรอกชื่อ-สกุล';
       if (!document.getElementById('f_age').value.trim()) return 'กรุณากรอกอายุ';
+      if (!document.getElementById('f_empid').value.trim()) return 'กรุณากรอกรหัสพนักงาน';
       if (!document.getElementById('f_dept').value.trim()) return 'กรุณากรอกแผนก';
+      if (!document.getElementById('f_division').value.trim()) return 'กรุณากรอกฝ่าย';
       if (!document.getElementById('f_phone').value.trim()) return 'กรุณากรอกเบอร์โทรติดต่อกลับ';
     }
     if (n === 2) {
+      const patient = document.querySelector('input[name="patient"]:checked');
+      if (!patient) return 'กรุณาเลือกผู้เข้ารับบริการ';
+      const pn = document.getElementById('patient_detail_' + patient.value);
+      if (pn && !pn.value.trim()) return 'กรุณาระบุชื่อ - สกุลบุคคลในครอบครัว';
       const service = document.querySelector('input[name="service"]:checked');
       if (!service) return 'กรุณาเลือกกรณีที่เข้ารับบริการ';
       const detailEl = document.getElementById('service_detail_' + service.value);
@@ -556,8 +569,8 @@
     hr: { title: 'รายการคำขอใบส่งตัว', desc: 'ตรวจสอบคำขอ ออกใบส่งตัว และส่งออกข้อมูล' }
   };
   const HEAD_ICONS = {
-    employee: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V7z"/><path d="M14 3v4h4"/><path d="M12 11v6M9 14h6"/></svg>',
-    hr: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="4" width="12" height="17" rx="1.5"/><path d="M9 4h6v2.5H9z"/><path d="M9.5 13.5l2 2 3.5-4"/></svg>'
+    employee: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21h16"/><path d="M6 21V9l6-5 6 5v12"/><path d="M10.5 21v-3.5h3V21"/><path class="acc" d="M12 10.5v4M10 12.5h4"/></svg>',
+    hr: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="4" width="12" height="17" rx="1.6"/><path d="M9 4h6v2.6H9z"/><path class="acc" d="M9.5 13.5l2 2 3.5-4"/></svg>'
   };
   const appEl = document.getElementById('app');
   const sidebarEl = document.getElementById('sidebar');
@@ -575,7 +588,7 @@
     document.querySelectorAll('.view').forEach(v => v.classList.toggle('active', v.id === 'view-' + name));
     document.getElementById('pageTitle').textContent = VIEWS[name].title;
     document.getElementById('pageDesc').textContent = VIEWS[name].desc;
-    document.title = VIEWS[name].title + ' — Summit Auto Body Industry';
+    document.title = VIEWS[name].title + ' — Summit Auto Body Industry Co.Ltd. (Branch 2)';
     currentView = name;
     document.getElementById('headIcon').innerHTML = HEAD_ICONS[name];
     document.getElementById('appHeader').dataset.view = name;
@@ -669,6 +682,16 @@
 
   route();
 
+  // ---------- ผู้เข้ารับบริการ (พนักงาน / บุคคลในครอบครัว) ----------
+  const PATIENT_TYPES = [
+    { id: 'self', label: 'ตัวพนักงานเอง' },
+    { id: 'father', label: 'บิดา', needDetail: true, placeholder: 'ชื่อ - สกุล บิดา' },
+    { id: 'mother', label: 'มารดา', needDetail: true, placeholder: 'ชื่อ - สกุล มารดา' },
+    { id: 'spouse', label: 'คู่สมรส', needDetail: true, placeholder: 'ชื่อ - สกุล คู่สมรส' },
+    { id: 'child', label: 'บุตร', needDetail: true, placeholder: 'ชื่อ - สกุล บุตร' }
+  ];
+  renderOptionList('patientList', PATIENT_TYPES, 'patient');
+
   // ---------- Load form options ----------
   callApi('getFormOptions', {}).then(res => {
     if (!res.success) return;
@@ -687,7 +710,7 @@
         <span class="box"></span>
         <div style="flex:1;">
           <div class="opt-label">${o.label}</div>
-          ${o.needDetail ? `<input type="text" class="opt-detail" id="${groupName}_detail_${o.id}" placeholder="ระบุรายละเอียด...">` : ''}
+          ${o.needDetail ? `<input type="text" class="opt-detail" id="${groupName}_detail_${o.id}" placeholder="${o.placeholder || 'ระบุรายละเอียด...'}">` : ''}
         </div>
       </label>
     `).join('');
@@ -715,7 +738,10 @@
     const service = document.querySelector('input[name="service"]:checked');
     const payer = document.querySelector('input[name="payer"]:checked');
 
-    if (!name || !age || !dept || !phone) { currentStep = 1; updateStepUI(); return showToast('กรุณากรอกข้อมูลผู้ขอให้ครบ', 'err'); }
+    if (!name || !age || !dept || !phone || !document.getElementById('f_empid').value.trim() || !document.getElementById('f_division').value.trim()) { currentStep = 1; updateStepUI(); return showToast('กรุณากรอกข้อมูลผู้ขอให้ครบ', 'err'); }
+    const patient = document.querySelector('input[name="patient"]:checked');
+    const patientName = patient ? ((document.getElementById('patient_detail_' + patient.value) || {}).value || '').trim() : '';
+    if (!patient || (patient.value !== 'self' && !patientName)) { currentStep = 2; updateStepUI(); return showToast(!patient ? 'กรุณาเลือกผู้เข้ารับบริการ' : 'กรุณาระบุชื่อ - สกุลบุคคลในครอบครัว', 'err'); }
     if (!service) { currentStep = 2; updateStepUI(); return showToast('กรุณาเลือกกรณีที่เข้ารับบริการ', 'err'); }
     if (!payer) return showToast('กรุณาเลือกสิทธิ์การรักษา', 'err');
 
@@ -731,7 +757,7 @@
     callApi('submitReferralRequest', { data: {
       name, age, employeeId: document.getElementById('f_empid').value.trim(),
       department: dept, division: document.getElementById('f_division').value.trim(),
-      symptoms, serviceTypeId: service.value, serviceDetail,
+      symptoms, patientTypeId: patient.value, patientName, serviceTypeId: service.value, serviceDetail,
       payerTypeId: payer.value, payerDetail,
       contactPhone: phone, preferredDate: document.getElementById('f_date').value,
       hospital: (FORM_OPTIONS && FORM_OPTIONS.hospitals[0]) || ''
@@ -825,6 +851,7 @@
         </div>
         <div class="req-meta">
           แผนก: ${escapeHtml(r.department)}${r.division ? ' / ' + escapeHtml(r.division) : ''}${r.employeeId ? ' • รหัส ' + escapeHtml(r.employeeId) : ''}<br>
+          ${r.patientTypeLabel ? 'ผู้เข้ารับบริการ: ' + escapeHtml(r.patientTypeLabel) + (r.patientName ? ' — ' + escapeHtml(r.patientName) : '') + '<br>' : ''}
           กรณี: ${escapeHtml(r.serviceTypeLabel)}${r.serviceDetail ? ' — ' + escapeHtml(r.serviceDetail) : ''}<br>
           ${r.symptoms ? 'อาการ: ' + escapeHtml(r.symptoms) + '<br>' : ''}
           สิทธิ์: ${escapeHtml(r.payerTypeLabel)}${r.payerDetail ? ' — ' + escapeHtml(r.payerDetail) : ''}<br>
