@@ -6,83 +6,82 @@
 <title>ระบบขอใบส่งตัว — Summit Auto Body Industry</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@500;600;700&family=Sarabun:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <style>
+  /* ---- Design tokens: ใช้ชุดสี/ค่าตรงตาม design-system.css ของบริษัท (navy/gold) ---- */
   :root{
-    /* ---- โทนสี: เขียวปิโตรเลียมเข้ม (ความน่าเชื่อถือทางการแพทย์) + อำพัน (ป้ายนิรภัยโรงงาน) ---- */
-    --ink:#1C2420;        --ink-soft:#4A554E;
-    --pine:#173B37;       --pine-deep:#0E2825;
-    --amber:#DA9138;      --amber-deep:#B9761F;
-    --paper:#FAF7F1;      --paper-line:#E2DACB;
-    --card:#FFFFFF;
-    --ok:#3F7D58; --ok-bg:#EAF3EC;
-    --warn:#B9761F; --warn-bg:#FBF0DE;
-    --danger:#B14432; --danger-bg:#FBEAE6;
-    --r-sm:6px; --r-md:10px;
+    --canvas:#F0F3F7; --surface:#FFFFFF; --surface-2:#F5F7F8;
+    --border:#DCE3EA; --border-strong:#C4CEDA;
+    --ink:#16212B; --ink-soft:#647486;
+    --navy:#1B2A41; --navy-2:#20304A;
+    --gold:#D99A2B; --gold-bg:rgba(217,154,43,0.12); --gold-deep:#B9761F;
+    --success:#1B7A4A; --success-bg:rgba(27,122,74,0.12);
+    --danger:#AB3B27; --danger-bg:rgba(171,59,39,0.08);
+    --warning:#BD7A1E; --warning-bg:rgba(189,122,30,0.10);
+    --info:#2E6C93; --info-bg:rgba(46,108,147,0.08);
+    --radius-sm:4px; --radius-md:8px;
+    --shadow-sm:0 1px 2px rgba(20,30,45,0.06); --shadow-md:0 4px 16px rgba(20,30,45,0.08);
   }
   *{box-sizing:border-box;}
   html{-webkit-text-size-adjust:100%;}
-  body{margin:0;font-family:'Sarabun',sans-serif;background:var(--paper);color:var(--ink);
-    background-image:radial-gradient(circle at 1px 1px, rgba(28,36,32,.05) 1px, transparent 0);
-    background-size:22px 22px;}
-  h1,h2,h3,.font-display{font-family:'Kanit',sans-serif;}
+  body{margin:0;font-family:'IBM Plex Sans Thai','IBM Plex Sans',-apple-system,sans-serif;background:var(--canvas);color:var(--ink);}
+  h1,h2,h3,.font-display{font-family:inherit;}
 
-  header{background:var(--pine);border-bottom:3px solid var(--amber);color:#fff;padding:20px 16px;}
+  header{background:var(--navy-2);border-bottom:3px solid var(--gold);color:#fff;padding:18px 16px;}
   .header-inner{max-width:640px;margin:0 auto;display:flex;align-items:center;gap:12px;}
-  .seal{width:38px;height:38px;border-radius:50%;border:2px solid var(--amber);display:flex;align-items:center;justify-content:center;
-    font-family:'Kanit';font-weight:700;font-size:1rem;color:var(--amber);flex-shrink:0;}
-  header h1{margin:0;font-size:1.05rem;font-weight:600;letter-spacing:.2px;}
-  header p{margin:2px 0 0;font-size:.78rem;color:#CFE0DB;}
+  .seal{width:36px;height:36px;border-radius:8px;background:#fff;color:var(--navy);display:flex;align-items:center;justify-content:center;
+    font-family:'IBM Plex Sans Thai';font-weight:700;font-size:.9rem;flex-shrink:0;}
+  header h1{margin:0;font-size:1.05rem;font-weight:700;letter-spacing:.2px;}
+  header p{margin:2px 0 0;font-size:.78rem;color:#9FB0BC;}
 
   .wrap{max-width:640px;margin:0 auto;padding:0 16px 40px;}
 
-  .tabs{display:flex;margin:16px 0 22px;border-bottom:1px solid var(--paper-line);}
-  .tab{flex:1;padding:13px 8px;text-align:center;font-family:'Kanit';font-weight:500;font-size:.92rem;cursor:pointer;
+  .tabs{display:flex;margin:16px 0 22px;border-bottom:1px solid var(--border);}
+  .tab{flex:1;padding:13px 8px;text-align:center;font-family:'IBM Plex Sans Thai';font-weight:500;font-size:.92rem;cursor:pointer;
     color:var(--ink-soft);border-bottom:2px solid transparent;margin-bottom:-1px;transition:color .15s,border-color .15s;}
-  .tab.active{color:var(--pine);border-bottom-color:var(--amber);}
+  .tab.active{color:var(--navy);border-bottom-color:var(--gold);}
 
-  .card{background:var(--card);border:1px solid var(--paper-line);border-radius:var(--r-md);padding:24px 22px;margin-bottom:16px;}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-md);padding:24px 22px;margin-bottom:16px;box-shadow:var(--shadow-sm);}
   .view{display:none;} .view.active{display:block;}
 
   .stepper-bar{display:flex;align-items:center;justify-content:center;gap:0;margin:4px 0 18px;}
-  .step-dot{width:30px;height:30px;border-radius:50%;background:var(--card);border:1.5px solid var(--paper-line);
-    display:flex;align-items:center;justify-content:center;font-family:'Kanit';font-weight:600;font-size:.85rem;color:var(--ink-soft);
+  .step-dot{width:30px;height:30px;border-radius:50%;background:var(--surface);border:1.5px solid var(--border);
+    display:flex;align-items:center;justify-content:center;font-family:'IBM Plex Sans Thai';font-weight:600;font-size:.85rem;color:var(--ink-soft);
     flex-shrink:0;transition:.2s;}
-  .step-dot.active{border-color:var(--pine);color:var(--pine);background:#F4F8F6;}
-  .step-dot.done{border-color:var(--ok);background:var(--ok);color:#fff;}
-  .step-track{width:44px;height:1.5px;background:var(--paper-line);}
+  .step-dot.active{border-color:var(--navy);color:var(--navy);background:#F4F8F6;}
+  .step-dot.done{border-color:var(--success);background:var(--success);color:#fff;}
+  .step-track{width:44px;height:1.5px;background:var(--border);}
 
   .form-step{display:none;}
   .form-step.active{display:block;animation:stepIn .18s ease;}
   @keyframes stepIn{from{opacity:0;transform:translateX(8px);}to{opacity:1;transform:translateX(0);}}
 
   .step-nav{display:flex;gap:10px;margin-top:22px;}
-  .step-nav .btn{margin-top:0;flex:1;}
-  .step-nav .btn-ghost{flex:0 0 auto;padding-left:20px;padding-right:20px;}
 
   .section-title{display:flex;align-items:center;gap:10px;margin:0 0 14px;}
-  .section-title:not(:first-child){margin-top:26px;padding-top:22px;border-top:1px solid var(--paper-line);}
-  .step-num{width:24px;height:24px;border-radius:50%;background:var(--pine);color:#fff;flex-shrink:0;
-    display:flex;align-items:center;justify-content:center;font-family:'Kanit';font-size:.78rem;font-weight:600;}
-  .section-title span.txt{font-family:'Kanit';font-weight:600;color:var(--pine);font-size:.98rem;}
+  .section-title:not(:first-child){margin-top:26px;padding-top:22px;border-top:1px solid var(--border);}
+  .step-num{width:24px;height:24px;border-radius:50%;background:var(--navy);color:#fff;flex-shrink:0;
+    display:flex;align-items:center;justify-content:center;font-family:'IBM Plex Sans Thai';font-size:.78rem;font-weight:600;}
+  .section-title span.txt{font-family:'IBM Plex Sans Thai';font-weight:600;color:var(--navy);font-size:.98rem;}
 
   label{display:block;font-size:.82rem;color:var(--ink-soft);margin:12px 0 5px;font-weight:600;}
   input[type=text],input[type=number],input[type=tel],input[type=date],select,textarea{
-    width:100%;padding:11px 12px;border:1.5px solid var(--paper-line);border-radius:var(--r-sm);font-size:.95rem;
-    font-family:'Sarabun',sans-serif;background:#FFFDFA;color:var(--ink);
+    width:100%;padding:11px 12px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-size:.95rem;
+    font-family:'IBM Plex Sans Thai',sans-serif;background:#FFFDFA;color:var(--ink);
   }
-  input:focus,select:focus,textarea:focus{outline:none;border-color:var(--pine);box-shadow:0 0 0 3px rgba(23,59,55,.12);}
+  input:focus,select:focus,textarea:focus{outline:none;border-color:var(--navy);box-shadow:0 0 0 3px rgba(23,59,55,.12);}
   textarea{resize:vertical;min-height:60px;}
   .row2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
 
   .opt-list{display:flex;flex-direction:column;gap:7px;}
-  .opt{display:flex;align-items:flex-start;gap:11px;padding:11px 12px;border:1.5px solid var(--paper-line);border-radius:var(--r-sm);cursor:pointer;transition:border-color .15s,background .15s;}
-  .opt:hover{border-color:var(--amber);}
-  .opt.checked{border-color:var(--pine);background:#F4F8F6;}
+  .opt{display:flex;align-items:flex-start;gap:11px;padding:11px 12px;border:1.5px solid var(--border);border-radius:var(--radius-sm);cursor:pointer;transition:border-color .15s,background .15s;}
+  .opt:hover{border-color:var(--gold);}
+  .opt.checked{border-color:var(--navy);background:#F4F8F6;}
   .opt input{display:none;}
   .opt .box{width:19px;height:19px;border:1.5px solid var(--ink-soft);border-radius:4px;flex-shrink:0;margin-top:1px;
     display:flex;align-items:center;justify-content:center;transition:.15s;}
-  .opt.checked .box{background:var(--pine);border-color:var(--pine);}
+  .opt.checked .box{background:var(--navy);border-color:var(--navy);}
   .opt.checked .box::after{content:'';width:9px;height:6px;border-left:2px solid #fff;border-bottom:2px solid #fff;transform:rotate(-45deg) translateY(-1px);}
   .opt .opt-detail{margin-top:9px;display:none;width:100%;}
   .opt.checked .opt-detail.show{display:block;}
@@ -90,71 +89,104 @@
 
   .hint{font-size:.78rem;color:var(--ink-soft);margin-top:6px;line-height:1.5;}
 
-  .btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border:none;border-radius:var(--r-sm);
-    padding:13px 18px;font-family:'Kanit';font-size:.92rem;font-weight:500;cursor:pointer;transition:filter .15s, background .15s;}
-  .btn-primary{background:var(--amber);color:var(--pine-deep);width:100%;margin-top:20px;font-weight:600;}
-  .btn-primary:hover{filter:brightness(1.06);}
-  .btn-primary:disabled{opacity:.55;cursor:not-allowed;}
-  .btn-sm{padding:8px 13px;font-size:.82rem;border-radius:var(--r-sm);}
-  .btn-ghost{background:var(--paper);color:var(--pine);border:1.5px solid var(--paper-line);}
-  .btn-ok{background:var(--ok-bg);color:var(--ok);}
-  .btn-danger{background:var(--danger-bg);color:var(--danger);}
+  /* ---- ปุ่ม: ตรงตาม design-system.css section 4 ---- */
+  .btn{padding:10px 18px;border-radius:var(--radius-sm);border:1px solid var(--navy);background:var(--navy);color:#fff;
+    font-size:13.5px;font-weight:600;font-family:inherit;cursor:pointer;display:inline-flex;align-items:center;
+    justify-content:center;gap:6px;transition:.15s;}
+  .btn:hover{opacity:.88;}
+  .btn.secondary{background:#fff;border-color:var(--border-strong);color:var(--ink);}
+  .btn.secondary:hover{background:var(--surface-2);opacity:1;}
+  .btn-primary{padding:12px 28px;border-radius:var(--radius-sm);border:none;background:var(--success);color:#fff;
+    font-size:14px;font-weight:600;font-family:inherit;cursor:pointer;display:inline-flex;align-items:center;
+    justify-content:center;gap:6px;}
+  .btn-primary:hover{opacity:.9;}
+  .btn-primary:disabled{opacity:.6;cursor:not-allowed;}
+  .btn-mini{padding:7px 13px;border-radius:4px;border:1px solid var(--border);background:#fff;font-family:inherit;
+    font-size:12.5px;font-weight:600;cursor:pointer;color:var(--ink);display:inline-flex;align-items:center;gap:5px;}
+  .btn-mini:hover{background:var(--surface-2);}
+  .btn-mini.danger{border-color:var(--danger);color:var(--danger);}
+  .btn-mini.danger:hover{background:var(--danger-bg);}
+  .btn-mini.save{border-color:var(--success);color:var(--success);}
+  .btn-mini.save:hover{background:var(--success-bg);}
+  .step-nav .btn,.step-nav .btn-primary{flex:1;}
+  .step-nav .btn.secondary{flex:0 0 auto;padding-left:22px;padding-right:22px;}
 
   .success-box{text-align:center;padding:8px 6px 4px;}
   .stamp{display:flex;justify-content:center;margin-bottom:16px;}
-  .stamp-ring{width:74px;height:74px;border-radius:50%;border:2px solid var(--ok);position:relative;
+  .stamp-ring{width:74px;height:74px;border-radius:50%;border:2px solid var(--success);position:relative;
     display:flex;align-items:center;justify-content:center;}
-  .stamp-ring::before{content:'';position:absolute;inset:6px;border:1px dashed var(--ok);border-radius:50%;opacity:.55;}
-  .stamp-ring span{font-size:28px;color:var(--ok);font-weight:700;}
-  .success-title{font-family:'Kanit';font-weight:600;font-size:1.12rem;color:var(--pine);}
+  .stamp-ring::before{content:'';position:absolute;inset:6px;border:1px dashed var(--success);border-radius:50%;opacity:.55;}
+  .stamp-ring span{font-size:28px;color:var(--success);font-weight:700;}
+  .success-title{font-family:'IBM Plex Sans Thai';font-weight:600;font-size:1.12rem;color:var(--navy);}
 
-  .ticket{display:flex;align-items:center;justify-content:center;gap:10px;background:var(--paper);
-    border:1.5px dashed var(--paper-line);border-radius:var(--r-sm);padding:12px 18px;margin:18px auto 0;max-width:280px;}
+  .ticket{display:flex;align-items:center;justify-content:center;gap:10px;background:var(--canvas);
+    border:1.5px dashed var(--border);border-radius:var(--radius-sm);padding:12px 18px;margin:18px auto 0;max-width:280px;}
   .ticket-label{font-size:.78rem;color:var(--ink-soft);}
-  .ticket-id{font-family:'Kanit';font-weight:600;color:var(--pine);letter-spacing:1px;font-size:1.02rem;}
+  .ticket-id{font-family:'IBM Plex Sans Thai';font-weight:600;color:var(--navy);letter-spacing:1px;font-size:1.02rem;}
 
   .next-steps{text-align:left;max-width:340px;margin:22px auto 22px;display:flex;flex-direction:column;gap:12px;}
   .next-step{display:flex;align-items:flex-start;gap:11px;font-size:.87rem;color:var(--ink-soft);line-height:1.5;}
-  .ns-dot{flex-shrink:0;width:21px;height:21px;border-radius:50%;background:#F4F8F6;border:1.5px solid var(--pine);
-    color:var(--pine);font-family:'Kanit';font-weight:600;font-size:.72rem;display:flex;align-items:center;justify-content:center;margin-top:1px;}
+  .ns-dot{flex-shrink:0;width:21px;height:21px;border-radius:50%;background:#F4F8F6;border:1.5px solid var(--navy);
+    color:var(--navy);font-family:'IBM Plex Sans Thai';font-weight:600;font-size:.72rem;display:flex;align-items:center;justify-content:center;margin-top:1px;}
 
   /* HR gate */
   .gate{text-align:center;padding:34px 10px;}
-  .gate .lock{width:46px;height:46px;border-radius:50%;border:2px solid var(--amber);color:var(--amber);
+  .gate .lock{width:46px;height:46px;border-radius:50%;border:2px solid var(--gold);color:var(--gold);
     display:flex;align-items:center;justify-content:center;margin:0 auto;font-size:1.3rem;}
-  .gate .title{font-family:'Kanit';font-weight:600;color:var(--pine);margin-top:10px;}
+  .gate .title{font-family:'IBM Plex Sans Thai';font-weight:600;color:var(--navy);margin-top:10px;}
   .gate input{max-width:200px;margin:16px auto 4px;text-align:center;letter-spacing:3px;}
 
   /* HR list */
   .hr-toolbar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;}
   .hr-toolbar input,.hr-toolbar select{flex:1;min-width:120px;}
-  .req-card{background:var(--card);border:1px solid var(--paper-line);border-left:4px solid var(--paper-line);border-radius:var(--r-sm);padding:14px 16px;margin-bottom:10px;}
-  .req-card.pending{border-left-color:var(--warn);}
-  .req-card.issued{border-left-color:var(--ok);}
+  .req-card{background:var(--surface);border:1px solid var(--border);border-left:4px solid var(--border);border-radius:var(--radius-sm);padding:14px 16px;margin-bottom:10px;box-shadow:var(--shadow-sm);}
+  .req-card.pending{border-left-color:var(--warning);}
+  .req-card.issued{border-left-color:var(--success);}
   .req-card.void{border-left-color:var(--danger);opacity:.65;}
   .req-top{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;flex-wrap:wrap;}
-  .req-name{font-family:'Kanit';font-weight:600;color:var(--pine);}
+  .req-name{font-family:'IBM Plex Sans Thai';font-weight:600;color:var(--navy);}
   .req-id-sm{font-size:.74rem;color:var(--ink-soft);}
-  .badge{font-family:'Kanit';font-size:.7rem;font-weight:500;padding:4px 10px;border-radius:20px;white-space:nowrap;}
-  .badge.pending{background:var(--warn-bg);color:var(--warn);}
-  .badge.issued{background:var(--ok-bg);color:var(--ok);}
+  .badge{font-family:'IBM Plex Sans Thai';font-size:.7rem;font-weight:500;padding:4px 10px;border-radius:20px;white-space:nowrap;}
+  .badge.pending{background:var(--warning-bg);color:var(--warning);}
+  .badge.issued{background:var(--success-bg);color:var(--success);}
   .badge.void{background:var(--danger-bg);color:var(--danger);}
   .req-meta{font-size:.85rem;color:var(--ink-soft);margin-top:8px;line-height:1.7;}
   .req-actions{margin-top:11px;display:flex;gap:8px;flex-wrap:wrap;}
   .empty{text-align:center;color:var(--ink-soft);padding:30px 10px;font-size:.9rem;}
 
-  .toast-wrap{position:fixed;top:14px;right:14px;left:14px;z-index:999;display:flex;flex-direction:column;align-items:flex-end;gap:8px;}
-  .toast{background:var(--ink);color:#fff;padding:12px 16px;border-radius:var(--r-sm);font-size:.85rem;box-shadow:0 8px 20px rgba(0,0,0,.25);animation:in .2s ease;max-width:320px;}
-  .toast.ok{background:#265A3C;} .toast.err{background:#7A2E20;}
-  @keyframes in{from{opacity:0;transform:translateY(-6px);}to{opacity:1;transform:translateY(0);}}
-
-  .modal-overlay{position:fixed;inset:0;background:rgba(14,40,37,.55);display:none;align-items:center;justify-content:center;z-index:1000;padding:16px;}
-  .modal-overlay.show{display:flex;}
-  .modal{background:#fff;border-radius:var(--r-md);padding:22px;width:100%;max-width:360px;}
-  .modal h3{margin:0 0 10px;color:var(--pine);font-size:1rem;font-family:'Kanit';font-weight:600;}
-  .modal .row2{margin-top:14px;}
   small.muted{color:var(--ink-soft);}
   footer{text-align:center;color:var(--ink-soft);font-size:.75rem;padding:14px 0 34px;}
+
+  /* ---- SweetAlert2 theme: ตรงตาม design-system.css section 11 + 11b ---- */
+  .swal2-popup{font-family:'IBM Plex Sans Thai','IBM Plex Sans',sans-serif !important;border-radius:var(--radius-md) !important;box-shadow:0 14px 40px rgba(20,30,45,0.20) !important;padding:30px 26px 26px !important;}
+  .swal2-title{color:var(--ink) !important;font-size:19px !important;font-weight:700 !important;padding:6px 0 4px !important;}
+  .swal2-html-container{color:var(--ink-soft) !important;font-size:14px !important;line-height:1.55 !important;}
+  .swal2-actions{gap:10px !important;margin-top:22px !important;}
+  .swal2-styled{border-radius:var(--radius-sm) !important;font-family:inherit !important;font-size:14px !important;font-weight:600 !important;padding:11px 26px !important;box-shadow:none !important;transition:.15s !important;}
+  .swal2-styled.swal2-confirm:hover{opacity:.9 !important;}
+  .swal2-styled.swal2-cancel{background:#fff !important;color:var(--ink-soft) !important;border:1px solid var(--border-strong) !important;}
+  .swal2-styled.swal2-cancel:hover{background:var(--surface-2) !important;color:var(--ink) !important;}
+  .swal2-icon{border-width:2.5px !important;margin:14px auto 18px !important;}
+  .swal2-icon.swal2-success{border-color:var(--success) !important;color:var(--success) !important;}
+  .swal2-icon.swal2-success [class^=swal2-success-line]{background-color:var(--success) !important;}
+  .swal2-icon.swal2-error{border-color:var(--danger) !important;color:var(--danger) !important;}
+  .swal2-icon.swal2-error [class^=swal2-x-mark-line]{background-color:var(--danger) !important;}
+  .swal2-icon.swal2-warning{border-color:var(--warning) !important;color:var(--warning) !important;}
+  .swal2-icon.swal2-info{border-color:var(--info) !important;color:var(--info) !important;}
+  .swal2-timer-progress-bar{background:var(--navy) !important;}
+  .swal2-input,.swal2-textarea{border-radius:var(--radius-sm) !important;border:1px solid var(--border) !important;font-family:inherit !important;font-size:14px !important;box-shadow:none !important;height:auto !important;padding:10px 12px !important;}
+  .swal2-input:focus,.swal2-textarea:focus{border-color:var(--info) !important;box-shadow:0 0 0 3px rgba(46,108,147,0.15) !important;}
+  .swal2-validation-message{border-radius:var(--radius-sm) !important;font-size:13px !important;background:var(--danger-bg) !important;color:var(--danger) !important;}
+
+  .app-swal-popup{font-family:'IBM Plex Sans Thai','IBM Plex Sans',-apple-system,sans-serif !important;border-radius:var(--radius-md) !important;box-shadow:var(--shadow-md) !important;}
+  .app-swal-title{color:var(--ink) !important;font-size:18px !important;font-weight:700 !important;padding-top:4px !important;}
+  .app-swal-text{color:var(--ink-soft) !important;font-size:13.5px !important;}
+  .app-swal-confirm{background:var(--navy) !important;color:#fff !important;border:none !important;padding:10px 22px !important;border-radius:var(--radius-sm) !important;font-size:14px !important;font-weight:600 !important;font-family:inherit !important;cursor:pointer !important;margin:0 6px !important;box-shadow:none !important;}
+  .app-swal-confirm:hover{opacity:.9;}
+  .app-swal-confirm-danger{background:var(--danger) !important;}
+  .app-swal-confirm-danger:hover{opacity:.9;}
+  .app-swal-cancel{background:#fff !important;color:var(--ink) !important;border:1px solid var(--border-strong) !important;padding:10px 22px !important;border-radius:var(--radius-sm) !important;font-size:14px !important;font-weight:600 !important;font-family:inherit !important;cursor:pointer !important;margin:0 6px !important;box-shadow:none !important;}
+  .app-swal-cancel:hover{background:var(--surface-2) !important;}
 </style>
 </head>
 <body>
@@ -233,9 +265,9 @@
       </div>
 
       <div class="step-nav">
-        <button class="btn btn-ghost" id="backBtn" onclick="stepBack()" style="display:none;">ย้อนกลับ</button>
-        <button class="btn btn-primary" id="nextBtn" onclick="stepNext()">ถัดไป</button>
-        <button class="btn btn-primary" id="submitBtn" onclick="submitForm()" style="display:none;">ส่งคำขอใบส่งตัว</button>
+        <button class="btn secondary" id="backBtn" onclick="stepBack()" style="display:none;">ย้อนกลับ</button>
+        <button class="btn" id="nextBtn" onclick="stepNext()">ถัดไป</button>
+        <button class="btn-primary" id="submitBtn" onclick="submitForm()" style="display:none;">ส่งคำขอใบส่งตัว</button>
       </div>
       <div class="hint" style="text-align:center;margin-top:10px;">
         ส่งคำขอแล้วระบบจะแจ้งฝ่ายบุคคลทันที กรุณารอการติดต่อกลับ หรือแวะมารับใบส่งตัวที่ฝ่ายบุคคลได้เลย
@@ -261,7 +293,7 @@
           <div class="next-step"><span class="ns-dot">3</span>เซ็นชื่อรับใบส่งตัว แล้วนำไปโรงพยาบาลได้ทันที</div>
         </div>
 
-        <button class="btn btn-ghost btn-sm" onclick="resetForm()">ส่งคำขอใหม่อีกครั้ง</button>
+        <button class="btn secondary" onclick="resetForm()">ส่งคำขอใหม่อีกครั้ง</button>
       </div>
     </div>
   </div>
@@ -273,7 +305,7 @@
       <div class="title">สำหรับฝ่ายบุคคลเท่านั้น</div>
       <div class="hint">กรอกรหัสผ่านเพื่อดูรายการคำขอใบส่งตัว</div>
       <input type="text" id="hrCodeInput" placeholder="รหัสผ่าน" inputmode="numeric">
-      <div><button class="btn btn-primary" style="width:auto;padding:11px 30px;" onclick="unlockHr()">เข้าสู่หน้ารายการ</button></div>
+      <div><button class="btn" style="padding:11px 30px;" onclick="unlockHr()">เข้าสู่หน้ารายการ</button></div>
     </div>
 
     <div id="hrPanel" style="display:none;">
@@ -288,9 +320,9 @@
           </select>
         </div>
         <div class="hr-toolbar">
-          <button class="btn btn-ghost btn-sm" onclick="loadHrList()">🔄 รีเฟรช</button>
-          <button class="btn btn-ghost btn-sm" onclick="exportCsv()">⬇️ Export CSV</button>
-          <button class="btn btn-ghost btn-sm" onclick="lockHr()">🔒 ออกจากหน้านี้</button>
+          <button class="btn-mini" onclick="loadHrList()">🔄 รีเฟรช</button>
+          <button class="btn-mini" onclick="exportCsv()">⬇️ Export CSV</button>
+          <button class="btn-mini" onclick="lockHr()">🔒 ออกจากหน้านี้</button>
         </div>
         <div id="hrPendingSummary" class="hint"></div>
       </div>
@@ -302,20 +334,6 @@
 
 <footer>© Summit Auto Body Industry — ระบบขอใบส่งตัว</footer>
 
-<div class="toast-wrap" id="toastWrap"></div>
-
-<div class="modal-overlay" id="noteModal">
-  <div class="modal">
-    <h3 id="noteModalTitle">ยืนยันออกใบส่งตัว</h3>
-    <small class="muted" id="noteModalDesc"></small>
-    <label>หมายเหตุ (ไม่บังคับ)</label>
-    <textarea id="noteModalText" placeholder="เช่น มารับเอกสารแล้ว 24/9"></textarea>
-    <div class="row2">
-      <button class="btn btn-ghost" onclick="closeNoteModal()">ยกเลิก</button>
-      <button class="btn btn-primary" style="margin-top:0;" onclick="confirmNoteModal()">ยืนยัน</button>
-    </div>
-  </div>
-</div>
 
 <script>
   // ตั้งค่า URL ของ Apps Script Web App ที่ deploy ไว้ (ใช้ URL เดิมได้เลยถ้า deploy ทับของเดิม)
@@ -332,13 +350,33 @@
     }).then(r => r.json());
   }
 
+  // ---------- ธีม SweetAlert2 ของบริษัท (swal-theme.js) ----------
+  Swal = Swal.mixin({
+    buttonsStyling: false,
+    customClass: {
+      popup: 'app-swal-popup', title: 'app-swal-title', htmlContainer: 'app-swal-text',
+      confirmButton: 'app-swal-confirm', cancelButton: 'app-swal-cancel', denyButton: 'app-swal-deny'
+    }
+  });
+  function fireAlert(opts){
+    const merged = Object.assign({ reverseButtons: true }, opts);
+    if (merged.confirmButtonColor) {
+      merged.customClass = {
+        popup: 'app-swal-popup', title: 'app-swal-title', htmlContainer: 'app-swal-text',
+        confirmButton: 'app-swal-confirm app-swal-confirm-danger',
+        cancelButton: 'app-swal-cancel', denyButton: 'app-swal-deny'
+      };
+      delete merged.confirmButtonColor;
+    }
+    return Swal.fire(merged);
+  }
+
   function showToast(msg, type){
-    const wrap = document.getElementById('toastWrap');
-    const el = document.createElement('div');
-    el.className = 'toast ' + (type || '');
-    el.textContent = msg;
-    wrap.appendChild(el);
-    setTimeout(() => el.remove(), 3800);
+    fireAlert({
+      toast: true, position: 'top-end', showConfirmButton: false, timer: 2600, timerProgressBar: true,
+      icon: type === 'err' ? 'error' : (type === 'ok' ? 'success' : undefined),
+      title: msg
+    });
   }
 
   // ---------- Step wizard ----------
@@ -560,8 +598,8 @@
         </div>
         ${r.status === 'รอ HR ออกใบ' ? `
         <div class="req-actions">
-          <button class="btn btn-sm btn-ok" onclick="openNoteModal('${r.requestId}','issue')">✓ ออกใบแล้ว</button>
-          <button class="btn btn-sm btn-danger" onclick="openNoteModal('${r.requestId}','void')">ยกเลิกคำขอ</button>
+          <button class="btn-mini save" onclick="openNoteModal('${r.requestId}','issue')">✓ ออกใบแล้ว</button>
+          <button class="btn-mini danger" onclick="openNoteModal('${r.requestId}','void')">ยกเลิกคำขอ</button>
         </div>` : ''}
       </div>
     `).join('');
@@ -569,32 +607,39 @@
 
   function escapeHtml(s){ return String(s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 
-  // ---- Note modal (ใช้ร่วมกันทั้งออกใบแล้ว/ยกเลิก) ----
-  let noteModalCtx = null;
+  // ---- Confirm dialog (ใช้ร่วมกันทั้งออกใบแล้ว/ยกเลิก) ----
   function openNoteModal(requestId, mode){
-    noteModalCtx = { requestId, mode };
-    document.getElementById('noteModalTitle').textContent = mode === 'issue' ? 'ยืนยันออกใบส่งตัวแล้ว' : 'ยืนยันยกเลิกคำขอ';
-    document.getElementById('noteModalDesc').textContent = mode === 'issue'
-      ? 'เลขที่คำขอ ' + requestId + ' — จะถูกทำเครื่องหมายว่าออกใบแล้ว'
-      : 'เลขที่คำขอ ' + requestId + ' — กรุณาระบุเหตุผลการยกเลิก';
-    document.getElementById('noteModalText').value = '';
-    document.getElementById('noteModal').classList.add('show');
-  }
-  function closeNoteModal(){ document.getElementById('noteModal').classList.remove('show'); noteModalCtx = null; }
-  function confirmNoteModal(){
-    if (!noteModalCtx) return;
-    const note = document.getElementById('noteModalText').value.trim();
-    if (noteModalCtx.mode === 'void' && !note) return showToast('กรุณาระบุเหตุผลการยกเลิก', 'err');
-    const action = noteModalCtx.mode === 'issue' ? 'markRequestIssued' : 'voidRequest';
-    const payload = noteModalCtx.mode === 'issue'
-      ? { accessCode: HR_CODE, requestId: noteModalCtx.requestId, note }
-      : { accessCode: HR_CODE, requestId: noteModalCtx.requestId, reason: note };
-    callApi(action, payload).then(res => {
-      if (!res.success) return showToast(res.error || 'ทำรายการไม่สำเร็จ', 'err');
-      showToast('บันทึกเรียบร้อย', 'ok');
-      closeNoteModal();
-      loadHrList();
-    }).catch(() => showToast('เชื่อมต่อระบบไม่สำเร็จ', 'err'));
+    const isVoid = mode === 'void';
+    fireAlert({
+      icon: isVoid ? 'warning' : 'question',
+      title: isVoid ? 'ยืนยันยกเลิกคำขอ' : 'ยืนยันออกใบส่งตัวแล้ว',
+      html: 'เลขที่คำขอ <b>' + requestId + '</b>' + (isVoid ? ' — กรุณาระบุเหตุผลการยกเลิก' : ''),
+      input: 'textarea',
+      inputPlaceholder: isVoid ? 'เช่น พนักงานยกเลิกเอง' : 'หมายเหตุ (ไม่บังคับ) เช่น มารับเอกสารแล้ว 24/9',
+      showCancelButton: true,
+      confirmButtonText: isVoid ? 'ยืนยันยกเลิก' : 'ยืนยัน',
+      cancelButtonText: 'ปิด',
+      confirmButtonColor: isVoid ? true : undefined,
+      preConfirm: (note) => {
+        if (isVoid && !String(note || '').trim()) {
+          Swal.showValidationMessage('กรุณาระบุเหตุผลการยกเลิก');
+          return false;
+        }
+        return note;
+      }
+    }).then(result => {
+      if (!result.isConfirmed) return;
+      const note = result.value || '';
+      const action = isVoid ? 'voidRequest' : 'markRequestIssued';
+      const payload = isVoid
+        ? { accessCode: HR_CODE, requestId: requestId, reason: note }
+        : { accessCode: HR_CODE, requestId: requestId, note: note };
+      callApi(action, payload).then(res => {
+        if (!res.success) return showToast(res.error || 'ทำรายการไม่สำเร็จ', 'err');
+        showToast('บันทึกเรียบร้อย', 'ok');
+        loadHrList();
+      }).catch(() => showToast('เชื่อมต่อระบบไม่สำเร็จ', 'err'));
+    });
   }
 
   function exportCsv(){
