@@ -54,6 +54,9 @@
   .menu-btn:hover{background:var(--surface-2);}
   .menu-btn:focus-visible{outline:2px solid var(--gold);outline-offset:2px;}
   .menu-btn svg{width:20px;height:20px;}
+  .ah-icon{width:44px;height:44px;flex-shrink:0;display:flex;align-items:center;justify-content:center;border-radius:11px;background:var(--navy);color:var(--gold);}
+  .ah-icon svg{width:22px;height:22px;}
+  @media (max-width:559px){.ah-icon{display:none;}}
   #formCard{scroll-margin-top:92px;}
 
   .sidebar{position:sticky;top:0;align-self:start;height:100vh;height:100dvh;display:flex;flex-direction:column;
@@ -319,6 +322,7 @@
 <header class="app-header" id="appHeader" data-view="employee">
   <div class="ah-inner">
     <button class="menu-btn" id="menuBtn" aria-label="เปิดเมนู" aria-expanded="false" aria-controls="sidebar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+    <div class="ah-icon" id="headIcon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V7z"/><path d="M14 3v4h4"/><path d="M12 11v6M9 14h6"/></svg></div>
     <div class="ah-text"><h1 id="pageTitle">ขอใบส่งตัว</h1><p id="pageDesc"></p></div>
     <div class="ah-chip" id="headChip" hidden></div>
   </div>
@@ -551,6 +555,10 @@
     employee: { title: 'ขอใบส่งตัว', desc: 'กรอกข้อมูล 3 ขั้นตอน ฝ่ายบุคคลจะเตรียมใบส่งตัวให้' },
     hr: { title: 'รายการคำขอใบส่งตัว', desc: 'ตรวจสอบคำขอ ออกใบส่งตัว และส่งออกข้อมูล' }
   };
+  const HEAD_ICONS = {
+    employee: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V7z"/><path d="M14 3v4h4"/><path d="M12 11v6M9 14h6"/></svg>',
+    hr: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="4" width="12" height="17" rx="1.5"/><path d="M9 4h6v2.5H9z"/><path d="M9.5 13.5l2 2 3.5-4"/></svg>'
+  };
   const appEl = document.getElementById('app');
   const sidebarEl = document.getElementById('sidebar');
   const menuBtn = document.getElementById('menuBtn');
@@ -569,6 +577,7 @@
     document.getElementById('pageDesc').textContent = VIEWS[name].desc;
     document.title = VIEWS[name].title + ' — Summit Auto Body Industry';
     currentView = name;
+    document.getElementById('headIcon').innerHTML = HEAD_ICONS[name];
     document.getElementById('appHeader').dataset.view = name;
     syncHeaderChip();
     window.scrollTo(0, 0);
