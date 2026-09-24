@@ -128,7 +128,7 @@
     .scrim{display:block;position:fixed;inset:0;background:rgba(14,24,38,.55);opacity:0;pointer-events:none;transition:opacity .2s;z-index:55;}
     .app.drawer-open .scrim{opacity:1;pointer-events:auto;}
     .sb-close{display:inline-flex;}
-    .sb-foot{display:none;}
+    #sbToggle{display:none;}
   }
   @media (max-width:560px){.ah-chip{display:none;}}
   @media (prefers-reduced-motion:reduce){.ah-progress i,.app,.sidebar,.scrim,.nav-item,.sb-toggle svg{transition:none !important;}}
@@ -248,6 +248,9 @@
   /* ---- HR page ---- */
   .stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px;}
   .stat{text-align:left;padding:14px;background:var(--surface);border:1.5px solid var(--border);border-radius:var(--radius-md);box-shadow:var(--shadow-sm);cursor:pointer;font:inherit;color:inherit;transition:border-color .15s,box-shadow .15s;}
+  .stat{display:flex;flex-direction:column;align-items:flex-start;justify-content:flex-start;}
+  .sb-logout[hidden]{display:none;}
+  .sb-logout:hover{background:rgba(171,59,39,.22);color:#fff;}
   .stat:hover{border-color:var(--border-strong);}
   .stat:focus-visible{outline:2px solid var(--gold);outline-offset:2px;}
   .stat.active{border-color:var(--c);box-shadow:0 0 0 3px var(--c-bg);}
@@ -367,6 +370,7 @@
   </nav>
 
   <div class="sb-foot">
+    <button class="sb-toggle sb-logout" id="sbLogout" data-label="ออกจากระบบ" aria-label="ออกจากระบบฝ่ายบุคคล" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:20px;height:20px"><path d="M9 4H6a1 1 0 0 0-1 1v14a1 1 0 0 0 1 1h3"/><path d="M15 8l4 4-4 4M19 12H9"/></svg><span class="t-label">ออกจากระบบ</span></button>
     <button class="sb-toggle" id="sbToggle" data-label="ย่อเมนู" aria-expanded="true" aria-label="ย่อเมนู (Ctrl+B)">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg>
       <span class="t-label">ย่อเมนู</span>
@@ -499,13 +503,13 @@
         <button class="stat s-all" data-status=""><span class="stat-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 6h14M5 12h14M5 18h9"/></svg></span><span class="stat-num" id="stAll">–</span><span class="stat-label">คำขอทั้งหมด</span><span class="stat-note" id="stAllNote"></span></button>
       </div>
       <div class="hr-bar">
-        <div class="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4 4"/></svg><input type="text" id="hrKeyword" placeholder="ค้นหาชื่อ / รหัสพนักงาน / แผนก / เลขที่คำขอ"></div>
+        <div class="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4 4"/></svg><input type="text" id="hrKeyword" placeholder="ค้นหาชื่อ / รหัส / แผนก"></div>
         <select id="hrStatus" hidden><option value="">ทุกสถานะ</option><option value="รอ HR ออกใบ">รอ HR ออกใบ</option><option value="ออกใบแล้ว">ออกใบแล้ว</option><option value="ยกเลิก">ยกเลิก</option></select>
         <div class="hr-actions">
           <button class="btn-mini" onclick="loadHrList()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.3-5.7"/><path d="M20 4v5h-5"/></svg>รีเฟรช</button>
           <button class="btn-mini" onclick="exportCsv()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11M7.5 10.5L12 15l4.5-4.5"/><path d="M5 19h14"/></svg>Export CSV</button>
           <button class="btn-mini" onclick="openPwModal()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="15" r="4"/><path d="M11 12l8-8M16 7l3 3"/></svg>จัดการรหัสผ่าน</button>
-          <button class="btn-mini" onclick="lockHr()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>ออกจากหน้านี้</button>
+          <button class="btn-mini" onclick="confirmLogout()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 4H6a1 1 0 0 0-1 1v14a1 1 0 0 0 1 1h3"/><path d="M15 8l4 4-4 4M19 12H9"/></svg>ออกจากระบบ</button>
         </div>
       </div>
       <div id="hrPendingSummary" class="hint" style="margin:0 0 10px;"></div>
@@ -681,6 +685,7 @@
   // สถานะ 🔒 + จำนวนรอออกใบ บนเมนูฝ่ายบุคคล
   function syncHrNav(count){
     hrItem.classList.toggle('locked', !HR_CODE);
+    const lo = document.getElementById('sbLogout'); if (lo) lo.hidden = !HR_CODE;
     syncHeaderChip();
     if (!HR_CODE) count = 0;
     if (typeof count === 'number') {
@@ -1090,6 +1095,36 @@
   document.getElementById('pwClose').addEventListener('click', closePwModal);
   document.getElementById('pwBack').addEventListener('click', closePwModal);
   document.addEventListener('keydown', e => { if (e.key === 'Escape' && !document.getElementById('pwModal').hidden && !Swal.isVisible()) closePwModal(); });
+
+  // ================= ออกจากระบบ (ฝ่ายบุคคล) =================
+  function confirmLogout(){
+    if (!HR_CODE) return;
+    fireAlert({
+      icon: 'question', title: 'ออกจากระบบฝ่ายบุคคล?',
+      html: 'ระบบจะล้างรหัสผ่านที่จำไว้ในเครื่องนี้<br>ครั้งถัดไปต้องกรอกรหัสผ่านใหม่เพื่อดูรายการ',
+      showCancelButton: true, confirmButtonText: 'ออกจากระบบ', cancelButtonText: 'ยกเลิก'
+    }).then(r => {
+      if (!r.isConfirmed) return;
+      closePwModal();
+      logoutHr();
+      fireAlert({
+        icon: 'success', title: 'ออกจากระบบเรียบร้อย',
+        html: 'ล้างรหัสผ่านออกจากเครื่องนี้แล้ว',
+        showConfirmButton: false, timer: 2200, timerProgressBar: true
+      });
+    });
+  }
+  function logoutHr(){
+    lockHr();
+    document.getElementById('hrList').innerHTML = '';
+    document.getElementById('hrPendingSummary').textContent = '';
+    ['stPending', 'stIssued', 'stVoid', 'stAll'].forEach(id => document.getElementById(id).textContent = '–');
+    ['stPendingNote', 'stAllNote'].forEach(id => document.getElementById(id).textContent = '');
+    document.getElementById('hrKeyword').value = '';
+    document.getElementById('hrStatus').value = '';
+    syncStatActive();
+  }
+  document.getElementById('sbLogout').addEventListener('click', confirmLogout);
 </script>
 </body>
 </html>
