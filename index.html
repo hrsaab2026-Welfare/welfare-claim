@@ -28,19 +28,84 @@
   body{margin:0;font-family:'IBM Plex Sans Thai','IBM Plex Sans',-apple-system,sans-serif;background:var(--canvas);color:var(--ink);}
   h1,h2,h3,.font-display{font-family:inherit;}
 
-  header{background:var(--navy-2);border-bottom:3px solid var(--gold);color:#fff;padding:18px 16px;}
-  .header-inner{max-width:640px;margin:0 auto;display:flex;align-items:center;gap:12px;}
-  .seal{width:36px;height:36px;border-radius:8px;background:#fff;color:var(--navy);display:flex;align-items:center;justify-content:center;
-    font-family:'IBM Plex Sans Thai';font-weight:700;font-size:.9rem;flex-shrink:0;}
-  header h1{margin:0;font-size:1.05rem;font-weight:700;letter-spacing:.2px;}
-  header p{margin:2px 0 0;font-size:.78rem;color:#9FB0BC;}
+  /* ================= Sidebar layout ================= */
+  :root{--sb-w:264px;--sb-w-min:76px;--sb-line:rgba(255,255,255,.09);--sb-muted:#9FB0BC;}
+  .app{display:grid;grid-template-columns:var(--sb-w) minmax(0,1fr);min-height:100vh;transition:grid-template-columns .24s cubic-bezier(.4,0,.2,1);}
+  .main{min-width:0;display:flex;flex-direction:column;min-height:100vh;}
+  .wrap{width:100%;max-width:760px;margin:0 auto;padding:32px 28px 24px;flex:1;}
+  .page-head{margin:0 0 20px;}
+  .page-head h2{margin:0;font-size:1.35rem;font-weight:700;color:var(--navy);}
+  .page-head p{margin:4px 0 0;font-size:.88rem;color:var(--ink-soft);}
 
-  .wrap{max-width:640px;margin:0 auto;padding:0 16px 40px;}
+  .sidebar{position:sticky;top:0;align-self:start;height:100vh;height:100dvh;display:flex;flex-direction:column;
+    background:var(--navy);color:#fff;overflow:hidden;z-index:60;}
+  .sb-brand{display:flex;align-items:center;gap:12px;min-height:76px;padding:0 18px;border-bottom:1px solid var(--sb-line);}
+  .seal{width:38px;height:38px;border-radius:9px;background:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 0 0 3px rgba(217,154,43,.35);}
+  .sb-title{min-width:0;line-height:1.3;}
+  .sb-title strong{display:block;font-size:.98rem;font-weight:700;white-space:nowrap;}
+  .sb-title span{display:block;font-size:.75rem;color:var(--sb-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .sb-nav{flex:1;padding:8px 12px;}
+  .sb-group-label{padding:16px 12px 6px;font-size:.74rem;font-weight:600;color:var(--sb-muted);white-space:nowrap;}
 
-  .tabs{display:flex;margin:16px 0 22px;border-bottom:1px solid var(--border);}
-  .tab{flex:1;padding:13px 8px;text-align:center;font-family:'IBM Plex Sans Thai';font-weight:500;font-size:.92rem;cursor:pointer;
-    color:var(--ink-soft);border-bottom:2px solid transparent;margin-bottom:-1px;transition:color .15s,border-color .15s;}
-  .tab.active{color:var(--navy);border-bottom-color:var(--gold);}
+  .nav-item{position:relative;display:flex;align-items:center;gap:12px;width:100%;margin:2px 0;padding:11px 12px;border:0;border-radius:var(--radius-md);
+    background:transparent;color:#C7D2DC;font:inherit;font-size:.92rem;font-weight:500;text-align:left;cursor:pointer;transition:background .15s,color .15s;}
+  .nav-item:hover{background:rgba(255,255,255,.06);color:#fff;}
+  .nav-item[aria-current="page"]{background:rgba(255,255,255,.10);color:#fff;font-weight:600;}
+  .nav-item[aria-current="page"]::before{content:'';position:absolute;left:-12px;top:8px;bottom:8px;width:3px;border-radius:0 3px 3px 0;background:var(--gold);}
+  .nav-item svg{width:20px;height:20px;flex-shrink:0;}
+  .nav-item[aria-current="page"] .ni-icon{color:var(--gold);}
+  .ni-label{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .ni-lock{display:none;opacity:.55;}
+  .nav-item.locked .ni-lock{display:inline-flex;}
+  .ni-lock svg{width:15px;height:15px;}
+  .ni-badge{display:none;min-width:22px;height:22px;padding:0 7px;border-radius:11px;background:var(--gold);color:var(--navy);font-size:.74rem;font-weight:700;align-items:center;justify-content:center;}
+  .ni-badge.show{display:inline-flex;}
+
+  .sb-foot{padding:12px;border-top:1px solid var(--sb-line);}
+  .sb-toggle{position:relative;display:flex;align-items:center;gap:12px;width:100%;padding:10px 12px;border:0;border-radius:var(--radius-md);
+    background:transparent;color:var(--sb-muted);font:inherit;font-size:.85rem;cursor:pointer;transition:background .15s,color .15s;}
+  .sb-toggle:hover{background:rgba(255,255,255,.06);color:#fff;}
+  .sb-toggle svg{width:20px;height:20px;flex-shrink:0;transition:transform .24s;}
+  .nav-item:focus-visible,.sb-toggle:focus-visible,.icon-btn:focus-visible{outline:2px solid var(--gold);outline-offset:2px;}
+
+  .topbar{display:none;position:sticky;top:0;z-index:50;align-items:center;gap:12px;padding:10px 14px;background:var(--navy-2);border-bottom:3px solid var(--gold);color:#fff;}
+  .topbar strong{font-size:1rem;font-weight:700;}
+  .icon-btn{width:40px;height:40px;border-radius:var(--radius-md);border:1px solid rgba(255,255,255,.2);background:transparent;color:#fff;
+    display:inline-flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;}
+  .icon-btn:hover{background:rgba(255,255,255,.08);}
+  .icon-btn svg{width:20px;height:20px;}
+  .sb-close{display:none;margin-left:auto;}
+  .scrim{display:none;}
+
+  @media (min-width:900px){
+    .app.collapsed{grid-template-columns:var(--sb-w-min) minmax(0,1fr);}
+    .app.collapsed .sidebar{overflow:visible;}
+    .app.collapsed .sb-title,.app.collapsed .ni-label,.app.collapsed .ni-lock,.app.collapsed .sb-toggle .t-label{display:none;}
+    .app.collapsed .sb-brand{justify-content:center;padding:0;}
+    .app.collapsed .sb-group-label{height:1px;margin:14px 16px;padding:0;overflow:hidden;font-size:0;background:var(--sb-line);}
+    .app.collapsed .nav-item,.app.collapsed .sb-toggle{justify-content:center;padding-left:0;padding-right:0;}
+    .app.collapsed .ni-badge{position:absolute;top:3px;right:7px;min-width:18px;height:18px;padding:0 5px;font-size:.66rem;}
+    .app.collapsed .sb-toggle svg{transform:rotate(180deg);}
+    .app.collapsed .nav-item::after,.app.collapsed .sb-toggle::after{content:attr(data-label);position:absolute;left:calc(100% + 14px);top:50%;transform:translateY(-50%);
+      padding:6px 11px;border-radius:6px;background:#0E1826;color:#fff;font-size:.8rem;font-weight:500;white-space:nowrap;box-shadow:var(--shadow-md);
+      opacity:0;pointer-events:none;transition:opacity .12s;z-index:80;}
+    .app.collapsed .nav-item:hover::after,.app.collapsed .nav-item:focus-visible::after,
+    .app.collapsed .sb-toggle:hover::after,.app.collapsed .sb-toggle:focus-visible::after{opacity:1;}
+  }
+  @media (max-width:899px){
+    .app{display:block;}
+    .topbar{display:flex;}
+    .wrap{padding:20px 16px 24px;}
+    #formCard{scroll-margin-top:80px;}
+    .sidebar{position:fixed;top:0;left:0;bottom:0;width:min(84vw,300px);height:auto;transform:translateX(-102%);visibility:hidden;
+      transition:transform .24s cubic-bezier(.4,0,.2,1),visibility 0s .24s;box-shadow:8px 0 32px rgba(10,18,30,.35);}
+    .app.drawer-open .sidebar{transform:none;visibility:visible;transition:transform .24s cubic-bezier(.4,0,.2,1),visibility 0s;}
+    .scrim{display:block;position:fixed;inset:0;background:rgba(14,24,38,.55);opacity:0;pointer-events:none;transition:opacity .2s;z-index:55;}
+    .app.drawer-open .scrim{opacity:1;pointer-events:auto;}
+    .sb-close{display:inline-flex;}
+    .sb-foot{display:none;}
+  }
+  @media (prefers-reduced-motion:reduce){.app,.sidebar,.scrim,.nav-item,.sb-toggle svg{transition:none !important;}}
 
   .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-md);padding:24px 22px;margin-bottom:16px;box-shadow:var(--shadow-sm);}
   .view{display:none;} .view.active{display:block;}
@@ -191,30 +256,52 @@
 </head>
 <body>
 
-<header>
-  <div class="header-inner">
+<div class="app" id="app">
+<div class="scrim" id="scrim"></div>
+
+<aside class="sidebar" id="sidebar" aria-label="เมนูหลัก">
+  <div class="sb-brand">
     <div class="seal">
-      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#1B2A41" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M7 3h6l4 4v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"/>
-        <path d="M13 3v4h4"/>
-        <line x1="8.5" y1="11" x2="13.3" y2="11"/>
-        <line x1="8.5" y1="14" x2="13.3" y2="14"/>
-        <path d="M8.5 17.5h5.7"/>
-        <path d="M13 15.7l2 1.8-2 1.8"/>
+      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#1B2A41" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M7 3h6l4 4v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"/><path d="M13 3v4h4"/>
+        <line x1="8.5" y1="11" x2="13.3" y2="11"/><line x1="8.5" y1="14" x2="13.3" y2="14"/>
+        <path d="M8.5 17.5h5.7"/><path d="M13 15.7l2 1.8-2 1.8"/>
       </svg>
     </div>
-    <div>
-      <h1>ระบบขอใบส่งตัว</h1>
-      <p id="companyLabel">โรงพยาบาลราชธานี</p>
-    </div>
+    <div class="sb-title"><strong>ระบบขอใบส่งตัว</strong><span id="companyLabel">โรงพยาบาลราชธานี</span></div>
+    <button class="icon-btn sb-close" id="sbClose" aria-label="ปิดเมนู"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
   </div>
-</header>
 
-<div class="wrap">
-  <div class="tabs">
-    <div class="tab active" data-tab="employee">ขอใบส่งตัว</div>
-    <div class="tab" data-tab="hr">สำหรับฝ่ายบุคคล</div>
+  <nav class="sb-nav" aria-label="เมนูหลัก">
+    <div class="sb-group-label">สำหรับพนักงาน</div>
+    <button class="nav-item" data-tab="employee" data-label="ขอใบส่งตัว" aria-current="page">
+      <svg class="ni-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H7a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V7z"/><path d="M14 3v4h4"/><path d="M12 11v6M9 14h6"/></svg>
+      <span class="ni-label">ขอใบส่งตัว</span>
+    </button>
+    <div class="sb-group-label">สำหรับฝ่ายบุคคล</div>
+    <button class="nav-item locked" data-tab="hr" data-label="รายการคำขอ">
+      <svg class="ni-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="4" width="12" height="17" rx="1.5"/><path d="M9 4h6v2.5H9z"/><path d="M9.5 13.5l2 2 3.5-4"/></svg>
+      <span class="ni-label">รายการคำขอ</span>
+      <span class="ni-lock" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></span>
+      <span class="ni-badge" id="hrBadge"></span>
+    </button>
+  </nav>
+
+  <div class="sb-foot">
+    <button class="sb-toggle" id="sbToggle" data-label="ย่อเมนู" aria-expanded="true" aria-label="ย่อเมนู (Ctrl+B)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg>
+      <span class="t-label">ย่อเมนู</span>
+    </button>
   </div>
+</aside>
+
+<main class="main" id="main">
+<div class="topbar">
+  <button class="icon-btn" id="menuBtn" aria-label="เปิดเมนู" aria-expanded="false" aria-controls="sidebar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+  <strong>ระบบขอใบส่งตัว</strong>
+</div>
+<div class="wrap">
+  <div class="page-head"><h2 id="pageTitle">ขอใบส่งตัว</h2><p id="pageDesc"></p></div>
 
   <!-- ================= EMPLOYEE VIEW ================= -->
   <div class="view active" id="view-employee">
@@ -342,6 +429,8 @@
 </div>
 
 <footer>© Summit Auto Body Industry — ระบบขอใบส่งตัว</footer>
+</main>
+</div>
 
 
 <script>
@@ -433,19 +522,100 @@
     updateStepUI();
   }
 
-  // ---------- Tabs ----------
-  document.querySelectorAll('.tab').forEach(tab => {
-    tab.addEventListener('click', () => {
-      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-      document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-      tab.classList.add('active');
-      document.getElementById('view-' + tab.dataset.tab).classList.add('active');
-      if (tab.dataset.tab === 'hr' && HR_CODE) tryAutoUnlock();
+  // ---------- Sidebar navigation ----------
+  const VIEWS = {
+    employee: { title: 'ขอใบส่งตัว', desc: 'กรอกข้อมูล 3 ขั้นตอน ฝ่ายบุคคลจะเตรียมใบส่งตัวให้' },
+    hr: { title: 'รายการคำขอใบส่งตัว', desc: 'ตรวจสอบคำขอ ออกใบส่งตัว และส่งออกข้อมูล' }
+  };
+  const appEl = document.getElementById('app');
+  const sidebarEl = document.getElementById('sidebar');
+  const menuBtn = document.getElementById('menuBtn');
+  const toggleBtn = document.getElementById('sbToggle');
+  const hrItem = document.querySelector('.nav-item[data-tab="hr"]');
+  const hrBadge = document.getElementById('hrBadge');
+  const isDesktop = () => window.matchMedia('(min-width:900px)').matches;
+
+  function showView(name){
+    document.querySelectorAll('.nav-item').forEach(n => {
+      if (n.dataset.tab === name) n.setAttribute('aria-current', 'page'); else n.removeAttribute('aria-current');
     });
-  });
-  if (new URLSearchParams(location.search).get('hr') === '1') {
-    document.querySelector('.tab[data-tab="hr"]').click();
+    document.querySelectorAll('.view').forEach(v => v.classList.toggle('active', v.id === 'view-' + name));
+    document.getElementById('pageTitle').textContent = VIEWS[name].title;
+    document.getElementById('pageDesc').textContent = VIEWS[name].desc;
+    document.title = VIEWS[name].title + ' — Summit Auto Body Industry';
+    window.scrollTo(0, 0);
+    if (name === 'hr' && HR_CODE) tryAutoUnlock();
   }
+  function route(){
+    const h = location.hash.replace('#', '');
+    const wantHr = !h && new URLSearchParams(location.search).get('hr') === '1';
+    showView(VIEWS[h] ? h : (wantHr ? 'hr' : 'employee'));
+  }
+  window.addEventListener('hashchange', route);
+
+  document.querySelectorAll('.nav-item').forEach(n => n.addEventListener('click', () => {
+    if (location.hash === '#' + n.dataset.tab) showView(n.dataset.tab); else location.hash = n.dataset.tab;
+    closeDrawer();
+  }));
+  sidebarEl.addEventListener('keydown', e => {
+    if (e.key !== 'ArrowDown' && e.key !== 'ArrowUp') return;
+    const items = [...sidebarEl.querySelectorAll('.nav-item')], i = items.indexOf(document.activeElement);
+    if (i < 0) return;
+    e.preventDefault();
+    items[(i + (e.key === 'ArrowDown' ? 1 : -1) + items.length) % items.length].focus();
+  });
+
+  // สถานะ 🔒 + จำนวนรอออกใบ บนเมนูฝ่ายบุคคล
+  function syncHrNav(count){
+    hrItem.classList.toggle('locked', !HR_CODE);
+    if (!HR_CODE) count = 0;
+    if (typeof count === 'number') {
+      hrBadge.textContent = count > 99 ? '99+' : count;
+      hrBadge.classList.toggle('show', count > 0);
+      hrItem.setAttribute('aria-label', 'รายการคำขอ' + (!HR_CODE ? ' (ล็อกอยู่)' : count > 0 ? ' รอออกใบ ' + count + ' รายการ' : ''));
+    }
+  }
+  syncHrNav(0);
+  if (HR_CODE) callApi('listReferralRequests', { accessCode: HR_CODE, filters: {} }).then(res => {
+    if (res.error === 'WRONG_CODE') return lockHr();
+    syncHrNav(res.pendingCount || 0);
+  }).catch(() => {});
+
+  // ย่อ/ขยาย (desktop) — จำค่าไว้
+  function setCollapsed(c){
+    appEl.classList.toggle('collapsed', c);
+    toggleBtn.setAttribute('aria-expanded', String(!c));
+    toggleBtn.setAttribute('aria-label', (c ? 'ขยายเมนู' : 'ย่อเมนู') + ' (Ctrl+B)');
+    toggleBtn.dataset.label = c ? 'ขยายเมนู' : 'ย่อเมนู';
+    try { localStorage.setItem('sb_collapsed', c ? '1' : '0'); } catch (e) {}
+  }
+  toggleBtn.addEventListener('click', () => setCollapsed(!appEl.classList.contains('collapsed')));
+  try { if (localStorage.getItem('sb_collapsed') === '1') setCollapsed(true); } catch (e) {}
+  document.addEventListener('keydown', e => {
+    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'b' && isDesktop()) { e.preventDefault(); toggleBtn.click(); }
+    if (e.key === 'Escape' && appEl.classList.contains('drawer-open')) closeDrawer(true);
+  });
+
+  // Drawer (mobile)
+  function openDrawer(){
+    appEl.classList.add('drawer-open');
+    menuBtn.setAttribute('aria-expanded', 'true');
+    document.body.style.overflow = 'hidden';
+    setTimeout(() => (sidebarEl.querySelector('.nav-item[aria-current]') || sidebarEl).focus(), 60);
+  }
+  function closeDrawer(returnFocus){
+    if (!appEl.classList.contains('drawer-open')) return;
+    appEl.classList.remove('drawer-open');
+    menuBtn.setAttribute('aria-expanded', 'false');
+    document.body.style.overflow = '';
+    if (returnFocus === true) menuBtn.focus();
+  }
+  menuBtn.addEventListener('click', openDrawer);
+  document.getElementById('sbClose').addEventListener('click', () => closeDrawer(true));
+  document.getElementById('scrim').addEventListener('click', () => closeDrawer(true));
+  window.matchMedia('(min-width:900px)').addEventListener('change', () => closeDrawer());
+
+  route();
 
   // ---------- Load form options ----------
   callApi('getFormOptions', {}).then(res => {
@@ -559,6 +729,7 @@
   function lockHr(){
     HR_CODE = '';
     localStorage.removeItem('referral_hr_code');
+    syncHrNav();
     document.getElementById('hrGate').style.display = 'block';
     document.getElementById('hrPanel').style.display = 'none';
     document.getElementById('hrCodeInput').value = '';
@@ -583,6 +754,7 @@
 
   function renderHrList(res){
     document.getElementById('hrPendingSummary').textContent = 'รอออกใบทั้งหมด ' + (res.pendingCount || 0) + ' รายการ';
+    syncHrNav(res.pendingCount || 0);
     const list = document.getElementById('hrList');
     if (!res.requests || !res.requests.length) {
       list.innerHTML = '<div class="card empty">ไม่พบคำขอ</div>';
