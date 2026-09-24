@@ -100,12 +100,23 @@
   .btn-ok{background:var(--ok-bg);color:var(--ok);}
   .btn-danger{background:var(--danger-bg);color:var(--danger);}
 
-  .success-box{text-align:center;padding:18px 6px;}
-  .success-box .icon{width:60px;height:60px;border-radius:50%;border:2px solid var(--ok);color:var(--ok);
-    display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:26px;}
-  .success-box .title{font-family:'Kanit';font-weight:600;font-size:1.05rem;color:var(--pine);}
-  .req-id{display:inline-block;background:var(--paper);border:1.5px dashed var(--paper-line);color:var(--pine);
-    font-family:'Kanit';font-weight:600;padding:7px 16px;border-radius:var(--r-sm);margin:12px 0;letter-spacing:1px;}
+  .success-box{text-align:center;padding:8px 6px 4px;}
+  .stamp{display:flex;justify-content:center;margin-bottom:16px;}
+  .stamp-ring{width:74px;height:74px;border-radius:50%;border:2px solid var(--ok);position:relative;
+    display:flex;align-items:center;justify-content:center;}
+  .stamp-ring::before{content:'';position:absolute;inset:6px;border:1px dashed var(--ok);border-radius:50%;opacity:.55;}
+  .stamp-ring span{font-size:28px;color:var(--ok);font-weight:700;}
+  .success-title{font-family:'Kanit';font-weight:600;font-size:1.12rem;color:var(--pine);}
+
+  .ticket{display:flex;align-items:center;justify-content:center;gap:10px;background:var(--paper);
+    border:1.5px dashed var(--paper-line);border-radius:var(--r-sm);padding:12px 18px;margin:18px auto 0;max-width:280px;}
+  .ticket-label{font-size:.78rem;color:var(--ink-soft);}
+  .ticket-id{font-family:'Kanit';font-weight:600;color:var(--pine);letter-spacing:1px;font-size:1.02rem;}
+
+  .next-steps{text-align:left;max-width:340px;margin:22px auto 22px;display:flex;flex-direction:column;gap:12px;}
+  .next-step{display:flex;align-items:flex-start;gap:11px;font-size:.87rem;color:var(--ink-soft);line-height:1.5;}
+  .ns-dot{flex-shrink:0;width:21px;height:21px;border-radius:50%;background:#F4F8F6;border:1.5px solid var(--pine);
+    color:var(--pine);font-family:'Kanit';font-weight:600;font-size:.72rem;display:flex;align-items:center;justify-content:center;margin-top:1px;}
 
   /* HR gate */
   .gate{text-align:center;padding:34px 10px;}
@@ -233,11 +244,24 @@
 
     <div class="card" id="successCard" style="display:none;">
       <div class="success-box">
-        <div class="icon">✓</div>
-        <div style="font-weight:700;font-size:1.05rem;">ส่งคำขอเรียบร้อยแล้ว</div>
-        <div class="hint">ฝ่ายบุคคลได้รับแจ้งเตือนแล้ว กรุณารอการติดต่อกลับ</div>
-        <div class="req-id" id="successReqId"></div>
-        <div><button class="btn btn-ghost btn-sm" onclick="resetForm()">ส่งคำขอใหม่อีกครั้ง</button></div>
+        <div class="stamp">
+          <div class="stamp-ring"><span>✓</span></div>
+        </div>
+        <div class="success-title">ส่งคำขอเรียบร้อยแล้ว</div>
+        <div class="hint">ฝ่ายบุคคลได้รับแจ้งเตือนทางอีเมลทันที</div>
+
+        <div class="ticket">
+          <span class="ticket-label">เลขที่คำขอ</span>
+          <span class="ticket-id" id="successReqId"></span>
+        </div>
+
+        <div class="next-steps">
+          <div class="next-step"><span class="ns-dot">1</span>ฝ่ายบุคคลตรวจสอบคำขอและเตรียมใบส่งตัว</div>
+          <div class="next-step"><span class="ns-dot">2</span>รอการติดต่อกลับ หรือแวะมาที่ฝ่ายบุคคลได้เลย</div>
+          <div class="next-step"><span class="ns-dot">3</span>เซ็นชื่อรับใบส่งตัว แล้วนำไปโรงพยาบาลได้ทันที</div>
+        </div>
+
+        <button class="btn btn-ghost btn-sm" onclick="resetForm()">ส่งคำขอใหม่อีกครั้ง</button>
       </div>
     </div>
   </div>
