@@ -518,7 +518,7 @@
   </div>
 </div>
 
-<footer>© Summit Auto Body Industry Co.Ltd. (Branch 2) — ระบบขอใบส่งตัว</footer>
+<footer>Summit Auto Body Industry Co.Ltd. (Branch 2) — ระบบขอใบส่งตัว</footer>
 <div class="modal" id="pwModal" hidden>
   <div class="modal-back" id="pwBack"></div>
   <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="pwTitle">
@@ -871,6 +871,7 @@
       document.getElementById('hrGate').style.display = 'none';
       document.getElementById('hrPanel').style.display = 'block';
       renderHrList(res);
+      registerAppUrl_();
     }).catch(() => showToast('เชื่อมต่อระบบไม่สำเร็จ', 'err'));
   }
 
@@ -1125,6 +1126,15 @@
     syncStatActive();
   }
   document.getElementById('sbLogout').addEventListener('click', confirmLogout);
+
+  // ให้ระบบจดจำ URL หน้าเว็บนี้ไว้ใช้เป็นลิงก์ในอีเมลแจ้งเตือน (ส่งเฉพาะตอนฝ่ายบุคคลปลดล็อกแล้วเท่านั้น)
+  function registerAppUrl_(){
+    try {
+      if (location.protocol !== 'https:' || sessionStorage.getItem('app_url_sent')) return;
+      callApi('registerAppUrl', { accessCode: HR_CODE, url: location.origin + location.pathname })
+        .then(() => { try { sessionStorage.setItem('app_url_sent', '1'); } catch (e) {} }).catch(() => {});
+    } catch (e) {}
+  }
 </script>
 </body>
 </html>
