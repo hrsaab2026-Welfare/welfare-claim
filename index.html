@@ -245,6 +245,59 @@
   .req-actions{margin-top:11px;display:flex;gap:8px;flex-wrap:wrap;}
   .empty{text-align:center;color:var(--ink-soft);padding:30px 10px;font-size:.9rem;}
 
+  /* ---- HR page ---- */
+  .stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px;}
+  .stat{text-align:left;padding:14px;background:var(--surface);border:1.5px solid var(--border);border-radius:var(--radius-md);box-shadow:var(--shadow-sm);cursor:pointer;font:inherit;color:inherit;transition:border-color .15s,box-shadow .15s;}
+  .stat:hover{border-color:var(--border-strong);}
+  .stat:focus-visible{outline:2px solid var(--gold);outline-offset:2px;}
+  .stat.active{border-color:var(--c);box-shadow:0 0 0 3px var(--c-bg);}
+  .stat-ic{width:32px;height:32px;border-radius:9px;display:flex;align-items:center;justify-content:center;background:var(--c-bg);color:var(--c);}
+  .stat-ic svg{width:18px;height:18px;}
+  .stat-num{display:block;margin-top:10px;font-size:1.75rem;font-weight:700;line-height:1;font-variant-numeric:tabular-nums;}
+  .stat-label{display:block;margin-top:5px;font-size:.82rem;font-weight:600;color:var(--ink-soft);}
+  .stat-note{display:block;margin-top:2px;min-height:1em;font-size:.72rem;color:var(--ink-soft);}
+  .stat-note.late{color:var(--danger);font-weight:600;}
+  .s-pending{--c:var(--gold-deep);--c-bg:var(--gold-bg);} .s-issued{--c:var(--success);--c-bg:var(--success-bg);}
+  .s-void{--c:var(--danger);--c-bg:var(--danger-bg);} .s-all{--c:var(--navy);--c-bg:rgba(27,42,65,.09);}
+  .hr-bar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:10px;}
+  .search{position:relative;flex:1;min-width:220px;}
+  .search svg{position:absolute;left:12px;top:50%;transform:translateY(-50%);width:18px;height:18px;color:var(--ink-soft);pointer-events:none;}
+  .search input{padding-left:38px;}
+  .hr-actions{display:flex;gap:8px;flex-wrap:wrap;}
+  .btn-mini svg{width:15px;height:15px;flex-shrink:0;}
+  .btn-mini:disabled{opacity:.4;cursor:not-allowed;}
+  .req{background:var(--surface);border:1px solid var(--border);border-left:4px solid var(--border);border-radius:var(--radius-md);padding:16px 18px;margin-bottom:12px;box-shadow:var(--shadow-sm);}
+  .req.pending{border-left-color:var(--gold);} .req.issued{border-left-color:var(--success);} .req.void{border-left-color:var(--danger);opacity:.72;}
+  .req-head{display:flex;align-items:center;gap:12px;}
+  .avatar{width:40px;height:40px;border-radius:50%;background:var(--navy);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:600;flex-shrink:0;}
+  .req-who{flex:1;min-width:0;}
+  .req-side{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end;}
+  .wait{font-size:.72rem;color:var(--ink-soft);} .wait.late{color:var(--danger);font-weight:600;}
+  .kv-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px 18px;margin:14px 0 0;padding-top:14px;border-top:1px solid var(--border);}
+  .kv{margin:0;min-width:0;} .kv.full{grid-column:1/-1;}
+  .kv dt{font-size:.72rem;color:var(--ink-soft);margin-bottom:2px;} .kv dd{margin:0;font-size:.88rem;word-break:break-word;}
+  .kv dd a{color:var(--info);text-decoration:none;}
+  .pill{display:inline-block;padding:2px 9px;border-radius:12px;background:var(--surface-2);border:1px solid var(--border);font-size:.78rem;font-weight:500;}
+  .pill.fam{background:var(--info-bg);border-color:transparent;color:var(--info);}
+  .empty svg{width:34px;height:34px;color:var(--border-strong);display:block;margin:0 auto 8px;}
+  .modal{position:fixed;inset:0;z-index:900;display:flex;align-items:center;justify-content:center;padding:16px;}
+  .modal[hidden]{display:none;}
+  .modal-back{position:absolute;inset:0;background:rgba(14,24,38,.55);}
+  .modal-card{position:relative;width:100%;max-width:520px;max-height:88vh;display:flex;flex-direction:column;background:var(--surface);border-radius:12px;box-shadow:0 20px 50px rgba(10,18,30,.3);}
+  .modal-head{display:flex;justify-content:space-between;gap:12px;padding:20px 22px 14px;border-bottom:1px solid var(--border);}
+  .modal-head h3{margin:0;font-size:1.05rem;color:var(--navy);} .modal-head p{margin:3px 0 0;font-size:.78rem;color:var(--ink-soft);line-height:1.5;}
+  .modal-x{width:32px;height:32px;flex-shrink:0;border:0;border-radius:8px;background:transparent;color:var(--ink-soft);cursor:pointer;display:flex;align-items:center;justify-content:center;}
+  .modal-x:hover{background:var(--surface-2);} .modal-x svg{width:18px;height:18px;}
+  .modal-body{padding:6px 22px;overflow:auto;}
+  .modal-foot{padding:14px 22px 20px;border-top:1px solid var(--border);} .modal-foot .btn{width:100%;} .modal-foot svg{width:16px;height:16px;}
+  .pw-item{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--border);} .pw-item:last-child{border-bottom:0;}
+  .pw-key{width:36px;height:36px;border-radius:9px;background:var(--gold-bg);color:var(--gold-deep);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .pw-key svg{width:18px;height:18px;}
+  .pw-info{flex:1;min-width:0;} .pw-label{font-weight:600;font-size:.92rem;} .pw-meta{font-size:.74rem;color:var(--ink-soft);}
+  .pw-you{margin-left:6px;padding:2px 8px;border-radius:10px;background:var(--success-bg);color:var(--success);font-size:.68rem;font-weight:600;}
+  .pw-row{display:flex;gap:8px;align-items:center;} .pw-row .swal2-input{flex:1;min-width:0;}
+  @media (max-width:640px){.stat-grid{grid-template-columns:repeat(2,1fr);}}
+  @media (max-width:560px){.kv-grid{grid-template-columns:1fr;} .req-head{flex-wrap:wrap;}}
   small.muted{color:var(--ink-soft);}
   footer{text-align:center;color:var(--ink-soft);font-size:.75rem;padding:14px 0 34px;}
 
@@ -439,30 +492,40 @@
     </div>
 
     <div id="hrPanel" style="display:none;">
-      <div class="card">
-        <div class="hr-toolbar">
-          <input type="text" id="hrKeyword" placeholder="ค้นหาชื่อ / รหัสพนักงาน / แผนก / เลขที่คำขอ">
-          <select id="hrStatus">
-            <option value="">ทุกสถานะ</option>
-            <option value="รอ HR ออกใบ">รอ HR ออกใบ</option>
-            <option value="ออกใบแล้ว">ออกใบแล้ว</option>
-            <option value="ยกเลิก">ยกเลิก</option>
-          </select>
-        </div>
-        <div class="hr-toolbar">
-          <button class="btn-mini" onclick="loadHrList()">🔄 รีเฟรช</button>
-          <button class="btn-mini" onclick="exportCsv()">⬇️ Export CSV</button>
-          <button class="btn-mini" onclick="lockHr()">🔒 ออกจากหน้านี้</button>
-        </div>
-        <div id="hrPendingSummary" class="hint"></div>
+      <div class="stat-grid" id="hrStats">
+        <button class="stat s-pending" data-status="รอ HR ออกใบ"><span class="stat-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span><span class="stat-num" id="stPending">–</span><span class="stat-label">รอออกใบ</span><span class="stat-note" id="stPendingNote"></span></button>
+        <button class="stat s-issued" data-status="ออกใบแล้ว"><span class="stat-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M8.5 12.5l2.5 2.5 4.5-5"/></svg></span><span class="stat-num" id="stIssued">–</span><span class="stat-label">ออกใบแล้ว</span><span class="stat-note"></span></button>
+        <button class="stat s-void" data-status="ยกเลิก"><span class="stat-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9 9l6 6M15 9l-6 6"/></svg></span><span class="stat-num" id="stVoid">–</span><span class="stat-label">ยกเลิก</span><span class="stat-note"></span></button>
+        <button class="stat s-all" data-status=""><span class="stat-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 6h14M5 12h14M5 18h9"/></svg></span><span class="stat-num" id="stAll">–</span><span class="stat-label">คำขอทั้งหมด</span><span class="stat-note" id="stAllNote"></span></button>
       </div>
-
+      <div class="hr-bar">
+        <div class="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4 4"/></svg><input type="text" id="hrKeyword" placeholder="ค้นหาชื่อ / รหัสพนักงาน / แผนก / เลขที่คำขอ"></div>
+        <select id="hrStatus" hidden><option value="">ทุกสถานะ</option><option value="รอ HR ออกใบ">รอ HR ออกใบ</option><option value="ออกใบแล้ว">ออกใบแล้ว</option><option value="ยกเลิก">ยกเลิก</option></select>
+        <div class="hr-actions">
+          <button class="btn-mini" onclick="loadHrList()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.3-5.7"/><path d="M20 4v5h-5"/></svg>รีเฟรช</button>
+          <button class="btn-mini" onclick="exportCsv()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11M7.5 10.5L12 15l4.5-4.5"/><path d="M5 19h14"/></svg>Export CSV</button>
+          <button class="btn-mini" onclick="openPwModal()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="15" r="4"/><path d="M11 12l8-8M16 7l3 3"/></svg>จัดการรหัสผ่าน</button>
+          <button class="btn-mini" onclick="lockHr()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>ออกจากหน้านี้</button>
+        </div>
+      </div>
+      <div id="hrPendingSummary" class="hint" style="margin:0 0 10px;"></div>
       <div id="hrList"></div>
     </div>
   </div>
 </div>
 
 <footer>© Summit Auto Body Industry Co.Ltd. (Branch 2) — ระบบขอใบส่งตัว</footer>
+<div class="modal" id="pwModal" hidden>
+  <div class="modal-back" id="pwBack"></div>
+  <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="pwTitle">
+    <div class="modal-head">
+      <div><h3 id="pwTitle">จัดการรหัสผ่านฝ่ายบุคคล</h3><p>ให้แต่ละคนใช้รหัสของตัวเอง ระบบเก็บเฉพาะค่าเข้ารหัส ดูรหัสเดิมย้อนหลังไม่ได้</p></div>
+      <button class="modal-x" id="pwClose" aria-label="ปิด"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    </div>
+    <div class="modal-body" id="pwList"></div>
+    <div class="modal-foot"><button class="btn" id="pwAdd"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>เพิ่มรหัสผ่าน</button></div>
+  </div>
+</div>
 </main>
 </div>
 
@@ -832,39 +895,67 @@
 
   const statusClass = s => s === 'รอ HR ออกใบ' ? 'pending' : (s === 'ออกใบแล้ว' ? 'issued' : 'void');
 
+  const IC = p => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + p + '</svg>';
+  const PATHS = {clock: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>', ok: '<circle cx="12" cy="12" r="9"/><path d="M8.5 12.5l2.5 2.5 4.5-5"/>', no: '<circle cx="12" cy="12" r="9"/><path d="M9 9l6 6M15 9l-6 6"/>', all: '<path d="M5 6h14M5 12h14M5 18h9"/>', search: '<circle cx="11" cy="11" r="6.5"/><path d="M16 16l4 4"/>', refresh: '<path d="M20 12a8 8 0 1 1-2.3-5.7"/><path d="M20 4v5h-5"/>', dl: '<path d="M12 4v11M7.5 10.5L12 15l4.5-4.5"/><path d="M5 19h14"/>', key: '<circle cx="8" cy="15" r="4"/><path d="M11 12l8-8M16 7l3 3"/>', lock: '<rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>', plus: '<path d="M12 5v14M5 12h14"/>', edit: '<path d="M4 20h4l10-10-4-4L4 16z"/>', trash: '<path d="M5 7h14M10 7V4h4v3M7 7l1 13h8l1-13"/>', x: '<path d="M6 6l12 12M18 6L6 18"/>', doc: '<path d="M14 3H7a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V7z"/><path d="M14 3v4h4"/>'};
+
+  function renderStats(st){
+    if (!st) return;
+    document.getElementById('stPending').textContent = st.pending;
+    document.getElementById('stIssued').textContent = st.issued;
+    document.getElementById('stVoid').textContent = st.void;
+    document.getElementById('stAll').textContent = st.total;
+    const pn = document.getElementById('stPendingNote');
+    pn.textContent = st.pending ? (st.oldestPendingDays >= 1 ? 'เก่าสุดรอมา ' + st.oldestPendingDays + ' วัน' : 'ทั้งหมดเพิ่งยื่นวันนี้') : 'ไม่มีงานค้าง';
+    pn.classList.toggle('late', st.oldestPendingDays >= 3);
+    document.getElementById('stAllNote').textContent = st.today ? 'ยื่นวันนี้ ' + st.today + ' รายการ' : '';
+  }
+  function syncStatActive(){
+    const v = document.getElementById('hrStatus').value;
+    document.querySelectorAll('.stat').forEach(s => s.classList.toggle('active', s.dataset.status === v));
+  }
+  document.getElementById('hrStats').addEventListener('click', e => {
+    const b = e.target.closest('.stat'); if (!b) return;
+    const sel = document.getElementById('hrStatus');
+    sel.value = sel.value === b.dataset.status ? '' : b.dataset.status;
+    loadHrList();
+  });
+
   function renderHrList(res){
-    document.getElementById('hrPendingSummary').textContent = 'รอออกใบทั้งหมด ' + (res.pendingCount || 0) + ' รายการ';
+    renderStats(res.stats);
+    syncStatActive();
+    const n = (res.requests || []).length;
+    document.getElementById('hrPendingSummary').textContent = 'แสดง ' + n + ' รายการ' + (document.getElementById('hrStatus').value ? ' • กรองตามสถานะ' : '');
     syncHrNav(res.pendingCount || 0);
     const list = document.getElementById('hrList');
-    if (!res.requests || !res.requests.length) {
-      list.innerHTML = '<div class="card empty">ไม่พบคำขอ</div>';
+    if (!n) {
+      list.innerHTML = '<div class="card empty">' + IC(PATHS.doc) + 'ไม่พบคำขอที่ตรงกับเงื่อนไข</div>';
       return;
     }
-    list.innerHTML = res.requests.map(r => `
-      <div class="card req-card ${statusClass(r.status)}">
-        <div class="req-top">
-          <div>
-            <div class="req-name">${escapeHtml(r.name)} <span class="req-id-sm">(${r.age||'-'} ปี)</span></div>
-            <div class="req-id-sm">เลขที่ ${r.requestId} • ${r.timestamp}</div>
-          </div>
-          <span class="badge ${statusClass(r.status)}">${r.status}</span>
-        </div>
-        <div class="req-meta">
-          แผนก: ${escapeHtml(r.department)}${r.division ? ' / ' + escapeHtml(r.division) : ''}${r.employeeId ? ' • รหัส ' + escapeHtml(r.employeeId) : ''}<br>
-          ${r.patientTypeLabel ? 'ผู้เข้ารับบริการ: ' + escapeHtml(r.patientTypeLabel) + (r.patientName ? ' — ' + escapeHtml(r.patientName) : '') + '<br>' : ''}
-          กรณี: ${escapeHtml(r.serviceTypeLabel)}${r.serviceDetail ? ' — ' + escapeHtml(r.serviceDetail) : ''}<br>
-          ${r.symptoms ? 'อาการ: ' + escapeHtml(r.symptoms) + '<br>' : ''}
-          สิทธิ์: ${escapeHtml(r.payerTypeLabel)}${r.payerDetail ? ' — ' + escapeHtml(r.payerDetail) : ''}<br>
-          ติดต่อ: ${escapeHtml(r.contactPhone)}${r.preferredDate ? ' • ต้องการไปวันที่ ' + r.preferredDate : ''}
-          ${r.hrNote ? '<br>หมายเหตุ: ' + escapeHtml(r.hrNote) : ''}
-        </div>
-        ${r.status === 'รอ HR ออกใบ' ? `
-        <div class="req-actions">
-          <button class="btn-mini save" onclick="openNoteModal('${r.requestId}','issue')">✓ ออกใบแล้ว</button>
-          <button class="btn-mini danger" onclick="openNoteModal('${r.requestId}','void')">ยกเลิกคำขอ</button>
-        </div>` : ''}
-      </div>
-    `).join('');
+    const kv = (k, v, full) => v ? '<div class="kv' + (full ? ' full' : '') + '"><dt>' + k + '</dt><dd>' + v + '</dd></div>' : '';
+    list.innerHTML = res.requests.map(r => {
+      const cls = statusClass(r.status), pending = r.status === 'รอ HR ออกใบ';
+      const family = r.patientTypeLabel && r.patientTypeLabel !== 'ตัวพนักงานเอง';
+      const wait = pending && r.waitDays >= 1 ? '<span class="wait' + (r.waitDays >= 3 ? ' late' : '') + '">รอมา ' + r.waitDays + ' วัน</span>' : '';
+      return '<article class="req ' + cls + '">' +
+        '<div class="req-head"><div class="avatar">' + escapeHtml(String(r.name || '?').trim().charAt(0)) + '</div>' +
+        '<div class="req-who"><div class="req-name">' + escapeHtml(r.name) + ' <span class="req-id-sm">(' + (r.age || '-') + ' ปี)</span></div>' +
+        '<div class="req-id-sm">' + r.requestId + ' • ' + r.timestamp + '</div></div>' +
+        '<div class="req-side">' + wait + '<span class="badge ' + cls + '">' + r.status + '</span></div></div>' +
+        '<dl class="kv-grid">' +
+          kv('แผนก / ฝ่าย', escapeHtml(r.department) + (r.division ? ' / ' + escapeHtml(r.division) : '')) +
+          kv('รหัสพนักงาน', escapeHtml(r.employeeId)) +
+          (r.patientTypeLabel ? kv('ผู้เข้ารับบริการ', '<span class="pill' + (family ? ' fam' : '') + '">' + escapeHtml(r.patientTypeLabel) + '</span>' + (r.patientName ? ' ' + escapeHtml(r.patientName) : '')) : '') +
+          kv('กรณี', escapeHtml(r.serviceTypeLabel) + (r.serviceDetail ? ' — ' + escapeHtml(r.serviceDetail) : '')) +
+          kv('สิทธิ์การรักษา', escapeHtml(r.payerTypeLabel) + (r.payerDetail ? ' — ' + escapeHtml(r.payerDetail) : '')) +
+          kv('ติดต่อ', r.contactPhone ? '<a href="tel:' + escapeHtml(r.contactPhone) + '">' + escapeHtml(r.contactPhone) + '</a>' : '') +
+          kv('วันที่ต้องการไป', escapeHtml(r.preferredDate)) +
+          kv('อาการ', escapeHtml(r.symptoms), true) +
+          kv('หมายเหตุ HR', escapeHtml(r.hrNote), true) +
+        '</dl>' +
+        (pending ? '<div class="req-actions"><button class="btn-mini save" onclick="openNoteModal(\'' + r.requestId + '\',\'issue\')">' + IC(PATHS.ok) + 'ออกใบแล้ว</button>' +
+          '<button class="btn-mini danger" onclick="openNoteModal(\'' + r.requestId + '\',\'void\')">' + IC(PATHS.no) + 'ยกเลิกคำขอ</button></div>' : '') +
+        '</article>';
+    }).join('');
   }
 
   function escapeHtml(s){ return String(s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
@@ -919,6 +1010,86 @@
       URL.revokeObjectURL(url);
     }).catch(() => showToast('เชื่อมต่อระบบไม่สำเร็จ', 'err'));
   }
+
+  // ================= จัดการรหัสผ่านฝ่ายบุคคล =================
+  let PW_CODES = [];
+  function genCode(){
+    const a = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; let s = '';
+    crypto.getRandomValues(new Uint32Array(6)).forEach(n => s += a[n % a.length]);
+    return s;
+  }
+  function openPwModal(){
+    if (!HR_CODE) return;
+    document.getElementById('pwModal').hidden = false;
+    document.body.style.overflow = 'hidden';
+    document.getElementById('pwList').innerHTML = '<div class="empty">กำลังโหลด...</div>';
+    loadPwList();
+    document.getElementById('pwClose').focus();
+  }
+  function closePwModal(){
+    document.getElementById('pwModal').hidden = true;
+    document.body.style.overflow = '';
+  }
+  function loadPwList(){
+    callApi('listAccessCodes', { accessCode: HR_CODE }).then(res => {
+      if (res.error === 'WRONG_CODE') { closePwModal(); lockHr(); return; }
+      if (!res.success) return showToast(res.error || 'โหลดรายการรหัสผ่านไม่สำเร็จ', 'err');
+      renderPwList(res.codes);
+    }).catch(() => showToast('เชื่อมต่อระบบไม่สำเร็จ', 'err'));
+  }
+  function renderPwList(codes){
+    PW_CODES = codes || [];
+    document.getElementById('pwList').innerHTML = PW_CODES.map(c =>
+      '<div class="pw-item"><div class="pw-key">' + IC(PATHS.key) + '</div>' +
+      '<div class="pw-info"><div class="pw-label">' + escapeHtml(c.label) + (c.isSelf ? '<span class="pw-you">กำลังใช้งาน</span>' : '') + '</div>' +
+      '<div class="pw-meta">สร้างเมื่อ ' + escapeHtml(c.createdAt) + '</div></div>' +
+      '<button class="btn-mini" onclick="pwEdit(\'' + c.id + '\')">' + IC(PATHS.edit) + 'แก้ไข</button>' +
+      '<button class="btn-mini danger" ' + (c.isSelf || PW_CODES.length < 2 ? 'disabled title="ลบรหัสที่กำลังใช้อยู่หรือรหัสสุดท้ายไม่ได้"' : '') + ' onclick="pwDelete(\'' + c.id + '\')">' + IC(PATHS.trash) + 'ลบ</button></div>'
+    ).join('');
+  }
+  function pwForm(title, label, isEdit){
+    return fireAlert({
+      title: title, showCancelButton: true, focusConfirm: false,
+      confirmButtonText: isEdit ? 'บันทึก' : 'เพิ่มรหัส', cancelButtonText: 'ปิด',
+      html: '<input id="pwLabel" class="swal2-input" maxlength="40" placeholder="ชื่อผู้ถือรหัส เช่น คุณสมหญิง (HR)" value="' + escapeHtml(label || '') + '">' +
+        '<div class="pw-row"><input id="pwCode" class="swal2-input" maxlength="32" autocomplete="off" placeholder="' + (isEdit ? 'รหัสใหม่ (เว้นว่าง = ไม่เปลี่ยนรหัส)' : 'รหัสผ่านใหม่ 4-32 ตัวอักษร') + '">' +
+        '<button type="button" class="btn-mini" onclick="document.getElementById(\'pwCode\').value=genCode()">สุ่มรหัส</button></div>',
+      preConfirm: () => {
+        const l = document.getElementById('pwLabel').value.trim(), c = document.getElementById('pwCode').value.trim();
+        if (!l) { Swal.showValidationMessage('กรุณาระบุชื่อผู้ถือรหัส'); return false; }
+        if ((!isEdit || c) && !/^\S{4,32}$/.test(c)) { Swal.showValidationMessage('รหัสผ่านต้องยาว 4-32 ตัวอักษร และห้ามมีช่องว่าง'); return false; }
+        return { label: l, code: c };
+      }
+    });
+  }
+  function pwSave(action, payload, okMsg){
+    callApi(action, Object.assign({ accessCode: HR_CODE }, payload)).then(res => {
+      if (!res.success) return showToast(res.error || 'บันทึกไม่สำเร็จ', 'err');
+      if (res.selfChanged && payload.newCode) { HR_CODE = payload.newCode; localStorage.setItem('referral_hr_code', HR_CODE); }
+      showToast(okMsg, 'ok');
+      renderPwList(res.codes);
+    }).catch(() => showToast('เชื่อมต่อระบบไม่สำเร็จ', 'err'));
+  }
+  function pwAdd(){
+    pwForm('เพิ่มรหัสผ่านใหม่', '', false).then(r => {
+      if (r.isConfirmed) pwSave('addAccessCode', { label: r.value.label, newCode: r.value.code }, 'เพิ่มรหัสผ่านแล้ว');
+    });
+  }
+  function pwEdit(id){
+    const c = PW_CODES.find(x => x.id === id); if (!c) return;
+    pwForm('แก้ไขรหัสผ่าน', c.label, true).then(r => {
+      if (r.isConfirmed) pwSave('updateAccessCode', { id: id, label: r.value.label, newCode: r.value.code }, 'บันทึกการแก้ไขแล้ว');
+    });
+  }
+  function pwDelete(id){
+    const c = PW_CODES.find(x => x.id === id); if (!c) return;
+    fireAlert({ icon: 'warning', title: 'ลบรหัสผ่านนี้?', html: 'รหัสของ <b>' + escapeHtml(c.label) + '</b> จะใช้เข้าระบบไม่ได้ทันที', showCancelButton: true, confirmButtonText: 'ลบรหัส', cancelButtonText: 'ปิด', confirmButtonColor: true })
+      .then(r => { if (r.isConfirmed) pwSave('deleteAccessCode', { id: id }, 'ลบรหัสผ่านแล้ว'); });
+  }
+  document.getElementById('pwAdd').addEventListener('click', pwAdd);
+  document.getElementById('pwClose').addEventListener('click', closePwModal);
+  document.getElementById('pwBack').addEventListener('click', closePwModal);
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && !document.getElementById('pwModal').hidden && !Swal.isVisible()) closePwModal(); });
 </script>
 </body>
 </html>
