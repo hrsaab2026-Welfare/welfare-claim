@@ -4,93 +4,142 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>ระบบขอใบส่งตัว — Summit Auto Body Industry</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@500;600;700&family=Sarabun:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root{
-    --navy:#1F4C73; --navy-dark:#163a58; --accent:#2E86AB;
-    --bg:#f4f7fb; --card:#ffffff; --border:#e2e8f0; --text:#1e293b; --muted:#64748b;
-    --danger:#dc2626; --warn:#d97706; --ok:#16a34a;
-    --radius:14px;
+    /* ---- โทนสี: เขียวปิโตรเลียมเข้ม (ความน่าเชื่อถือทางการแพทย์) + อำพัน (ป้ายนิรภัยโรงงาน) ---- */
+    --ink:#1C2420;        --ink-soft:#4A554E;
+    --pine:#173B37;       --pine-deep:#0E2825;
+    --amber:#DA9138;      --amber-deep:#B9761F;
+    --paper:#FAF7F1;      --paper-line:#E2DACB;
+    --card:#FFFFFF;
+    --ok:#3F7D58; --ok-bg:#EAF3EC;
+    --warn:#B9761F; --warn-bg:#FBF0DE;
+    --danger:#B14432; --danger-bg:#FBEAE6;
+    --r-sm:6px; --r-md:10px;
   }
   *{box-sizing:border-box;}
-  body{margin:0;font-family:'Segoe UI',Tahoma,'Sarabun',sans-serif;background:var(--bg);color:var(--text);}
-  header{background:linear-gradient(135deg,var(--navy),var(--navy-dark));color:#fff;padding:22px 16px 60px;text-align:center;}
-  header h1{margin:0 0 4px;font-size:1.3rem;}
-  header p{margin:0;opacity:.85;font-size:.85rem;}
-  .wrap{max-width:760px;margin:-40px auto 40px;padding:0 14px;}
-  .tabs{display:flex;background:var(--card);border-radius:var(--radius);box-shadow:0 6px 20px rgba(15,40,70,.12);overflow:hidden;margin-bottom:18px;}
-  .tab{flex:1;padding:14px;text-align:center;font-weight:600;cursor:pointer;color:var(--muted);border-bottom:3px solid transparent;transition:.15s;}
-  .tab.active{color:var(--navy);border-bottom-color:var(--accent);background:#f0f7fc;}
-  .card{background:var(--card);border-radius:var(--radius);box-shadow:0 6px 20px rgba(15,40,70,.08);padding:22px;margin-bottom:16px;}
+  html{-webkit-text-size-adjust:100%;}
+  body{margin:0;font-family:'Sarabun',sans-serif;background:var(--paper);color:var(--ink);
+    background-image:radial-gradient(circle at 1px 1px, rgba(28,36,32,.05) 1px, transparent 0);
+    background-size:22px 22px;}
+  h1,h2,h3,.font-display{font-family:'Kanit',sans-serif;}
+
+  header{background:var(--pine);border-bottom:3px solid var(--amber);color:#fff;padding:20px 16px;}
+  .header-inner{max-width:640px;margin:0 auto;display:flex;align-items:center;gap:12px;}
+  .seal{width:38px;height:38px;border-radius:50%;border:2px solid var(--amber);display:flex;align-items:center;justify-content:center;
+    font-family:'Kanit';font-weight:700;font-size:1rem;color:var(--amber);flex-shrink:0;}
+  header h1{margin:0;font-size:1.05rem;font-weight:600;letter-spacing:.2px;}
+  header p{margin:2px 0 0;font-size:.78rem;color:#CFE0DB;}
+
+  .wrap{max-width:640px;margin:0 auto;padding:0 16px 40px;}
+
+  .tabs{display:flex;margin:16px 0 22px;border-bottom:1px solid var(--paper-line);}
+  .tab{flex:1;padding:13px 8px;text-align:center;font-family:'Kanit';font-weight:500;font-size:.92rem;cursor:pointer;
+    color:var(--ink-soft);border-bottom:2px solid transparent;margin-bottom:-1px;transition:color .15s,border-color .15s;}
+  .tab.active{color:var(--pine);border-bottom-color:var(--amber);}
+
+  .card{background:var(--card);border:1px solid var(--paper-line);border-radius:var(--r-md);padding:24px 22px;margin-bottom:16px;}
   .view{display:none;} .view.active{display:block;}
-  .section-title{font-weight:700;color:var(--navy);margin:0 0 10px;font-size:.95rem;display:flex;align-items:center;gap:8px;}
-  .section-title:not(:first-child){margin-top:20px;padding-top:16px;border-top:1px dashed var(--border);}
-  label{display:block;font-size:.85rem;color:var(--muted);margin:10px 0 4px;font-weight:600;}
+
+  .section-title{display:flex;align-items:center;gap:10px;margin:0 0 14px;}
+  .section-title:not(:first-child){margin-top:26px;padding-top:22px;border-top:1px solid var(--paper-line);}
+  .step-num{width:24px;height:24px;border-radius:50%;background:var(--pine);color:#fff;flex-shrink:0;
+    display:flex;align-items:center;justify-content:center;font-family:'Kanit';font-size:.78rem;font-weight:600;}
+  .section-title span.txt{font-family:'Kanit';font-weight:600;color:var(--pine);font-size:.98rem;}
+
+  label{display:block;font-size:.82rem;color:var(--ink-soft);margin:12px 0 5px;font-weight:600;}
   input[type=text],input[type=number],input[type=tel],input[type=date],select,textarea{
-    width:100%;padding:11px 12px;border:1.5px solid var(--border);border-radius:10px;font-size:.95rem;
-    font-family:inherit;background:#fff;color:var(--text);
+    width:100%;padding:11px 12px;border:1.5px solid var(--paper-line);border-radius:var(--r-sm);font-size:.95rem;
+    font-family:'Sarabun',sans-serif;background:#FFFDFA;color:var(--ink);
   }
-  input:focus,select:focus,textarea:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(46,134,171,.15);}
+  input:focus,select:focus,textarea:focus{outline:none;border-color:var(--pine);box-shadow:0 0 0 3px rgba(23,59,55,.12);}
   textarea{resize:vertical;min-height:60px;}
   .row2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
-  .opt-list{display:flex;flex-direction:column;gap:8px;}
-  .opt{display:flex;align-items:flex-start;gap:10px;padding:10px 12px;border:1.5px solid var(--border);border-radius:10px;cursor:pointer;transition:.15s;}
-  .opt:hover{border-color:var(--accent);}
-  .opt.checked{border-color:var(--accent);background:#eef7fb;}
-  .opt input{margin-top:2px;}
-  .opt .opt-detail{margin-top:8px;display:none;width:100%;}
+
+  .opt-list{display:flex;flex-direction:column;gap:7px;}
+  .opt{display:flex;align-items:flex-start;gap:11px;padding:11px 12px;border:1.5px solid var(--paper-line);border-radius:var(--r-sm);cursor:pointer;transition:border-color .15s,background .15s;}
+  .opt:hover{border-color:var(--amber);}
+  .opt.checked{border-color:var(--pine);background:#F4F8F6;}
+  .opt input{display:none;}
+  .opt .box{width:19px;height:19px;border:1.5px solid var(--ink-soft);border-radius:4px;flex-shrink:0;margin-top:1px;
+    display:flex;align-items:center;justify-content:center;transition:.15s;}
+  .opt.checked .box{background:var(--pine);border-color:var(--pine);}
+  .opt.checked .box::after{content:'';width:9px;height:6px;border-left:2px solid #fff;border-bottom:2px solid #fff;transform:rotate(-45deg) translateY(-1px);}
+  .opt .opt-detail{margin-top:9px;display:none;width:100%;}
   .opt.checked .opt-detail.show{display:block;}
-  .hint{font-size:.78rem;color:var(--muted);margin-top:4px;}
-  .btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border:none;border-radius:10px;
-    padding:13px 18px;font-size:.95rem;font-weight:700;cursor:pointer;transition:.15s;}
-  .btn-primary{background:var(--navy);color:#fff;width:100%;margin-top:18px;}
-  .btn-primary:hover{background:var(--navy-dark);}
-  .btn-primary:disabled{opacity:.6;cursor:not-allowed;}
-  .btn-sm{padding:8px 12px;font-size:.8rem;border-radius:8px;}
-  .btn-ghost{background:#eef2f7;color:var(--navy);}
-  .btn-ok{background:#e7f8ee;color:var(--ok);}
-  .btn-danger{background:#fdecec;color:var(--danger);}
-  .success-box{text-align:center;padding:20px 10px;}
-  .success-box .icon{width:64px;height:64px;border-radius:50%;background:#e7f8ee;color:var(--ok);
-    display:flex;align-items:center;justify-content:center;margin:0 auto 14px;font-size:32px;}
-  .req-id{display:inline-block;background:#eef2f7;color:var(--navy);font-weight:700;padding:6px 14px;border-radius:8px;margin:10px 0;letter-spacing:.5px;}
+  .opt-label{font-size:.93rem;padding-top:1px;}
+
+  .hint{font-size:.78rem;color:var(--ink-soft);margin-top:6px;line-height:1.5;}
+
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border:none;border-radius:var(--r-sm);
+    padding:13px 18px;font-family:'Kanit';font-size:.92rem;font-weight:500;cursor:pointer;transition:filter .15s, background .15s;}
+  .btn-primary{background:var(--amber);color:var(--pine-deep);width:100%;margin-top:20px;font-weight:600;}
+  .btn-primary:hover{filter:brightness(1.06);}
+  .btn-primary:disabled{opacity:.55;cursor:not-allowed;}
+  .btn-sm{padding:8px 13px;font-size:.82rem;border-radius:var(--r-sm);}
+  .btn-ghost{background:var(--paper);color:var(--pine);border:1.5px solid var(--paper-line);}
+  .btn-ok{background:var(--ok-bg);color:var(--ok);}
+  .btn-danger{background:var(--danger-bg);color:var(--danger);}
+
+  .success-box{text-align:center;padding:18px 6px;}
+  .success-box .icon{width:60px;height:60px;border-radius:50%;border:2px solid var(--ok);color:var(--ok);
+    display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:26px;}
+  .success-box .title{font-family:'Kanit';font-weight:600;font-size:1.05rem;color:var(--pine);}
+  .req-id{display:inline-block;background:var(--paper);border:1.5px dashed var(--paper-line);color:var(--pine);
+    font-family:'Kanit';font-weight:600;padding:7px 16px;border-radius:var(--r-sm);margin:12px 0;letter-spacing:1px;}
+
   /* HR gate */
-  .gate{text-align:center;padding:30px 10px;}
-  .gate input{max-width:220px;margin:14px auto;text-align:center;letter-spacing:2px;}
+  .gate{text-align:center;padding:34px 10px;}
+  .gate .lock{width:46px;height:46px;border-radius:50%;border:2px solid var(--amber);color:var(--amber);
+    display:flex;align-items:center;justify-content:center;margin:0 auto;font-size:1.3rem;}
+  .gate .title{font-family:'Kanit';font-weight:600;color:var(--pine);margin-top:10px;}
+  .gate input{max-width:200px;margin:16px auto 4px;text-align:center;letter-spacing:3px;}
+
   /* HR list */
-  .hr-toolbar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;}
+  .hr-toolbar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;}
   .hr-toolbar input,.hr-toolbar select{flex:1;min-width:120px;}
-  .req-card{border:1.5px solid var(--border);border-radius:12px;padding:14px;margin-bottom:10px;position:relative;}
-  .req-card.pending{border-left:4px solid var(--warn);}
-  .req-card.issued{border-left:4px solid var(--ok);}
-  .req-card.void{border-left:4px solid var(--danger);opacity:.7;}
+  .req-card{background:var(--card);border:1px solid var(--paper-line);border-left:4px solid var(--paper-line);border-radius:var(--r-sm);padding:14px 16px;margin-bottom:10px;}
+  .req-card.pending{border-left-color:var(--warn);}
+  .req-card.issued{border-left-color:var(--ok);}
+  .req-card.void{border-left-color:var(--danger);opacity:.65;}
   .req-top{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;flex-wrap:wrap;}
-  .req-name{font-weight:700;color:var(--navy);}
-  .req-id-sm{font-size:.75rem;color:var(--muted);}
-  .badge{font-size:.72rem;font-weight:700;padding:3px 9px;border-radius:20px;white-space:nowrap;}
-  .badge.pending{background:#fef3e2;color:var(--warn);}
-  .badge.issued{background:#e7f8ee;color:var(--ok);}
-  .badge.void{background:#fdecec;color:var(--danger);}
-  .req-meta{font-size:.85rem;color:var(--muted);margin-top:6px;line-height:1.6;}
-  .req-actions{margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;}
-  .empty{text-align:center;color:var(--muted);padding:30px 10px;font-size:.9rem;}
-  .toast-wrap{position:fixed;top:14px;right:14px;z-index:999;display:flex;flex-direction:column;gap:8px;max-width:320px;}
-  .toast{background:#1e293b;color:#fff;padding:12px 16px;border-radius:10px;font-size:.85rem;box-shadow:0 8px 20px rgba(0,0,0,.2);animation:in .2s ease;}
-  .toast.ok{background:#166534;} .toast.err{background:#991b1b;}
+  .req-name{font-family:'Kanit';font-weight:600;color:var(--pine);}
+  .req-id-sm{font-size:.74rem;color:var(--ink-soft);}
+  .badge{font-family:'Kanit';font-size:.7rem;font-weight:500;padding:4px 10px;border-radius:20px;white-space:nowrap;}
+  .badge.pending{background:var(--warn-bg);color:var(--warn);}
+  .badge.issued{background:var(--ok-bg);color:var(--ok);}
+  .badge.void{background:var(--danger-bg);color:var(--danger);}
+  .req-meta{font-size:.85rem;color:var(--ink-soft);margin-top:8px;line-height:1.7;}
+  .req-actions{margin-top:11px;display:flex;gap:8px;flex-wrap:wrap;}
+  .empty{text-align:center;color:var(--ink-soft);padding:30px 10px;font-size:.9rem;}
+
+  .toast-wrap{position:fixed;top:14px;right:14px;left:14px;z-index:999;display:flex;flex-direction:column;align-items:flex-end;gap:8px;}
+  .toast{background:var(--ink);color:#fff;padding:12px 16px;border-radius:var(--r-sm);font-size:.85rem;box-shadow:0 8px 20px rgba(0,0,0,.25);animation:in .2s ease;max-width:320px;}
+  .toast.ok{background:#265A3C;} .toast.err{background:#7A2E20;}
   @keyframes in{from{opacity:0;transform:translateY(-6px);}to{opacity:1;transform:translateY(0);}}
-  .modal-overlay{position:fixed;inset:0;background:rgba(15,23,42,.5);display:none;align-items:center;justify-content:center;z-index:1000;padding:16px;}
+
+  .modal-overlay{position:fixed;inset:0;background:rgba(14,40,37,.55);display:none;align-items:center;justify-content:center;z-index:1000;padding:16px;}
   .modal-overlay.show{display:flex;}
-  .modal{background:#fff;border-radius:14px;padding:20px;width:100%;max-width:360px;}
-  .modal h3{margin:0 0 10px;color:var(--navy);font-size:1rem;}
-  .modal .row2{margin-top:12px;}
-  small.muted{color:var(--muted);}
-  footer{text-align:center;color:var(--muted);font-size:.75rem;padding:10px 0 30px;}
+  .modal{background:#fff;border-radius:var(--r-md);padding:22px;width:100%;max-width:360px;}
+  .modal h3{margin:0 0 10px;color:var(--pine);font-size:1rem;font-family:'Kanit';font-weight:600;}
+  .modal .row2{margin-top:14px;}
+  small.muted{color:var(--ink-soft);}
+  footer{text-align:center;color:var(--ink-soft);font-size:.75rem;padding:14px 0 34px;}
 </style>
 </head>
 <body>
 
 <header>
-  <h1>ระบบขอใบส่งตัว</h1>
-  <p id="companyLabel">โรงพยาบาลราชธานี</p>
+  <div class="header-inner">
+    <div class="seal">RF</div>
+    <div>
+      <h1>ระบบขอใบส่งตัว</h1>
+      <p id="companyLabel">โรงพยาบาลราชธานี</p>
+    </div>
+  </div>
 </header>
 
 <div class="wrap">
@@ -103,7 +152,7 @@
   <div class="view active" id="view-employee">
 
     <div class="card" id="formCard">
-      <div class="section-title">👤 ข้อมูลผู้ขอส่งตัว</div>
+      <div class="section-title"><span class="step-num">1</span><span class="txt">ข้อมูลผู้ขอส่งตัว</span></div>
       <label>ชื่อ-สกุล *</label>
       <input type="text" id="f_name" placeholder="เช่น สมชาย ใจดี">
       <div class="row2">
@@ -129,13 +178,13 @@
       <label>เบอร์โทรติดต่อกลับ *</label>
       <input type="tel" id="f_phone" placeholder="เช่น 081-234-5678">
 
-      <div class="section-title">🏥 เข้ารับบริการในโรงพยาบาล — กรณี *</div>
+      <div class="section-title"><span class="step-num">2</span><span class="txt">เข้ารับบริการในโรงพยาบาล — กรณี</span></div>
       <div class="opt-list" id="serviceList"></div>
 
       <label style="margin-top:14px;">อาการ / รายละเอียดเบื้องต้น</label>
       <textarea id="f_symptoms" placeholder="เช่น ปวดท้อง มีไข้ 2 วัน"></textarea>
 
-      <div class="section-title">💳 โดยขอใช้สิทธิ์รักษา *</div>
+      <div class="section-title"><span class="step-num">3</span><span class="txt">โดยขอใช้สิทธิ์รักษา</span></div>
       <div class="opt-list" id="payerList"></div>
 
       <label style="margin-top:14px;">วันที่ต้องการไปโรงพยาบาล</label>
@@ -161,8 +210,8 @@
   <!-- ================= HR VIEW ================= -->
   <div class="view" id="view-hr">
     <div class="card gate" id="hrGate">
-      <div style="font-size:2rem;">🔒</div>
-      <div style="font-weight:700;color:var(--navy);margin-top:6px;">สำหรับฝ่ายบุคคลเท่านั้น</div>
+      <div class="lock">🔒</div>
+      <div class="title">สำหรับฝ่ายบุคคลเท่านั้น</div>
       <div class="hint">กรอกรหัสผ่านเพื่อดูรายการคำขอใบส่งตัว</div>
       <input type="text" id="hrCodeInput" placeholder="รหัสผ่าน" inputmode="numeric">
       <div><button class="btn btn-primary" style="width:auto;padding:11px 30px;" onclick="unlockHr()">เข้าสู่หน้ารายการ</button></div>
@@ -261,8 +310,9 @@
     c.innerHTML = options.map((o, i) => `
       <label class="opt" id="${groupName}_opt_${o.id}">
         <input type="radio" name="${groupName}" value="${o.id}" onchange="onOptionChange('${groupName}','${containerId}')">
+        <span class="box"></span>
         <div style="flex:1;">
-          <div>${o.label}</div>
+          <div class="opt-label">${o.label}</div>
           ${o.needDetail ? `<input type="text" class="opt-detail" id="${groupName}_detail_${o.id}" placeholder="ระบุรายละเอียด...">` : ''}
         </div>
       </label>
