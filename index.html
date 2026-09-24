@@ -44,6 +44,22 @@
   .card{background:var(--card);border:1px solid var(--paper-line);border-radius:var(--r-md);padding:24px 22px;margin-bottom:16px;}
   .view{display:none;} .view.active{display:block;}
 
+  .stepper-bar{display:flex;align-items:center;justify-content:center;gap:0;margin:4px 0 18px;}
+  .step-dot{width:30px;height:30px;border-radius:50%;background:var(--card);border:1.5px solid var(--paper-line);
+    display:flex;align-items:center;justify-content:center;font-family:'Kanit';font-weight:600;font-size:.85rem;color:var(--ink-soft);
+    flex-shrink:0;transition:.2s;}
+  .step-dot.active{border-color:var(--pine);color:var(--pine);background:#F4F8F6;}
+  .step-dot.done{border-color:var(--ok);background:var(--ok);color:#fff;}
+  .step-track{width:44px;height:1.5px;background:var(--paper-line);}
+
+  .form-step{display:none;}
+  .form-step.active{display:block;animation:stepIn .18s ease;}
+  @keyframes stepIn{from{opacity:0;transform:translateX(8px);}to{opacity:1;transform:translateX(0);}}
+
+  .step-nav{display:flex;gap:10px;margin-top:22px;}
+  .step-nav .btn{margin-top:0;flex:1;}
+  .step-nav .btn-ghost{flex:0 0 auto;padding-left:20px;padding-right:20px;}
+
   .section-title{display:flex;align-items:center;gap:10px;margin:0 0 14px;}
   .section-title:not(:first-child){margin-top:26px;padding-top:22px;border-top:1px solid var(--paper-line);}
   .step-num{width:24px;height:24px;border-radius:50%;background:var(--pine);color:#fff;flex-shrink:0;
@@ -151,46 +167,65 @@
   <!-- ================= EMPLOYEE VIEW ================= -->
   <div class="view active" id="view-employee">
 
+    <div class="stepper-bar" id="stepperBar">
+      <div class="step-dot active" data-step="1"><span>1</span></div>
+      <div class="step-track"></div>
+      <div class="step-dot" data-step="2"><span>2</span></div>
+      <div class="step-track"></div>
+      <div class="step-dot" data-step="3"><span>3</span></div>
+    </div>
+
     <div class="card" id="formCard">
-      <div class="section-title"><span class="step-num">1</span><span class="txt">ข้อมูลผู้ขอส่งตัว</span></div>
-      <label>ชื่อ-สกุล *</label>
-      <input type="text" id="f_name" placeholder="เช่น สมชาย ใจดี">
-      <div class="row2">
-        <div>
-          <label>อายุ *</label>
-          <input type="number" id="f_age" min="15" max="80" placeholder="เช่น 32">
+
+      <div class="form-step active" data-step="1">
+        <div class="section-title"><span class="step-num">1</span><span class="txt">ข้อมูลผู้ขอส่งตัว</span></div>
+        <label>ชื่อ-สกุล *</label>
+        <input type="text" id="f_name" placeholder="เช่น สมชาย ใจดี">
+        <div class="row2">
+          <div>
+            <label>อายุ *</label>
+            <input type="number" id="f_age" min="15" max="80" placeholder="เช่น 32">
+          </div>
+          <div>
+            <label>รหัสพนักงาน (ถ้ามี)</label>
+            <input type="text" id="f_empid" placeholder="ไม่บังคับ">
+          </div>
         </div>
-        <div>
-          <label>รหัสพนักงาน (ถ้ามี)</label>
-          <input type="text" id="f_empid" placeholder="ไม่บังคับ">
+        <div class="row2">
+          <div>
+            <label>แผนก *</label>
+            <input type="text" id="f_dept" placeholder="เช่น ผลิต 2">
+          </div>
+          <div>
+            <label>ฝ่าย</label>
+            <input type="text" id="f_division" placeholder="ไม่บังคับ">
+          </div>
         </div>
+        <label>เบอร์โทรติดต่อกลับ *</label>
+        <input type="tel" id="f_phone" placeholder="เช่น 081-234-5678">
       </div>
-      <div class="row2">
-        <div>
-          <label>แผนก *</label>
-          <input type="text" id="f_dept" placeholder="เช่น ผลิต 2">
-        </div>
-        <div>
-          <label>ฝ่าย</label>
-          <input type="text" id="f_division" placeholder="ไม่บังคับ">
-        </div>
+
+      <div class="form-step" data-step="2">
+        <div class="section-title"><span class="step-num">2</span><span class="txt">เข้ารับบริการในโรงพยาบาล — กรณี</span></div>
+        <div class="opt-list" id="serviceList"></div>
+
+        <label style="margin-top:14px;">อาการ / รายละเอียดเบื้องต้น</label>
+        <textarea id="f_symptoms" placeholder="เช่น ปวดท้อง มีไข้ 2 วัน"></textarea>
       </div>
-      <label>เบอร์โทรติดต่อกลับ *</label>
-      <input type="tel" id="f_phone" placeholder="เช่น 081-234-5678">
 
-      <div class="section-title"><span class="step-num">2</span><span class="txt">เข้ารับบริการในโรงพยาบาล — กรณี</span></div>
-      <div class="opt-list" id="serviceList"></div>
+      <div class="form-step" data-step="3">
+        <div class="section-title"><span class="step-num">3</span><span class="txt">โดยขอใช้สิทธิ์รักษา</span></div>
+        <div class="opt-list" id="payerList"></div>
 
-      <label style="margin-top:14px;">อาการ / รายละเอียดเบื้องต้น</label>
-      <textarea id="f_symptoms" placeholder="เช่น ปวดท้อง มีไข้ 2 วัน"></textarea>
+        <label style="margin-top:14px;">วันที่ต้องการไปโรงพยาบาล</label>
+        <input type="date" id="f_date">
+      </div>
 
-      <div class="section-title"><span class="step-num">3</span><span class="txt">โดยขอใช้สิทธิ์รักษา</span></div>
-      <div class="opt-list" id="payerList"></div>
-
-      <label style="margin-top:14px;">วันที่ต้องการไปโรงพยาบาล</label>
-      <input type="date" id="f_date">
-
-      <button class="btn btn-primary" id="submitBtn" onclick="submitForm()">ส่งคำขอใบส่งตัว</button>
+      <div class="step-nav">
+        <button class="btn btn-ghost" id="backBtn" onclick="stepBack()" style="display:none;">ย้อนกลับ</button>
+        <button class="btn btn-primary" id="nextBtn" onclick="stepNext()">ถัดไป</button>
+        <button class="btn btn-primary" id="submitBtn" onclick="submitForm()" style="display:none;">ส่งคำขอใบส่งตัว</button>
+      </div>
       <div class="hint" style="text-align:center;margin-top:10px;">
         ส่งคำขอแล้วระบบจะแจ้งฝ่ายบุคคลทันที กรุณารอการติดต่อกลับ หรือแวะมารับใบส่งตัวที่ฝ่ายบุคคลได้เลย
       </div>
@@ -282,6 +317,51 @@
     setTimeout(() => el.remove(), 3800);
   }
 
+  // ---------- Step wizard ----------
+  let currentStep = 1;
+  const TOTAL_STEPS = 3;
+
+  function updateStepUI(){
+    document.querySelectorAll('.form-step').forEach(s => s.classList.toggle('active', Number(s.dataset.step) === currentStep));
+    document.querySelectorAll('.step-dot').forEach(d => {
+      const n = Number(d.dataset.step);
+      d.classList.toggle('active', n === currentStep);
+      d.classList.toggle('done', n < currentStep);
+    });
+    document.getElementById('backBtn').style.display = currentStep > 1 ? 'inline-flex' : 'none';
+    document.getElementById('nextBtn').style.display = currentStep < TOTAL_STEPS ? 'inline-flex' : 'none';
+    document.getElementById('submitBtn').style.display = currentStep === TOTAL_STEPS ? 'inline-flex' : 'none';
+    document.getElementById('formCard').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  function validateStep(n){
+    if (n === 1) {
+      if (!document.getElementById('f_name').value.trim()) return 'กรุณากรอกชื่อ-สกุล';
+      if (!document.getElementById('f_age').value.trim()) return 'กรุณากรอกอายุ';
+      if (!document.getElementById('f_dept').value.trim()) return 'กรุณากรอกแผนก';
+      if (!document.getElementById('f_phone').value.trim()) return 'กรุณากรอกเบอร์โทรติดต่อกลับ';
+    }
+    if (n === 2) {
+      const service = document.querySelector('input[name="service"]:checked');
+      if (!service) return 'กรุณาเลือกกรณีที่เข้ารับบริการ';
+      const detailEl = document.getElementById('service_detail_' + service.value);
+      if (detailEl && !detailEl.value.trim()) return 'กรุณาระบุรายละเอียดของกรณีที่เลือก';
+      if (service.value === 'treatment' && !document.getElementById('f_symptoms').value.trim()) return 'กรณีเข้ารับการรักษา กรุณาระบุอาการ';
+    }
+    return null;
+  }
+
+  function stepNext(){
+    const err = validateStep(currentStep);
+    if (err) return showToast(err, 'err');
+    currentStep = Math.min(TOTAL_STEPS, currentStep + 1);
+    updateStepUI();
+  }
+  function stepBack(){
+    currentStep = Math.max(1, currentStep - 1);
+    updateStepUI();
+  }
+
   // ---------- Tabs ----------
   document.querySelectorAll('.tab').forEach(tab => {
     tab.addEventListener('click', () => {
@@ -341,11 +421,8 @@
     const service = document.querySelector('input[name="service"]:checked');
     const payer = document.querySelector('input[name="payer"]:checked');
 
-    if (!name) return showToast('กรุณากรอกชื่อ-สกุล', 'err');
-    if (!age) return showToast('กรุณากรอกอายุ', 'err');
-    if (!dept) return showToast('กรุณากรอกแผนก', 'err');
-    if (!phone) return showToast('กรุณากรอกเบอร์โทรติดต่อกลับ', 'err');
-    if (!service) return showToast('กรุณาเลือกกรณีที่เข้ารับบริการ', 'err');
+    if (!name || !age || !dept || !phone) { currentStep = 1; updateStepUI(); return showToast('กรุณากรอกข้อมูลผู้ขอให้ครบ', 'err'); }
+    if (!service) { currentStep = 2; updateStepUI(); return showToast('กรุณาเลือกกรณีที่เข้ารับบริการ', 'err'); }
     if (!payer) return showToast('กรุณาเลือกสิทธิ์การรักษา', 'err');
 
     const serviceDetail = (document.getElementById('service_detail_' + service.value) || {}).value || '';
@@ -368,6 +445,7 @@
       btn.disabled = false; btn.textContent = 'ส่งคำขอใบส่งตัว';
       if (!res.success) return showToast(res.error || 'ส่งคำขอไม่สำเร็จ', 'err');
       document.getElementById('formCard').style.display = 'none';
+      document.getElementById('stepperBar').style.display = 'none';
       document.getElementById('successCard').style.display = 'block';
       document.getElementById('successReqId').textContent = res.requestId;
     }).catch(() => {
@@ -378,10 +456,13 @@
 
   function resetForm(){
     document.getElementById('formCard').style.display = 'block';
+    document.getElementById('stepperBar').style.display = 'flex';
     document.getElementById('successCard').style.display = 'none';
     ['f_name','f_age','f_empid','f_dept','f_division','f_phone','f_symptoms','f_date'].forEach(id => document.getElementById(id).value = '');
     document.querySelectorAll('input[type=radio]').forEach(r => r.checked = false);
     document.querySelectorAll('.opt').forEach(o => { o.classList.remove('checked'); const d=o.querySelector('.opt-detail'); if(d){d.classList.remove('show'); d.value='';} });
+    currentStep = 1;
+    updateStepUI();
   }
 
   // ================= HR SIDE =================
