@@ -464,7 +464,11 @@
           </div>
           <div>
             <label>ฝ่าย *</label>
-            <input type="text" id="f_division" placeholder="เช่น HR">
+            <div class="combo" id="divCombo">
+              <input type="text" id="f_division" class="combo-input" placeholder="ค้นหา / เลือกฝ่าย" autocomplete="off">
+              <span class="combo-chevron"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></span>
+              <div class="combo-panel" id="divPanel" hidden></div>
+            </div>
           </div>
         </div>
         <label>เบอร์โทรติดต่อกลับ *</label>
@@ -550,6 +554,7 @@
           <button class="btn-mini" onclick="exportCsv()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11M7.5 10.5L12 15l4.5-4.5"/><path d="M5 19h14"/></svg>Export CSV</button>
           <button class="btn-mini" onclick="openPwModal()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="15" r="4"/><path d="M11 12l8-8M16 7l3 3"/></svg>จัดการรหัสผ่าน</button>
           <button class="btn-mini" onclick="openDeptModal()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7l3-3h5l2 2h8v11a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V7z"/></svg>จัดการแผนก</button>
+          <button class="btn-mini" onclick="openDivModal()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 21V7l8-4 8 4v14"/><path d="M9 21v-6h6v6"/><path d="M9 11h.01M15 11h.01M9 15h.01M15 15h.01"/></svg>จัดการฝ่าย</button>
           <button class="btn-mini" onclick="confirmLogout()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 4H6a1 1 0 0 0-1 1v14a1 1 0 0 0 1 1h3"/><path d="M15 8l4 4-4 4M19 12H9"/></svg>ออกจากระบบ</button>
         </div>
       </div>
@@ -594,6 +599,18 @@
     </div>
     <div class="modal-body" id="deptList"></div>
     <div class="modal-foot"><button class="btn" id="deptAdd"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>เพิ่มแผนก</button></div>
+  </div>
+</div>
+
+<div class="modal" id="divModal" hidden>
+  <div class="modal-back" id="divBack"></div>
+  <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="divTitle">
+    <div class="modal-head">
+      <div><h3 id="divTitle">จัดการฝ่าย</h3><p>รายชื่อฝ่ายตรงนี้จะใช้เป็นตัวเลือกดรอปดาวน์ค้นหาได้ในหน้าฟอร์มขอใบส่งตัวของพนักงาน (ช่อง "ฝ่าย")</p></div>
+      <button class="modal-x" id="divClose" aria-label="ปิด"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    </div>
+    <div class="modal-body" id="divList"></div>
+    <div class="modal-foot"><button class="btn" id="divAdd"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>เพิ่มฝ่าย</button></div>
   </div>
 </div>
 </main>
@@ -669,7 +686,8 @@
       if (!document.getElementById('f_empid').value.trim()) return 'กรุณากรอกรหัสพนักงาน';
       if (!document.getElementById('f_dept').value.trim()) return 'กรุณาเลือกแผนก';
       if (!isValidDept()) return 'กรุณาเลือกแผนกจากรายการที่มี';
-      if (!document.getElementById('f_division').value.trim()) return 'กรุณากรอกฝ่าย';
+      if (!document.getElementById('f_division').value.trim()) return 'กรุณาเลือกฝ่าย';
+      if (!isValidDivision()) return 'กรุณาเลือกฝ่ายจากรายการที่มี';
       if (!document.getElementById('f_phone').value.trim()) return 'กรุณากรอกเบอร์โทรติดต่อกลับ';
     }
     if (n === 2) {
@@ -875,11 +893,60 @@
     return !DEPT_LIST.length || DEPT_LIST.some(d => d.toLowerCase() === v.toLowerCase());
   }
 
+  // ---------- Division combobox (ค้นหา + เลือกฝ่ายจากรายการที่ HR ตั้งไว้) ----------
+  let DIV_LIST = [];
+  function initDivCombo(){
+    const input = document.getElementById('f_division');
+    const panel = document.getElementById('divPanel');
+    let activeIdx = -1;
+    const filtered = () => {
+      const q = input.value.trim().toLowerCase();
+      return q ? DIV_LIST.filter(d => d.toLowerCase().indexOf(q) !== -1) : DIV_LIST;
+    };
+    const updateActive = opts => {
+      opts.forEach((o, i) => o.classList.toggle('active', i === activeIdx));
+      if (activeIdx >= 0) opts[activeIdx].scrollIntoView({ block: 'nearest' });
+    };
+    const renderPanel = () => {
+      activeIdx = -1;
+      if (!DIV_LIST.length) { panel.hidden = true; return; }
+      const items = filtered();
+      panel.innerHTML = items.length
+        ? items.map((d, i) => '<div class="combo-opt" data-i="' + i + '">' + escapeHtml(d) + '</div>').join('')
+        : '<div class="combo-empty">ไม่พบฝ่ายที่ค้นหา</div>';
+      panel.hidden = false;
+    };
+    input.addEventListener('focus', renderPanel);
+    input.addEventListener('input', renderPanel);
+    input.addEventListener('blur', () => { setTimeout(() => { panel.hidden = true; }, 120); });
+    panel.addEventListener('mousedown', e => {
+      const opt = e.target.closest('.combo-opt'); if (!opt) return;
+      e.preventDefault();
+      input.value = filtered()[Number(opt.dataset.i)];
+      panel.hidden = true;
+    });
+    input.addEventListener('keydown', e => {
+      if (panel.hidden) return;
+      const opts = panel.querySelectorAll('.combo-opt');
+      if (!opts.length) return;
+      if (e.key === 'ArrowDown') { e.preventDefault(); activeIdx = Math.min(opts.length - 1, activeIdx + 1); updateActive(opts); }
+      else if (e.key === 'ArrowUp') { e.preventDefault(); activeIdx = Math.max(0, activeIdx - 1); updateActive(opts); }
+      else if (e.key === 'Enter') { if (activeIdx >= 0) { e.preventDefault(); input.value = opts[activeIdx].textContent; panel.hidden = true; } }
+      else if (e.key === 'Escape') { panel.hidden = true; }
+    });
+  }
+  initDivCombo();
+  function isValidDivision(){
+    const v = document.getElementById('f_division').value.trim();
+    return !DIV_LIST.length || DIV_LIST.some(d => d.toLowerCase() === v.toLowerCase());
+  }
+
   // ---------- Load form options ----------
   callApi('getFormOptions', {}).then(res => {
     if (!res.success) return;
     FORM_OPTIONS = res;
     DEPT_LIST = res.departments || [];
+    DIV_LIST = res.divisions || [];
     document.getElementById('companyLabel').textContent = res.companyName;
     syncHeaderChip();
     renderOptionList('serviceList', res.serviceTypes, 'service');
@@ -924,6 +991,7 @@
 
     if (!name || !age || !dept || !phone || !document.getElementById('f_empid').value.trim() || !document.getElementById('f_division').value.trim()) { currentStep = 1; updateStepUI(); return showToast('กรุณากรอกข้อมูลผู้ขอให้ครบ', 'err'); }
     if (!isValidDept()) { currentStep = 1; updateStepUI(); return showToast('กรุณาเลือกแผนกจากรายการที่มี', 'err'); }
+    if (!isValidDivision()) { currentStep = 1; updateStepUI(); return showToast('กรุณาเลือกฝ่ายจากรายการที่มี', 'err'); }
     const patient = document.querySelector('input[name="patient"]:checked');
     const patientName = patient ? ((document.getElementById('patient_detail_' + patient.value) || {}).value || '').trim() : '';
     if (!patient || (patient.value !== 'self' && !patientName)) { currentStep = 2; updateStepUI(); return showToast(!patient ? 'กรุณาเลือกผู้เข้ารับบริการ' : 'กรุณาระบุชื่อ - สกุลบุคคลในครอบครัว', 'err'); }
@@ -1352,6 +1420,81 @@
   document.getElementById('deptClose').addEventListener('click', closeDeptModal);
   document.getElementById('deptBack').addEventListener('click', closeDeptModal);
   document.addEventListener('keydown', e => { if (e.key === 'Escape' && !document.getElementById('deptModal').hidden && !Swal.isVisible()) closeDeptModal(); });
+
+  // ================= จัดการฝ่าย (รายชื่อฝ่ายสำหรับดรอปดาวน์ในฟอร์ม) =================
+  let DIV_ITEMS = [];
+  function openDivModal(){
+    if (!HR_CODE) return;
+    document.getElementById('divModal').hidden = false;
+    document.body.style.overflow = 'hidden';
+    document.getElementById('divList').innerHTML = '<div class="empty">กำลังโหลด...</div>';
+    loadDivList();
+    document.getElementById('divClose').focus();
+  }
+  function closeDivModal(){
+    document.getElementById('divModal').hidden = true;
+    document.body.style.overflow = '';
+  }
+  function loadDivList(){
+    callApi('listDivisions', { accessCode: HR_CODE }).then(res => {
+      if (res.error === 'WRONG_CODE') { closeDivModal(); lockHr(); return; }
+      if (!res.success) return showToast(res.error || 'โหลดรายการฝ่ายไม่สำเร็จ', 'err');
+      renderDivList(res.items);
+    }).catch(() => showToast('เชื่อมต่อระบบไม่สำเร็จ', 'err'));
+  }
+  function renderDivList(items){
+    DIV_ITEMS = items || [];
+    DIV_LIST = DIV_ITEMS.map(d => d.division); // sync กับดรอปดาวน์ในฟอร์มขอใบส่งตัวทันที
+    if (!DIV_ITEMS.length) {
+      document.getElementById('divList').innerHTML = '<div class="empty">ยังไม่มีฝ่ายในระบบ กด "เพิ่มฝ่าย" เพื่อเริ่มต้น</div>';
+      return;
+    }
+    document.getElementById('divList').innerHTML = DIV_ITEMS.map(d =>
+      '<div class="pw-item"><div class="pw-key">' + IC('<path d="M4 21V7l8-4 8 4v14"/><path d="M9 21v-6h6v6"/>') + '</div>' +
+      '<div class="pw-info"><div class="pw-label">' + escapeHtml(d.division) + '</div></div>' +
+      '<button class="btn-mini" onclick="divEdit(\'' + d.id + '\')">' + IC(PATHS.edit) + 'แก้ไข</button>' +
+      '<button class="btn-mini danger" onclick="divDelete(\'' + d.id + '\')">' + IC(PATHS.trash) + 'ลบ</button></div>'
+    ).join('');
+  }
+  function divForm(title, division, isEdit){
+    return fireAlert({
+      title: title, showCancelButton: true, focusConfirm: false,
+      confirmButtonText: isEdit ? 'บันทึก' : 'เพิ่ม', cancelButtonText: 'ปิด',
+      html: '<input id="divName" class="swal2-input" maxlength="60" placeholder="ชื่อฝ่าย" value="' + escapeHtml(division || '') + '">',
+      preConfirm: () => {
+        const d = document.getElementById('divName').value.trim();
+        if (!d) { Swal.showValidationMessage('กรุณาระบุชื่อฝ่าย'); return false; }
+        return { division: d };
+      }
+    });
+  }
+  function divSave(action, payload, okMsg){
+    callApi(action, Object.assign({ accessCode: HR_CODE }, payload)).then(res => {
+      if (!res.success) return showToast(res.error || 'บันทึกไม่สำเร็จ', 'err');
+      showToast(okMsg, 'ok');
+      renderDivList(res.items);
+    }).catch(() => showToast('เชื่อมต่อระบบไม่สำเร็จ', 'err'));
+  }
+  function divAddFn(){
+    divForm('เพิ่มฝ่าย', '', false).then(r => {
+      if (r.isConfirmed) divSave('addDivision', { division: r.value.division }, 'เพิ่มฝ่ายแล้ว');
+    });
+  }
+  function divEdit(id){
+    const d = DIV_ITEMS.find(x => x.id === id); if (!d) return;
+    divForm('แก้ไขฝ่าย', d.division, true).then(r => {
+      if (r.isConfirmed) divSave('updateDivision', { id: id, division: r.value.division }, 'บันทึกการแก้ไขแล้ว');
+    });
+  }
+  function divDelete(id){
+    const d = DIV_ITEMS.find(x => x.id === id); if (!d) return;
+    fireAlert({ icon: 'warning', title: 'ลบฝ่ายนี้?', html: 'ฝ่าย <b>' + escapeHtml(d.division) + '</b> จะหายจากตัวเลือกในฟอร์มขอใบส่งตัว', showCancelButton: true, confirmButtonText: 'ลบ', cancelButtonText: 'ปิด', confirmButtonColor: true })
+      .then(r => { if (r.isConfirmed) divSave('deleteDivision', { id: id }, 'ลบฝ่ายแล้ว'); });
+  }
+  document.getElementById('divAdd').addEventListener('click', divAddFn);
+  document.getElementById('divClose').addEventListener('click', closeDivModal);
+  document.getElementById('divBack').addEventListener('click', closeDivModal);
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && !document.getElementById('divModal').hidden && !Swal.isVisible()) closeDivModal(); });
 
   // ================= ออกจากระบบ (ฝ่ายบุคคล) =================
   function confirmLogout(){
