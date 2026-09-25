@@ -283,6 +283,30 @@
   .pill{display:inline-block;padding:2px 9px;border-radius:12px;background:var(--surface-2);border:1px solid var(--border);font-size:.78rem;font-weight:500;}
   .pill.fam{background:var(--info-bg);border-color:transparent;color:var(--info);}
   .empty svg{width:34px;height:34px;color:var(--border-strong);display:block;margin:0 auto 8px;}
+
+  /* Compact HR list (row style) */
+  .req-list{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-md);box-shadow:var(--shadow-sm);overflow:hidden;}
+  .req-row{display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid var(--border);border-left:4px solid var(--border);cursor:pointer;background:var(--surface);transition:background .12s;}
+  .req-row:last-child{border-bottom:0;}
+  .req-row:hover{background:var(--surface-2);}
+  .req-row.pending{border-left-color:var(--gold);}
+  .req-row.issued{border-left-color:var(--success);}
+  .req-row.void{border-left-color:var(--danger);opacity:.72;}
+  .req-row .avatar{width:34px;height:34px;font-size:.85rem;}
+  .rr-main{flex:1;min-width:0;}
+  .rr-line1{display:flex;align-items:baseline;gap:6px;flex-wrap:wrap;}
+  .rr-name{font-family:'IBM Plex Sans Thai';font-weight:600;color:var(--navy);font-size:.92rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .rr-sub{font-size:.76rem;color:var(--ink-soft);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px;}
+  .rr-meta{display:none;font-size:.8rem;color:var(--ink-soft);flex:1.2;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .rr-side{display:flex;align-items:center;gap:8px;flex-shrink:0;}
+  .rr-chev{color:var(--ink-soft);flex-shrink:0;} .rr-chev svg{width:16px;height:16px;display:block;}
+  @media (min-width:720px){ .rr-meta{display:block;} }
+  .pagination{display:flex;align-items:center;justify-content:center;gap:14px;margin-top:14px;}
+  .pagination button{width:36px;height:36px;border-radius:9px;border:1.5px solid var(--border);background:var(--surface);color:var(--navy);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:border-color .15s,background .15s;}
+  .pagination button svg{width:17px;height:17px;}
+  .pagination button:hover:not(:disabled){border-color:var(--border-strong);background:var(--surface-2);}
+  .pagination button:disabled{opacity:.35;cursor:not-allowed;}
+  .pagination .page-info{font-size:.85rem;color:var(--ink-soft);font-variant-numeric:tabular-nums;min-width:110px;text-align:center;}
   .modal{position:fixed;inset:0;z-index:900;display:flex;align-items:center;justify-content:center;padding:16px;}
   .modal[hidden]{display:none;}
   .modal-back{position:absolute;inset:0;background:rgba(14,24,38,.55);}
@@ -514,6 +538,7 @@
       </div>
       <div id="hrPendingSummary" class="hint" style="margin:0 0 10px;"></div>
       <div id="hrList"></div>
+      <div class="pagination" id="hrPagination" hidden></div>
     </div>
   </div>
 </div>
@@ -528,6 +553,18 @@
     </div>
     <div class="modal-body" id="pwList"></div>
     <div class="modal-foot"><button class="btn" id="pwAdd"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>เพิ่มรหัสผ่าน</button></div>
+  </div>
+</div>
+
+<div class="modal" id="reqModal" hidden>
+  <div class="modal-back" id="reqBack"></div>
+  <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="reqTitle">
+    <div class="modal-head">
+      <div><h3 id="reqTitle">รายละเอียดคำขอ</h3><p id="reqSub"></p></div>
+      <button class="modal-x" id="reqClose" aria-label="ปิด"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    </div>
+    <div class="modal-body" id="reqBody"></div>
+    <div class="modal-foot" id="reqFoot" style="display:flex;gap:8px;"></div>
   </div>
 </div>
 </main>
@@ -926,43 +963,104 @@
     loadHrList();
   });
 
+  const HR_PAGE_SIZE = 10;
+  let HR_REQUESTS = [];
+  let HR_PAGE = 1;
+
   function renderHrList(res){
     renderStats(res.stats);
     syncStatActive();
-    const n = (res.requests || []).length;
-    document.getElementById('hrPendingSummary').textContent = 'แสดง ' + n + ' รายการ' + (document.getElementById('hrStatus').value ? ' • กรองตามสถานะ' : '');
+    HR_REQUESTS = res.requests || [];
+    HR_PAGE = 1;
+    const n = HR_REQUESTS.length;
+    document.getElementById('hrPendingSummary').textContent = 'พบ ' + n + ' รายการ' + (document.getElementById('hrStatus').value ? ' • กรองตามสถานะ' : '');
     syncHrNav(res.pendingCount || 0);
+    renderHrPage();
+  }
+
+  function renderHrPage(){
     const list = document.getElementById('hrList');
+    const pager = document.getElementById('hrPagination');
+    const n = HR_REQUESTS.length;
     if (!n) {
       list.innerHTML = '<div class="card empty">' + IC(PATHS.doc) + 'ไม่พบคำขอที่ตรงกับเงื่อนไข</div>';
+      pager.hidden = true;
       return;
     }
-    const kv = (k, v, full) => v ? '<div class="kv' + (full ? ' full' : '') + '"><dt>' + k + '</dt><dd>' + v + '</dd></div>' : '';
-    list.innerHTML = res.requests.map(r => {
+    const totalPages = Math.max(1, Math.ceil(n / HR_PAGE_SIZE));
+    if (HR_PAGE > totalPages) HR_PAGE = totalPages;
+    const start = (HR_PAGE - 1) * HR_PAGE_SIZE;
+    const pageItems = HR_REQUESTS.slice(start, start + HR_PAGE_SIZE);
+
+    list.innerHTML = '<div class="req-list">' + pageItems.map(r => {
       const cls = statusClass(r.status), pending = r.status === 'รอ HR ออกใบ';
-      const family = r.patientTypeLabel && r.patientTypeLabel !== 'ตัวพนักงานเอง';
       const wait = pending && r.waitDays >= 1 ? '<span class="wait' + (r.waitDays >= 3 ? ' late' : '') + '">รอมา ' + r.waitDays + ' วัน</span>' : '';
-      return '<article class="req ' + cls + '">' +
-        '<div class="req-head"><div class="avatar">' + escapeHtml(String(r.name || '?').trim().charAt(0)) + '</div>' +
-        '<div class="req-who"><div class="req-name">' + escapeHtml(r.name) + ' <span class="req-id-sm">(' + (r.age || '-') + ' ปี)</span></div>' +
-        '<div class="req-id-sm">' + r.requestId + ' • ' + r.timestamp + '</div></div>' +
-        '<div class="req-side">' + wait + '<span class="badge ' + cls + '">' + r.status + '</span></div></div>' +
-        '<dl class="kv-grid">' +
-          kv('แผนก / ฝ่าย', escapeHtml(r.department) + (r.division ? ' / ' + escapeHtml(r.division) : '')) +
-          kv('รหัสพนักงาน', escapeHtml(r.employeeId)) +
-          (r.patientTypeLabel ? kv('ผู้เข้ารับบริการ', '<span class="pill' + (family ? ' fam' : '') + '">' + escapeHtml(r.patientTypeLabel) + '</span>' + (r.patientName ? ' ' + escapeHtml(r.patientName) : '')) : '') +
-          kv('กรณี', escapeHtml(r.serviceTypeLabel) + (r.serviceDetail ? ' — ' + escapeHtml(r.serviceDetail) : '')) +
-          kv('สิทธิ์การรักษา', escapeHtml(r.payerTypeLabel) + (r.payerDetail ? ' — ' + escapeHtml(r.payerDetail) : '')) +
-          kv('ติดต่อ', r.contactPhone ? '<a href="tel:' + escapeHtml(r.contactPhone) + '">' + escapeHtml(r.contactPhone) + '</a>' : '') +
-          kv('วันที่ต้องการไป', escapeHtml(r.preferredDate)) +
-          kv('อาการ', escapeHtml(r.symptoms), true) +
-          kv('หมายเหตุ HR', escapeHtml(r.hrNote), true) +
-        '</dl>' +
-        (pending ? '<div class="req-actions"><button class="btn-mini save" onclick="openNoteModal(\'' + r.requestId + '\',\'issue\')">' + IC(PATHS.ok) + 'ออกใบแล้ว</button>' +
-          '<button class="btn-mini danger" onclick="openNoteModal(\'' + r.requestId + '\',\'void\')">' + IC(PATHS.no) + 'ยกเลิกคำขอ</button></div>' : '') +
-        '</article>';
-    }).join('');
+      const metaBits = [
+        escapeHtml(r.department) + (r.division ? '/' + escapeHtml(r.division) : ''),
+        r.patientTypeLabel ? escapeHtml(r.patientTypeLabel) : '',
+        r.serviceTypeLabel ? escapeHtml(r.serviceTypeLabel) : ''
+      ].filter(Boolean).join(' • ');
+      return '<div class="req-row ' + cls + '" onclick="openReqDetail(\'' + r.requestId + '\')">' +
+        '<div class="avatar">' + escapeHtml(String(r.name || '?').trim().charAt(0)) + '</div>' +
+        '<div class="rr-main">' +
+          '<div class="rr-line1"><span class="rr-name">' + escapeHtml(r.name) + '</span><span class="req-id-sm">' + r.requestId + '</span></div>' +
+          '<div class="rr-sub">' + escapeHtml(r.timestamp) + '</div>' +
+        '</div>' +
+        '<div class="rr-meta">' + metaBits + '</div>' +
+        '<div class="rr-side">' + wait + '<span class="badge ' + cls + '">' + r.status + '</span>' +
+          '<span class="rr-chev">' + IC('<path d="M9 6l6 6-6 6"/>') + '</span></div>' +
+      '</div>';
+    }).join('') + '</div>';
+
+    pager.hidden = totalPages <= 1;
+    if (!pager.hidden) {
+      pager.innerHTML =
+        '<button id="hrPrev" ' + (HR_PAGE <= 1 ? 'disabled' : '') + ' aria-label="ก่อนหน้า">' + IC('<path d="M15 6l-6 6 6 6"/>') + '</button>' +
+        '<span class="page-info">หน้า ' + HR_PAGE + ' จาก ' + totalPages + ' (' + n + ' รายการ)</span>' +
+        '<button id="hrNext" ' + (HR_PAGE >= totalPages ? 'disabled' : '') + ' aria-label="ถัดไป">' + IC('<path d="M9 6l6 6-6 6"/>') + '</button>';
+      document.getElementById('hrPrev').onclick = () => { HR_PAGE--; renderHrPage(); scrollHrListTop(); };
+      document.getElementById('hrNext').onclick = () => { HR_PAGE++; renderHrPage(); scrollHrListTop(); };
+    }
   }
+
+  function scrollHrListTop(){
+    document.getElementById('hrList').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  function openReqDetail(requestId){
+    const r = HR_REQUESTS.find(x => x.requestId === requestId);
+    if (!r) return;
+    const cls = statusClass(r.status), pending = r.status === 'รอ HR ออกใบ';
+    const family = r.patientTypeLabel && r.patientTypeLabel !== 'ตัวพนักงานเอง';
+    const kv = (k, v, full) => v ? '<div class="kv' + (full ? ' full' : '') + '"><dt>' + k + '</dt><dd>' + v + '</dd></div>' : '';
+    document.getElementById('reqTitle').textContent = r.name + ' (' + (r.age || '-') + ' ปี)';
+    document.getElementById('reqSub').innerHTML = r.requestId + ' • ' + r.timestamp + ' • <span class="badge ' + cls + '">' + r.status + '</span>';
+    document.getElementById('reqBody').innerHTML = '<dl class="kv-grid" style="border-top:0;padding-top:4px;">' +
+        kv('แผนก / ฝ่าย', escapeHtml(r.department) + (r.division ? ' / ' + escapeHtml(r.division) : '')) +
+        kv('รหัสพนักงาน', escapeHtml(r.employeeId)) +
+        (r.patientTypeLabel ? kv('ผู้เข้ารับบริการ', '<span class="pill' + (family ? ' fam' : '') + '">' + escapeHtml(r.patientTypeLabel) + '</span>' + (r.patientName ? ' ' + escapeHtml(r.patientName) : '')) : '') +
+        kv('กรณี', escapeHtml(r.serviceTypeLabel) + (r.serviceDetail ? ' — ' + escapeHtml(r.serviceDetail) : '')) +
+        kv('สิทธิ์การรักษา', escapeHtml(r.payerTypeLabel) + (r.payerDetail ? ' — ' + escapeHtml(r.payerDetail) : '')) +
+        kv('ติดต่อ', r.contactPhone ? '<a href="tel:' + escapeHtml(r.contactPhone) + '">' + escapeHtml(r.contactPhone) + '</a>' : '') +
+        kv('วันที่ต้องการไป', escapeHtml(r.preferredDate)) +
+        kv('อาการ', escapeHtml(r.symptoms), true) +
+        kv('หมายเหตุ HR', escapeHtml(r.hrNote), true) +
+      '</dl>';
+    document.getElementById('reqFoot').innerHTML = pending
+      ? '<button class="btn-mini save" style="flex:1;justify-content:center;" onclick="closeReqModal();openNoteModal(\'' + r.requestId + '\',\'issue\')">' + IC(PATHS.ok) + 'ออกใบแล้ว</button>' +
+        '<button class="btn-mini danger" style="flex:1;justify-content:center;" onclick="closeReqModal();openNoteModal(\'' + r.requestId + '\',\'void\')">' + IC(PATHS.no) + 'ยกเลิกคำขอ</button>'
+      : '';
+    document.getElementById('reqModal').hidden = false;
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeReqModal(){
+    document.getElementById('reqModal').hidden = true;
+    document.body.style.overflow = '';
+  }
+  document.getElementById('reqClose').addEventListener('click', closeReqModal);
+  document.getElementById('reqBack').addEventListener('click', closeReqModal);
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && !document.getElementById('reqModal').hidden && !Swal.isVisible()) closeReqModal(); });
 
   function escapeHtml(s){ return String(s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 
