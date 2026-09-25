@@ -444,11 +444,11 @@
         <div class="row2">
           <div>
             <label>แผนก *</label>
-            <input type="text" id="f_dept" placeholder="เช่น Ass'y">
+            <input type="text" id="f_dept" placeholder="เช่น HR">
           </div>
           <div>
             <label>ฝ่าย *</label>
-            <input type="text" id="f_division" placeholder="เช่น PRD">
+            <input type="text" id="f_division" placeholder="เช่น HR">
           </div>
         </div>
         <label>เบอร์โทรติดต่อกลับ *</label>
@@ -1247,7 +1247,7 @@
     return fireAlert({
       title: title, showCancelButton: true, focusConfirm: false,
       confirmButtonText: isEdit ? 'บันทึก' : 'เพิ่ม', cancelButtonText: 'ปิด',
-      html: '<input id="deptName" class="swal2-input" maxlength="60" placeholder="ชื่อแผนก (ตรงกับที่กรอกในฟอร์ม) เช่น Ass\'y" value="' + escapeHtml(department || '') + '">' +
+      html: '<input id="deptName" class="swal2-input" maxlength="60" placeholder="ชื่อแผนก (ตรงกับที่กรอกในฟอร์ม) เช่น HR" value="' + escapeHtml(department || '') + '">' +
         '<input id="deptEmail" class="swal2-input" type="email" maxlength="120" placeholder="อีเมลของแผนก" value="' + escapeHtml(email || '') + '">',
       preConfirm: () => {
         const d = document.getElementById('deptName').value.trim(), e = document.getElementById('deptEmail').value.trim();
