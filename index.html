@@ -165,6 +165,18 @@
   textarea{resize:vertical;min-height:60px;}
   .row2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
 
+  /* Searchable department combobox */
+  .combo{position:relative;}
+  .combo-input{padding-right:34px !important;}
+  .combo-chevron{position:absolute;right:11px;top:50%;transform:translateY(-50%);color:var(--ink-soft);pointer-events:none;display:flex;}
+  .combo-chevron svg{width:16px;height:16px;}
+  .combo-panel{position:absolute;z-index:60;top:calc(100% + 6px);left:0;right:0;max-height:230px;overflow:auto;
+    background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);box-shadow:var(--shadow-md);padding:5px;}
+  .combo-panel[hidden]{display:none;}
+  .combo-opt{padding:9px 12px;border-radius:7px;font-size:.9rem;cursor:pointer;color:var(--ink);}
+  .combo-opt:hover,.combo-opt.active{background:var(--surface-2);}
+  .combo-empty{padding:10px 12px;font-size:.82rem;color:var(--ink-soft);}
+
   .opt-list{display:flex;flex-direction:column;gap:7px;}
   .opt{display:flex;align-items:flex-start;gap:11px;padding:11px 12px;border:1.5px solid var(--border);border-radius:var(--radius-sm);cursor:pointer;transition:border-color .15s,background .15s;}
   .opt:hover{border-color:var(--gold);}
@@ -444,7 +456,11 @@
         <div class="row2">
           <div>
             <label>แผนก *</label>
-            <input type="text" id="f_dept" placeholder="เช่น HR">
+            <div class="combo" id="deptCombo">
+              <input type="text" id="f_dept" class="combo-input" placeholder="ค้นหา / เลือกแผนก" autocomplete="off">
+              <span class="combo-chevron"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></span>
+              <div class="combo-panel" id="deptPanel" hidden></div>
+            </div>
           </div>
           <div>
             <label>ฝ่าย *</label>
@@ -533,7 +549,7 @@
           <button class="btn-mini" onclick="loadHrList()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.3-5.7"/><path d="M20 4v5h-5"/></svg>รีเฟรช</button>
           <button class="btn-mini" onclick="exportCsv()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11M7.5 10.5L12 15l4.5-4.5"/><path d="M5 19h14"/></svg>Export CSV</button>
           <button class="btn-mini" onclick="openPwModal()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="15" r="4"/><path d="M11 12l8-8M16 7l3 3"/></svg>จัดการรหัสผ่าน</button>
-          <button class="btn-mini" onclick="openDeptModal()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>อีเมลแผนก</button>
+          <button class="btn-mini" onclick="openDeptModal()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7l3-3h5l2 2h8v11a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V7z"/></svg>จัดการแผนก</button>
           <button class="btn-mini" onclick="confirmLogout()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 4H6a1 1 0 0 0-1 1v14a1 1 0 0 0 1 1h3"/><path d="M15 8l4 4-4 4M19 12H9"/></svg>ออกจากระบบ</button>
         </div>
       </div>
@@ -573,11 +589,11 @@
   <div class="modal-back" id="deptBack"></div>
   <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="deptTitle">
     <div class="modal-head">
-      <div><h3 id="deptTitle">อีเมลแผนกผู้ขอ</h3><p>เมื่อมีคำขอใหม่ แผนกที่ตั้งอีเมลไว้จะได้รับแจ้งแบบย่อ (ชื่อผู้ยื่น + สถานะเท่านั้น) แผนกที่ไม่ได้ตั้งไว้จะไม่มีอีเมลส่งไป</p></div>
+      <div><h3 id="deptTitle">จัดการแผนก</h3><p>รายชื่อแผนกตรงนี้จะใช้เป็นตัวเลือกในหน้าฟอร์มขอใบส่งตัวของพนักงาน — ใส่อีเมลด้วย (ไม่บังคับ) เพื่อให้แผนกนั้นได้รับแจ้งแบบย่อ (ชื่อผู้ยื่น + สถานะ) เมื่อมีคำขอใหม่</p></div>
       <button class="modal-x" id="deptClose" aria-label="ปิด"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
     </div>
     <div class="modal-body" id="deptList"></div>
-    <div class="modal-foot"><button class="btn" id="deptAdd"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>เพิ่มอีเมลแผนก</button></div>
+    <div class="modal-foot"><button class="btn" id="deptAdd"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>เพิ่มแผนก</button></div>
   </div>
 </div>
 </main>
@@ -651,7 +667,8 @@
       if (!document.getElementById('f_name').value.trim()) return 'กรุณากรอกชื่อ-สกุล';
       if (!document.getElementById('f_age').value.trim()) return 'กรุณากรอกอายุ';
       if (!document.getElementById('f_empid').value.trim()) return 'กรุณากรอกรหัสพนักงาน';
-      if (!document.getElementById('f_dept').value.trim()) return 'กรุณากรอกแผนก';
+      if (!document.getElementById('f_dept').value.trim()) return 'กรุณาเลือกแผนก';
+      if (!isValidDept()) return 'กรุณาเลือกแผนกจากรายการที่มี';
       if (!document.getElementById('f_division').value.trim()) return 'กรุณากรอกฝ่าย';
       if (!document.getElementById('f_phone').value.trim()) return 'กรุณากรอกเบอร์โทรติดต่อกลับ';
     }
@@ -810,10 +827,59 @@
   ];
   renderOptionList('patientList', PATIENT_TYPES, 'patient');
 
+  // ---------- Department combobox (ค้นหา + เลือกแผนกจากรายการที่ HR ตั้งไว้) ----------
+  let DEPT_LIST = [];
+  function initDeptCombo(){
+    const input = document.getElementById('f_dept');
+    const panel = document.getElementById('deptPanel');
+    let activeIdx = -1;
+    const filtered = () => {
+      const q = input.value.trim().toLowerCase();
+      return q ? DEPT_LIST.filter(d => d.toLowerCase().indexOf(q) !== -1) : DEPT_LIST;
+    };
+    const updateActive = opts => {
+      opts.forEach((o, i) => o.classList.toggle('active', i === activeIdx));
+      if (activeIdx >= 0) opts[activeIdx].scrollIntoView({ block: 'nearest' });
+    };
+    const renderPanel = () => {
+      activeIdx = -1;
+      if (!DEPT_LIST.length) { panel.hidden = true; return; }
+      const items = filtered();
+      panel.innerHTML = items.length
+        ? items.map((d, i) => '<div class="combo-opt" data-i="' + i + '">' + escapeHtml(d) + '</div>').join('')
+        : '<div class="combo-empty">ไม่พบแผนกที่ค้นหา</div>';
+      panel.hidden = false;
+    };
+    input.addEventListener('focus', renderPanel);
+    input.addEventListener('input', renderPanel);
+    input.addEventListener('blur', () => { setTimeout(() => { panel.hidden = true; }, 120); });
+    panel.addEventListener('mousedown', e => {
+      const opt = e.target.closest('.combo-opt'); if (!opt) return;
+      e.preventDefault();
+      input.value = filtered()[Number(opt.dataset.i)];
+      panel.hidden = true;
+    });
+    input.addEventListener('keydown', e => {
+      if (panel.hidden) return;
+      const opts = panel.querySelectorAll('.combo-opt');
+      if (!opts.length) return;
+      if (e.key === 'ArrowDown') { e.preventDefault(); activeIdx = Math.min(opts.length - 1, activeIdx + 1); updateActive(opts); }
+      else if (e.key === 'ArrowUp') { e.preventDefault(); activeIdx = Math.max(0, activeIdx - 1); updateActive(opts); }
+      else if (e.key === 'Enter') { if (activeIdx >= 0) { e.preventDefault(); input.value = opts[activeIdx].textContent; panel.hidden = true; } }
+      else if (e.key === 'Escape') { panel.hidden = true; }
+    });
+  }
+  initDeptCombo();
+  function isValidDept(){
+    const v = document.getElementById('f_dept').value.trim();
+    return !DEPT_LIST.length || DEPT_LIST.some(d => d.toLowerCase() === v.toLowerCase());
+  }
+
   // ---------- Load form options ----------
   callApi('getFormOptions', {}).then(res => {
     if (!res.success) return;
     FORM_OPTIONS = res;
+    DEPT_LIST = res.departments || [];
     document.getElementById('companyLabel').textContent = res.companyName;
     syncHeaderChip();
     renderOptionList('serviceList', res.serviceTypes, 'service');
@@ -857,6 +923,7 @@
     const payer = document.querySelector('input[name="payer"]:checked');
 
     if (!name || !age || !dept || !phone || !document.getElementById('f_empid').value.trim() || !document.getElementById('f_division').value.trim()) { currentStep = 1; updateStepUI(); return showToast('กรุณากรอกข้อมูลผู้ขอให้ครบ', 'err'); }
+    if (!isValidDept()) { currentStep = 1; updateStepUI(); return showToast('กรุณาเลือกแผนกจากรายการที่มี', 'err'); }
     const patient = document.querySelector('input[name="patient"]:checked');
     const patientName = patient ? ((document.getElementById('patient_detail_' + patient.value) || {}).value || '').trim() : '';
     if (!patient || (patient.value !== 'self' && !patientName)) { currentStep = 2; updateStepUI(); return showToast(!patient ? 'กรุณาเลือกผู้เข้ารับบริการ' : 'กรุณาระบุชื่อ - สกุลบุคคลในครอบครัว', 'err'); }
@@ -1208,7 +1275,7 @@
   document.getElementById('pwBack').addEventListener('click', closePwModal);
   document.addEventListener('keydown', e => { if (e.key === 'Escape' && !document.getElementById('pwModal').hidden && !Swal.isVisible()) closePwModal(); });
 
-  // ================= จัดการอีเมลแผนกผู้ขอ =================
+  // ================= จัดการแผนก (รายชื่อแผนกสำหรับดรอปดาวน์ในฟอร์ม + อีเมลแจ้งแผนก ไม่บังคับ) =================
   let DEPT_EMAILS = [];
   function openDeptModal(){
     if (!HR_CODE) return;
@@ -1225,20 +1292,21 @@
   function loadDeptList(){
     callApi('listDepartmentEmails', { accessCode: HR_CODE }).then(res => {
       if (res.error === 'WRONG_CODE') { closeDeptModal(); lockHr(); return; }
-      if (!res.success) return showToast(res.error || 'โหลดรายการอีเมลแผนกไม่สำเร็จ', 'err');
+      if (!res.success) return showToast(res.error || 'โหลดรายการแผนกไม่สำเร็จ', 'err');
       renderDeptList(res.items);
     }).catch(() => showToast('เชื่อมต่อระบบไม่สำเร็จ', 'err'));
   }
   function renderDeptList(items){
     DEPT_EMAILS = items || [];
+    DEPT_LIST = DEPT_EMAILS.map(d => d.department); // sync กับดรอปดาวน์ในฟอร์มขอใบส่งตัวทันที
     if (!DEPT_EMAILS.length) {
-      document.getElementById('deptList').innerHTML = '<div class="empty">ยังไม่ได้ตั้งอีเมลให้แผนกใดเลย</div>';
+      document.getElementById('deptList').innerHTML = '<div class="empty">ยังไม่มีแผนกในระบบ กด "เพิ่มแผนก" เพื่อเริ่มต้น</div>';
       return;
     }
     document.getElementById('deptList').innerHTML = DEPT_EMAILS.map(d =>
       '<div class="pw-item"><div class="pw-key">' + IC('<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/>') + '</div>' +
       '<div class="pw-info"><div class="pw-label">' + escapeHtml(d.department) + '</div>' +
-      '<div class="pw-meta">' + escapeHtml(d.email) + '</div></div>' +
+      '<div class="pw-meta">' + (d.email ? escapeHtml(d.email) : '<span style="color:var(--ink-soft);">ยังไม่ได้ตั้งอีเมล</span>') + '</div></div>' +
       '<button class="btn-mini" onclick="deptEdit(\'' + d.id + '\')">' + IC(PATHS.edit) + 'แก้ไข</button>' +
       '<button class="btn-mini danger" onclick="deptDelete(\'' + d.id + '\')">' + IC(PATHS.trash) + 'ลบ</button></div>'
     ).join('');
@@ -1247,12 +1315,12 @@
     return fireAlert({
       title: title, showCancelButton: true, focusConfirm: false,
       confirmButtonText: isEdit ? 'บันทึก' : 'เพิ่ม', cancelButtonText: 'ปิด',
-      html: '<input id="deptName" class="swal2-input" maxlength="60" placeholder="ชื่อแผนก (ตรงกับที่กรอกในฟอร์ม) เช่น HR" value="' + escapeHtml(department || '') + '">' +
-        '<input id="deptEmail" class="swal2-input" type="email" maxlength="120" placeholder="อีเมลของแผนก" value="' + escapeHtml(email || '') + '">',
+      html: '<input id="deptName" class="swal2-input" maxlength="60" placeholder="ชื่อแผนก เช่น HR" value="' + escapeHtml(department || '') + '">' +
+        '<input id="deptEmail" class="swal2-input" type="email" maxlength="120" placeholder="อีเมลแจ้งเตือน (ไม่บังคับ)" value="' + escapeHtml(email || '') + '">',
       preConfirm: () => {
         const d = document.getElementById('deptName').value.trim(), e = document.getElementById('deptEmail').value.trim();
         if (!d) { Swal.showValidationMessage('กรุณาระบุชื่อแผนก'); return false; }
-        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e)) { Swal.showValidationMessage('กรุณากรอกอีเมลให้ถูกต้อง'); return false; }
+        if (e && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e)) { Swal.showValidationMessage('รูปแบบอีเมลไม่ถูกต้อง (เว้นว่างได้ถ้ายังไม่มี)'); return false; }
         return { department: d, email: e };
       }
     });
@@ -1265,20 +1333,20 @@
     }).catch(() => showToast('เชื่อมต่อระบบไม่สำเร็จ', 'err'));
   }
   function deptAddFn(){
-    deptForm('เพิ่มอีเมลแผนก', '', '', false).then(r => {
-      if (r.isConfirmed) deptSave('addDepartmentEmail', { department: r.value.department, email: r.value.email }, 'เพิ่มอีเมลแผนกแล้ว');
+    deptForm('เพิ่มแผนก', '', '', false).then(r => {
+      if (r.isConfirmed) deptSave('addDepartmentEmail', { department: r.value.department, email: r.value.email }, 'เพิ่มแผนกแล้ว');
     });
   }
   function deptEdit(id){
     const d = DEPT_EMAILS.find(x => x.id === id); if (!d) return;
-    deptForm('แก้ไขอีเมลแผนก', d.department, d.email, true).then(r => {
+    deptForm('แก้ไขแผนก', d.department, d.email, true).then(r => {
       if (r.isConfirmed) deptSave('updateDepartmentEmail', { id: id, department: r.value.department, email: r.value.email }, 'บันทึกการแก้ไขแล้ว');
     });
   }
   function deptDelete(id){
     const d = DEPT_EMAILS.find(x => x.id === id); if (!d) return;
-    fireAlert({ icon: 'warning', title: 'ลบอีเมลแผนกนี้?', html: 'แผนก <b>' + escapeHtml(d.department) + '</b> จะไม่ได้รับอีเมลแจ้งคำขอใหม่อีก', showCancelButton: true, confirmButtonText: 'ลบ', cancelButtonText: 'ปิด', confirmButtonColor: true })
-      .then(r => { if (r.isConfirmed) deptSave('deleteDepartmentEmail', { id: id }, 'ลบอีเมลแผนกแล้ว'); });
+    fireAlert({ icon: 'warning', title: 'ลบแผนกนี้?', html: 'แผนก <b>' + escapeHtml(d.department) + '</b> จะหายจากตัวเลือกในฟอร์มขอใบส่งตัว และจะไม่ได้รับอีเมลแจ้งอีก', showCancelButton: true, confirmButtonText: 'ลบ', cancelButtonText: 'ปิด', confirmButtonColor: true })
+      .then(r => { if (r.isConfirmed) deptSave('deleteDepartmentEmail', { id: id }, 'ลบแผนกแล้ว'); });
   }
   document.getElementById('deptAdd').addEventListener('click', deptAddFn);
   document.getElementById('deptClose').addEventListener('click', closeDeptModal);
