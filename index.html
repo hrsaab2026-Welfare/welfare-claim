@@ -594,7 +594,7 @@
   <div class="modal-back" id="deptBack"></div>
   <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="deptTitle">
     <div class="modal-head">
-      <div><h3 id="deptTitle">จัดการแผนก</h3><p>รายชื่อแผนกตรงนี้จะใช้เป็นตัวเลือกในหน้าฟอร์มขอใบส่งตัวของพนักงาน — ใส่อีเมลด้วย (ไม่บังคับ) เพื่อให้แผนกนั้นได้รับแจ้งแบบย่อ (ชื่อผู้ยื่น + สถานะ) เมื่อมีคำขอใหม่</p></div>
+      <div><h3 id="deptTitle">จัดการแผนก</h3><p>รายชื่อแผนกตรงนี้จะใช้เป็นตัวเลือกดรอปดาวน์ค้นหาได้ในหน้าฟอร์มขอใบส่งตัวของพนักงาน (ช่อง "แผนก")</p></div>
       <button class="modal-x" id="deptClose" aria-label="ปิด"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
     </div>
     <div class="modal-body" id="deptList"></div>
@@ -606,7 +606,7 @@
   <div class="modal-back" id="divBack"></div>
   <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="divTitle">
     <div class="modal-head">
-      <div><h3 id="divTitle">จัดการฝ่าย</h3><p>รายชื่อฝ่ายตรงนี้จะใช้เป็นตัวเลือกดรอปดาวน์ค้นหาได้ในหน้าฟอร์มขอใบส่งตัวของพนักงาน (ช่อง "ฝ่าย")</p></div>
+      <div><h3 id="divTitle">จัดการฝ่าย</h3><p>รายชื่อฝ่ายตรงนี้จะใช้เป็นตัวเลือกดรอปดาวน์ค้นหาได้ในหน้าฟอร์มขอใบส่งตัวของพนักงาน (ช่อง "ฝ่าย") — ใส่อีเมลด้วย (ไม่บังคับ) เพื่อให้ฝ่ายนั้นได้รับแจ้งแบบย่อ (ชื่อผู้ยื่น + สถานะ) เมื่อมีคำขอใหม่</p></div>
       <button class="modal-x" id="divClose" aria-label="ปิด"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
     </div>
     <div class="modal-body" id="divList"></div>
@@ -1373,23 +1373,20 @@
     }
     document.getElementById('deptList').innerHTML = DEPT_EMAILS.map(d =>
       '<div class="pw-item"><div class="pw-key">' + IC('<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/>') + '</div>' +
-      '<div class="pw-info"><div class="pw-label">' + escapeHtml(d.department) + '</div>' +
-      '<div class="pw-meta">' + (d.email ? escapeHtml(d.email) : '<span style="color:var(--ink-soft);">ยังไม่ได้ตั้งอีเมล</span>') + '</div></div>' +
+      '<div class="pw-info"><div class="pw-label">' + escapeHtml(d.department) + '</div></div>' +
       '<button class="btn-mini" onclick="deptEdit(\'' + d.id + '\')">' + IC(PATHS.edit) + 'แก้ไข</button>' +
       '<button class="btn-mini danger" onclick="deptDelete(\'' + d.id + '\')">' + IC(PATHS.trash) + 'ลบ</button></div>'
     ).join('');
   }
-  function deptForm(title, department, email, isEdit){
+  function deptForm(title, department, isEdit){
     return fireAlert({
       title: title, showCancelButton: true, focusConfirm: false,
       confirmButtonText: isEdit ? 'บันทึก' : 'เพิ่ม', cancelButtonText: 'ปิด',
-      html: '<input id="deptName" class="swal2-input" maxlength="60" placeholder="ชื่อแผนก เช่น HR" value="' + escapeHtml(department || '') + '">' +
-        '<input id="deptEmail" class="swal2-input" type="email" maxlength="120" placeholder="อีเมลแจ้งเตือน (ไม่บังคับ)" value="' + escapeHtml(email || '') + '">',
+      html: '<input id="deptName" class="swal2-input" maxlength="60" placeholder="ชื่อแผนก เช่น HR" value="' + escapeHtml(department || '') + '">',
       preConfirm: () => {
-        const d = document.getElementById('deptName').value.trim(), e = document.getElementById('deptEmail').value.trim();
+        const d = document.getElementById('deptName').value.trim();
         if (!d) { Swal.showValidationMessage('กรุณาระบุชื่อแผนก'); return false; }
-        if (e && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e)) { Swal.showValidationMessage('รูปแบบอีเมลไม่ถูกต้อง (เว้นว่างได้ถ้ายังไม่มี)'); return false; }
-        return { department: d, email: e };
+        return { department: d };
       }
     });
   }
@@ -1401,19 +1398,19 @@
     }).catch(() => showToast('เชื่อมต่อระบบไม่สำเร็จ', 'err'));
   }
   function deptAddFn(){
-    deptForm('เพิ่มแผนก', '', '', false).then(r => {
-      if (r.isConfirmed) deptSave('addDepartmentEmail', { department: r.value.department, email: r.value.email }, 'เพิ่มแผนกแล้ว');
+    deptForm('เพิ่มแผนก', '', false).then(r => {
+      if (r.isConfirmed) deptSave('addDepartmentEmail', { department: r.value.department }, 'เพิ่มแผนกแล้ว');
     });
   }
   function deptEdit(id){
     const d = DEPT_EMAILS.find(x => x.id === id); if (!d) return;
-    deptForm('แก้ไขแผนก', d.department, d.email, true).then(r => {
-      if (r.isConfirmed) deptSave('updateDepartmentEmail', { id: id, department: r.value.department, email: r.value.email }, 'บันทึกการแก้ไขแล้ว');
+    deptForm('แก้ไขแผนก', d.department, true).then(r => {
+      if (r.isConfirmed) deptSave('updateDepartmentEmail', { id: id, department: r.value.department }, 'บันทึกการแก้ไขแล้ว');
     });
   }
   function deptDelete(id){
     const d = DEPT_EMAILS.find(x => x.id === id); if (!d) return;
-    fireAlert({ icon: 'warning', title: 'ลบแผนกนี้?', html: 'แผนก <b>' + escapeHtml(d.department) + '</b> จะหายจากตัวเลือกในฟอร์มขอใบส่งตัว และจะไม่ได้รับอีเมลแจ้งอีก', showCancelButton: true, confirmButtonText: 'ลบ', cancelButtonText: 'ปิด', confirmButtonColor: true })
+    fireAlert({ icon: 'warning', title: 'ลบแผนกนี้?', html: 'แผนก <b>' + escapeHtml(d.department) + '</b> จะหายจากตัวเลือกในฟอร์มขอใบส่งตัว', showCancelButton: true, confirmButtonText: 'ลบ', cancelButtonText: 'ปิด', confirmButtonColor: true })
       .then(r => { if (r.isConfirmed) deptSave('deleteDepartmentEmail', { id: id }, 'ลบแผนกแล้ว'); });
   }
   document.getElementById('deptAdd').addEventListener('click', deptAddFn);
@@ -1421,7 +1418,7 @@
   document.getElementById('deptBack').addEventListener('click', closeDeptModal);
   document.addEventListener('keydown', e => { if (e.key === 'Escape' && !document.getElementById('deptModal').hidden && !Swal.isVisible()) closeDeptModal(); });
 
-  // ================= จัดการฝ่าย (รายชื่อฝ่ายสำหรับดรอปดาวน์ในฟอร์ม) =================
+  // ================= จัดการฝ่าย (รายชื่อฝ่ายสำหรับดรอปดาวน์ในฟอร์ม + อีเมลแจ้งฝ่ายผู้ขอ ไม่บังคับ) =================
   let DIV_ITEMS = [];
   function openDivModal(){
     if (!HR_CODE) return;
@@ -1451,20 +1448,23 @@
     }
     document.getElementById('divList').innerHTML = DIV_ITEMS.map(d =>
       '<div class="pw-item"><div class="pw-key">' + IC('<path d="M4 21V7l8-4 8 4v14"/><path d="M9 21v-6h6v6"/>') + '</div>' +
-      '<div class="pw-info"><div class="pw-label">' + escapeHtml(d.division) + '</div></div>' +
+      '<div class="pw-info"><div class="pw-label">' + escapeHtml(d.division) + '</div>' +
+      '<div class="pw-meta">' + (d.email ? escapeHtml(d.email) : '<span style="color:var(--ink-soft);">ยังไม่ได้ตั้งอีเมล</span>') + '</div></div>' +
       '<button class="btn-mini" onclick="divEdit(\'' + d.id + '\')">' + IC(PATHS.edit) + 'แก้ไข</button>' +
       '<button class="btn-mini danger" onclick="divDelete(\'' + d.id + '\')">' + IC(PATHS.trash) + 'ลบ</button></div>'
     ).join('');
   }
-  function divForm(title, division, isEdit){
+  function divForm(title, division, email, isEdit){
     return fireAlert({
       title: title, showCancelButton: true, focusConfirm: false,
       confirmButtonText: isEdit ? 'บันทึก' : 'เพิ่ม', cancelButtonText: 'ปิด',
-      html: '<input id="divName" class="swal2-input" maxlength="60" placeholder="ชื่อฝ่าย" value="' + escapeHtml(division || '') + '">',
+      html: '<input id="divName" class="swal2-input" maxlength="60" placeholder="ชื่อฝ่าย" value="' + escapeHtml(division || '') + '">' +
+        '<input id="divEmail" class="swal2-input" type="email" maxlength="120" placeholder="อีเมลแจ้งเตือน (ไม่บังคับ)" value="' + escapeHtml(email || '') + '">',
       preConfirm: () => {
-        const d = document.getElementById('divName').value.trim();
+        const d = document.getElementById('divName').value.trim(), e = document.getElementById('divEmail').value.trim();
         if (!d) { Swal.showValidationMessage('กรุณาระบุชื่อฝ่าย'); return false; }
-        return { division: d };
+        if (e && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e)) { Swal.showValidationMessage('รูปแบบอีเมลไม่ถูกต้อง (เว้นว่างได้ถ้ายังไม่มี)'); return false; }
+        return { division: d, email: e };
       }
     });
   }
@@ -1476,19 +1476,19 @@
     }).catch(() => showToast('เชื่อมต่อระบบไม่สำเร็จ', 'err'));
   }
   function divAddFn(){
-    divForm('เพิ่มฝ่าย', '', false).then(r => {
-      if (r.isConfirmed) divSave('addDivision', { division: r.value.division }, 'เพิ่มฝ่ายแล้ว');
+    divForm('เพิ่มฝ่าย', '', '', false).then(r => {
+      if (r.isConfirmed) divSave('addDivision', { division: r.value.division, email: r.value.email }, 'เพิ่มฝ่ายแล้ว');
     });
   }
   function divEdit(id){
     const d = DIV_ITEMS.find(x => x.id === id); if (!d) return;
-    divForm('แก้ไขฝ่าย', d.division, true).then(r => {
-      if (r.isConfirmed) divSave('updateDivision', { id: id, division: r.value.division }, 'บันทึกการแก้ไขแล้ว');
+    divForm('แก้ไขฝ่าย', d.division, d.email, true).then(r => {
+      if (r.isConfirmed) divSave('updateDivision', { id: id, division: r.value.division, email: r.value.email }, 'บันทึกการแก้ไขแล้ว');
     });
   }
   function divDelete(id){
     const d = DIV_ITEMS.find(x => x.id === id); if (!d) return;
-    fireAlert({ icon: 'warning', title: 'ลบฝ่ายนี้?', html: 'ฝ่าย <b>' + escapeHtml(d.division) + '</b> จะหายจากตัวเลือกในฟอร์มขอใบส่งตัว', showCancelButton: true, confirmButtonText: 'ลบ', cancelButtonText: 'ปิด', confirmButtonColor: true })
+    fireAlert({ icon: 'warning', title: 'ลบฝ่ายนี้?', html: 'ฝ่าย <b>' + escapeHtml(d.division) + '</b> จะหายจากตัวเลือกในฟอร์มขอใบส่งตัว และจะไม่ได้รับอีเมลแจ้งอีก', showCancelButton: true, confirmButtonText: 'ลบ', cancelButtonText: 'ปิด', confirmButtonColor: true })
       .then(r => { if (r.isConfirmed) divSave('deleteDivision', { id: id }, 'ลบฝ่ายแล้ว'); });
   }
   document.getElementById('divAdd').addEventListener('click', divAddFn);
