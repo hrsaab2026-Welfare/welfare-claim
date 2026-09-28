@@ -619,7 +619,7 @@
   <div class="modal-back" id="divBack"></div>
   <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="divTitle">
     <div class="modal-head">
-      <div><h3 id="divTitle">จัดการฝ่าย</h3><p>รายชื่อฝ่ายตรงนี้จะใช้เป็นตัวเลือกดรอปดาวน์ค้นหาได้ในหน้าฟอร์มขอใบส่งตัวของพนักงาน (ช่อง "ฝ่าย") — ใส่อีเมลด้วย (ไม่บังคับ) เพื่อให้ฝ่ายนั้นได้รับแจ้งแบบย่อ (ชื่อผู้ยื่น + สถานะ) เมื่อมีคำขอใหม่</p></div>
+      <div><h3 id="divTitle">จัดการฝ่าย</h3><p>รายชื่อฝ่ายตรงนี้จะใช้เป็นตัวเลือกดรอปดาวน์ค้นหาได้ในหน้าฟอร์มขอใบส่งตัวของพนักงาน (ช่อง "ฝ่าย") — ใส่อีเมลได้สูงสุด 3 อีเมลต่อฝ่าย (ไม่บังคับ) เพื่อให้ฝ่ายนั้นได้รับแจ้งแบบย่อ (ชื่อผู้ยื่น + สถานะ) เมื่อมีคำขอใหม่</p></div>
       <button class="modal-x" id="divClose" aria-label="ปิด"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
     </div>
     <div class="modal-body" id="divList"></div>
@@ -1462,22 +1462,32 @@
     document.getElementById('divList').innerHTML = DIV_ITEMS.map(d =>
       '<div class="pw-item"><div class="pw-key">' + IC('<path d="M4 21V7l8-4 8 4v14"/><path d="M9 21v-6h6v6"/>') + '</div>' +
       '<div class="pw-info"><div class="pw-label">' + escapeHtml(d.division) + '</div>' +
-      '<div class="pw-meta">' + (d.email ? escapeHtml(d.email) : '<span style="color:var(--ink-soft);">ยังไม่ได้ตั้งอีเมล</span>') + '</div></div>' +
+      '<div class="pw-meta">' + (d.email ? d.email.split(',').map(x => escapeHtml(x.trim())).join('<br>') : '<span style="color:var(--ink-soft);">ยังไม่ได้ตั้งอีเมล</span>') + '</div></div>' +
       '<button class="btn-mini" onclick="divEdit(\'' + d.id + '\')">' + IC(PATHS.edit) + 'แก้ไข</button>' +
       '<button class="btn-mini danger" onclick="divDelete(\'' + d.id + '\')">' + IC(PATHS.trash) + 'ลบ</button></div>'
     ).join('');
   }
   function divForm(title, division, email, isEdit){
+    const es = String(email || '').split(',').map(x => x.trim()).filter(Boolean);
+    const emailInputs = [0, 1, 2].map(i =>
+      '<input id="divEmail' + i + '" class="swal2-input" type="email" maxlength="120" placeholder="อีเมลแจ้งเตือน ' + (i + 1) + (i === 0 ? ' (ไม่บังคับ)' : '') + '" value="' + escapeHtml(es[i] || '') + '">'
+    ).join('');
     return fireAlert({
       title: title, showCancelButton: true, focusConfirm: false,
       confirmButtonText: isEdit ? 'บันทึก' : 'เพิ่ม', cancelButtonText: 'ปิด',
-      html: '<input id="divName" class="swal2-input" maxlength="60" placeholder="ชื่อฝ่าย" value="' + escapeHtml(division || '') + '">' +
-        '<input id="divEmail" class="swal2-input" type="email" maxlength="120" placeholder="อีเมลแจ้งเตือน (ไม่บังคับ)" value="' + escapeHtml(email || '') + '">',
+      html: '<input id="divName" class="swal2-input" maxlength="60" placeholder="ชื่อฝ่าย" value="' + escapeHtml(division || '') + '">' + emailInputs,
       preConfirm: () => {
-        const d = document.getElementById('divName').value.trim(), e = document.getElementById('divEmail').value.trim();
+        const d = document.getElementById('divName').value.trim();
         if (!d) { Swal.showValidationMessage('กรุณาระบุชื่อฝ่าย'); return false; }
-        if (e && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e)) { Swal.showValidationMessage('รูปแบบอีเมลไม่ถูกต้อง (เว้นว่างได้ถ้ายังไม่มี)'); return false; }
-        return { division: d, email: e };
+        const list = [], seen = {};
+        for (let i = 0; i < 3; i++) {
+          const e = document.getElementById('divEmail' + i).value.trim();
+          if (!e) continue;
+          if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e)) { Swal.showValidationMessage('อีเมลช่องที่ ' + (i + 1) + ' รูปแบบไม่ถูกต้อง'); return false; }
+          if (seen[e.toLowerCase()]) { Swal.showValidationMessage('มีอีเมลซ้ำกัน กรุณาตรวจสอบ'); return false; }
+          seen[e.toLowerCase()] = 1; list.push(e);
+        }
+        return { division: d, email: list.join(',') };
       }
     });
   }
