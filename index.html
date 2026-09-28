@@ -157,7 +157,7 @@
   .section-title span.txt{font-family:'IBM Plex Sans Thai';font-weight:600;color:var(--navy);font-size:.98rem;}
 
   label{display:block;font-size:.82rem;color:var(--ink-soft);margin:12px 0 5px;font-weight:600;}
-  input[type=text],input[type=number],input[type=tel],input[type=date],select,textarea{
+  input[type=text],input[type=password],input[type=number],input[type=tel],input[type=date],select,textarea{
     width:100%;padding:11px 12px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-size:.95rem;
     font-family:'IBM Plex Sans Thai',sans-serif;background:#FFFDFA;color:var(--ink);
   }
@@ -237,7 +237,11 @@
   .gate .lock{width:46px;height:46px;border-radius:50%;border:2px solid var(--gold);color:var(--gold);
     display:flex;align-items:center;justify-content:center;margin:0 auto;font-size:1.3rem;}
   .gate .title{font-family:'IBM Plex Sans Thai';font-weight:600;color:var(--navy);margin-top:10px;}
-  .gate input{max-width:200px;margin:16px auto 4px;text-align:center;letter-spacing:3px;}
+  .gate input{max-width:none;width:100%;margin:0;padding-left:44px;padding-right:44px;text-align:center;letter-spacing:3px;}
+  .gate-pw{position:relative;max-width:260px;margin:16px auto 8px;}
+  .pw-eye{position:absolute;right:6px;top:50%;transform:translateY(-50%);width:36px;height:36px;display:flex;align-items:center;justify-content:center;background:none;border:0;border-radius:8px;color:var(--navy);opacity:.65;cursor:pointer;padding:0;}
+  .pw-eye:hover,.pw-eye:focus-visible{opacity:1;background:rgba(0,0,0,.05);}
+  .pw-eye svg{width:20px;height:20px;}
 
   /* HR list */
   .hr-toolbar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;}
@@ -584,7 +588,7 @@
       <div class="lock">🔒</div>
       <div class="title">สำหรับฝ่ายบุคคลเท่านั้น</div>
       <div class="hint">กรอกรหัสผ่านเพื่อดูรายการคำขอใบส่งตัว</div>
-      <input type="text" id="hrCodeInput" placeholder="รหัสผ่าน" inputmode="text" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false">
+      <div class="gate-pw"><input type="password" id="hrCodeInput" placeholder="รหัสผ่าน" inputmode="text" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" onkeydown="if(event.key==='Enter')unlockHr()"><button type="button" class="pw-eye" id="hrCodeEye" onclick="toggleHrCodeVisible()" aria-label="แสดงรหัสผ่าน" aria-pressed="false"><svg id="hrEyeOn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg><svg id="hrEyeOff" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:none"><path d="M17.9 17.9A10.4 10.4 0 0112 19C5.6 19 2 12 2 12a18 18 0 015-5.9M9.9 5.2A9.7 9.7 0 0112 5c6.4 0 10 7 10 7a18 18 0 01-2.2 3.2M1 1l22 22"/><path d="M14.1 14.1a3 3 0 11-4.2-4.2"/></svg></button></div>
       <div><button class="btn" style="padding:11px 30px;" onclick="unlockHr()">เข้าสู่หน้ารายการ</button></div>
     </div>
 
@@ -1136,6 +1140,17 @@
     unlockHr(true);
   }
 
+  function toggleHrCodeVisible(force){
+    const i = document.getElementById('hrCodeInput'), b = document.getElementById('hrCodeEye');
+    const show = (typeof force === 'boolean') ? force : (i.type === 'password');
+    i.type = show ? 'text' : 'password';
+    document.getElementById('hrEyeOn').style.display = show ? 'none' : '';
+    document.getElementById('hrEyeOff').style.display = show ? '' : 'none';
+    b.setAttribute('aria-pressed', show ? 'true' : 'false');
+    b.setAttribute('aria-label', show ? 'ซ่อนรหัสผ่าน' : 'แสดงรหัสผ่าน');
+    i.focus();
+  }
+
   function unlockHr(silent){
     const code = document.getElementById('hrCodeInput').value.trim();
     if (!code) return showToast('กรุณากรอกรหัสผ่าน', 'err');
@@ -1157,6 +1172,7 @@
     document.getElementById('hrGate').style.display = 'block';
     document.getElementById('hrPanel').style.display = 'none';
     document.getElementById('hrCodeInput').value = '';
+    toggleHrCodeVisible(false);
   }
 
   function loadHrList(){
