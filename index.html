@@ -313,6 +313,21 @@
   .rr-side{display:flex;align-items:center;gap:8px;flex-shrink:0;}
   .rr-chev{color:var(--ink-soft);flex-shrink:0;} .rr-chev svg{width:16px;height:16px;display:block;}
   @media (min-width:720px){ .rr-meta{display:block;} }
+  /* ปุ่มแก้ไข/ลบในแต่ละแถว */
+  .rr-act{display:flex;gap:2px;}
+  .ib{width:30px;height:30px;border:0;border-radius:6px;background:transparent;color:var(--ink-soft);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .12s,color .12s;}
+  .ib svg{width:16px;height:16px;}
+  .ib:hover{background:var(--border);color:var(--navy);}
+  .ib.del:hover{background:var(--danger-bg);color:var(--danger);}
+  .ib:focus-visible{outline:2px solid var(--gold);outline-offset:1px;}
+  @media (max-width:560px){ .rr-chev{display:none;} }
+  /* ฟอร์มแก้ไขคำขอ */
+  #editModal .modal-card{max-width:600px;}
+  .edit-note{margin:10px 0 2px;padding:9px 12px;border-radius:var(--radius-sm);background:var(--info-bg);color:var(--info);font-size:.78rem;line-height:1.55;}
+  .edit-note.warn{background:var(--warning-bg);color:var(--warning);}
+  #editModal .modal-foot{display:flex;gap:8px;}
+  #editModal .modal-foot .btn{flex:1;width:auto;} #editModal .modal-foot .btn-mini{padding-left:20px;padding-right:20px;justify-content:center;}
+  @media (max-width:560px){ #editModal .row2{grid-template-columns:1fr;gap:0;} }
   .pagination{display:flex;align-items:center;justify-content:center;gap:14px;margin-top:14px;}
   .pagination button{width:36px;height:36px;border-radius:9px;border:1.5px solid var(--border);background:var(--surface);color:var(--navy);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:border-color .15s,background .15s;}
   .pagination button svg{width:17px;height:17px;}
@@ -588,7 +603,22 @@
       <button class="modal-x" id="reqClose" aria-label="ปิด"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
     </div>
     <div class="modal-body" id="reqBody"></div>
-    <div class="modal-foot" id="reqFoot" style="display:flex;gap:8px;"></div>
+    <div class="modal-foot" id="reqFoot" style="display:flex;flex-direction:column;gap:8px;"></div>
+  </div>
+</div>
+
+<div class="modal" id="editModal" hidden>
+  <div class="modal-back" id="editBack"></div>
+  <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="editTitle">
+    <div class="modal-head">
+      <div><h3 id="editTitle">แก้ไขข้อมูลคำขอ</h3><p id="editSub"></p></div>
+      <button class="modal-x" id="editClose" aria-label="ปิด"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    </div>
+    <div class="modal-body" id="editBody"></div>
+    <div class="modal-foot">
+      <button class="btn-mini" id="editCancel" type="button">ยกเลิก</button>
+      <button class="btn" id="editSave" type="button">บันทึกการแก้ไข</button>
+    </div>
   </div>
 </div>
 
@@ -1128,12 +1158,14 @@
   const HR_PAGE_SIZE = 10;
   let HR_REQUESTS = [];
   let HR_PAGE = 1;
+  let HR_KEEP_PAGE = false; // true = โหลดใหม่แล้วอยู่หน้าเดิม (ใช้หลังแก้ไข/ลบ)
 
   function renderHrList(res){
     renderStats(res.stats);
     syncStatActive();
     HR_REQUESTS = res.requests || [];
-    HR_PAGE = 1;
+    HR_PAGE = HR_KEEP_PAGE ? HR_PAGE : 1;
+    HR_KEEP_PAGE = false;
     const n = HR_REQUESTS.length;
     document.getElementById('hrPendingSummary').textContent = 'พบ ' + n + ' รายการ' + (document.getElementById('hrStatus').value ? ' • กรองตามสถานะ' : '');
     syncHrNav(res.pendingCount || 0);
@@ -1170,6 +1202,10 @@
         '</div>' +
         '<div class="rr-meta">' + metaBits + '</div>' +
         '<div class="rr-side">' + wait + '<span class="badge ' + cls + '">' + r.status + '</span>' +
+          '<span class="rr-act">' +
+            '<button type="button" class="ib" title="แก้ไข" aria-label="แก้ไขรายการนี้" onclick="event.stopPropagation();openEditRequest(\'' + r.requestId + '\')">' + IC(PATHS.edit) + '</button>' +
+            '<button type="button" class="ib del" title="ลบ" aria-label="ลบรายการนี้" onclick="event.stopPropagation();deleteRequestUi(\'' + r.requestId + '\')">' + IC(PATHS.trash) + '</button>' +
+          '</span>' +
           '<span class="rr-chev">' + IC('<path d="M9 6l6 6-6 6"/>') + '</span></div>' +
       '</div>';
     }).join('') + '</div>';
@@ -1208,10 +1244,16 @@
         kv('อาการ', escapeHtml(r.symptoms), true) +
         kv('หมายเหตุ HR', escapeHtml(r.hrNote), true) +
       '</dl>';
-    document.getElementById('reqFoot').innerHTML = pending
+    const pendHtml = pending
       ? '<button class="btn-mini save" style="flex:1;justify-content:center;" onclick="closeReqModal();openNoteModal(\'' + r.requestId + '\',\'issue\')">' + IC(PATHS.ok) + 'ออกใบแล้ว</button>' +
         '<button class="btn-mini danger" style="flex:1;justify-content:center;" onclick="closeReqModal();openNoteModal(\'' + r.requestId + '\',\'void\')">' + IC(PATHS.no) + 'ยกเลิกคำขอ</button>'
       : '';
+    const mgmtHtml =
+      '<button class="btn-mini" style="flex:1;justify-content:center;" onclick="closeReqModal();openEditRequest(\'' + r.requestId + '\')">' + IC(PATHS.edit) + 'แก้ไขข้อมูล</button>' +
+      '<button class="btn-mini danger" style="flex:1;justify-content:center;" onclick="closeReqModal();deleteRequestUi(\'' + r.requestId + '\')">' + IC(PATHS.trash) + 'ลบรายการ</button>';
+    document.getElementById('reqFoot').innerHTML =
+      (pendHtml ? '<div style="display:flex;gap:8px;">' + pendHtml + '</div>' : '') +
+      '<div style="display:flex;gap:8px;">' + mgmtHtml + '</div>';
     document.getElementById('reqModal').hidden = false;
     document.body.style.overflow = 'hidden';
   }
@@ -1223,6 +1265,139 @@
   document.getElementById('reqClose').addEventListener('click', closeReqModal);
   document.getElementById('reqBack').addEventListener('click', closeReqModal);
   document.addEventListener('keydown', e => { if (e.key === 'Escape' && !document.getElementById('reqModal').hidden && !Swal.isVisible()) closeReqModal(); });
+
+  // ================= แก้ไข / ลบ คำขอรายรายการ (ฝ่ายบุคคล) =================
+  const EDIT_PATIENTS = [
+    { id: 'self', label: 'ตัวพนักงานเอง' }, { id: 'father', label: 'บิดา' }, { id: 'mother', label: 'มารดา' },
+    { id: 'spouse', label: 'คู่สมรส' }, { id: 'child', label: 'บุตร' }
+  ];
+  let EDIT_ID = '';
+  let EDIT_BUSY = false;
+  const $e = id => document.getElementById(id);
+
+  function selOptions(list, cur){
+    const a = list.slice();
+    if (cur && a.indexOf(cur) === -1) a.unshift(cur); // ค่าเดิมที่ไม่อยู่ในรายการแล้ว ยังเลือกค้างไว้ได้
+    return a.map(v => '<option value="' + escapeHtml(v) + '"' + (v === cur ? ' selected' : '') + '>' + escapeHtml(v) + '</option>').join('');
+  }
+  function idOptions(list, cur){
+    return list.map(o => '<option value="' + escapeHtml(o.id) + '"' + (o.id === cur ? ' selected' : '') + '>' + escapeHtml(o.label) + '</option>').join('');
+  }
+
+  function openEditRequest(requestId){
+    const r = HR_REQUESTS.find(x => x.requestId === requestId);
+    if (!r) return;
+    const fo = FORM_OPTIONS || {};
+    const services = fo.serviceTypes || [], payers = fo.payerTypes || [], hospitals = fo.hospitals || [];
+    EDIT_ID = requestId;
+    $e('editTitle').textContent = 'แก้ไขข้อมูลคำขอ';
+    $e('editSub').innerHTML = escapeHtml(r.requestId) + ' • ยื่นเมื่อ ' + escapeHtml(r.timestamp) + ' • <span class="badge ' + statusClass(r.status) + '">' + escapeHtml(r.status) + '</span>';
+    const closed = r.status !== 'รอ HR ออกใบ';
+    $e('editBody').innerHTML =
+      '<div class="edit-note' + (closed ? ' warn' : '') + '">' +
+        (closed ? 'คำขอนี้ ' + escapeHtml(r.status) + ' — ถ้าแก้ข้อมูลสำคัญ อย่าลืมแก้ใบส่งตัวกระดาษให้ตรงกันด้วย<br>' : '') +
+        'การแก้ไขนี้ไม่ส่งอีเมลแจ้งซ้ำ และระบบจดประวัติการแก้ไขไว้ให้อัตโนมัติ</div>' +
+      '<label for="e_name">ชื่อ-สกุล</label><input type="text" id="e_name" maxlength="100" value="' + escapeHtml(r.name) + '">' +
+      '<div class="row2">' +
+        '<div><label for="e_age">อายุ</label><input type="number" id="e_age" min="0" max="120" value="' + escapeHtml(r.age) + '"></div>' +
+        '<div><label for="e_empid">รหัสพนักงาน</label><input type="text" id="e_empid" maxlength="30" value="' + escapeHtml(r.employeeId) + '"></div>' +
+      '</div>' +
+      '<div class="row2">' +
+        '<div><label for="e_dept">แผนก</label><select id="e_dept">' + selOptions(DEPT_LIST, r.department) + '</select></div>' +
+        '<div><label for="e_div">ฝ่าย</label><select id="e_div">' + selOptions(DIV_LIST, r.division) + '</select></div>' +
+      '</div>' +
+      '<label for="e_patient">ผู้เข้ารับบริการ</label><select id="e_patient">' + idOptions(EDIT_PATIENTS, r.patientTypeId || 'self') + '</select>' +
+      '<div id="e_patient_wrap" hidden><label for="e_patient_name" id="e_patient_lbl">ชื่อ-สกุล</label><input type="text" id="e_patient_name" maxlength="100" value="' + escapeHtml(r.patientName) + '"></div>' +
+      '<label for="e_service">กรณีที่เข้ารับบริการ</label><select id="e_service">' + idOptions(services, r.serviceTypeId) + '</select>' +
+      '<div id="e_service_wrap" hidden><label for="e_service_detail">รายละเอียด</label><input type="text" id="e_service_detail" maxlength="200" value="' + escapeHtml(r.serviceDetail) + '"></div>' +
+      '<label for="e_symptoms" id="e_symptoms_lbl">อาการ</label><textarea id="e_symptoms" maxlength="500">' + escapeHtml(r.symptoms) + '</textarea>' +
+      '<label for="e_payer">สิทธิ์การรักษา</label><select id="e_payer">' + idOptions(payers, r.payerTypeId) + '</select>' +
+      '<div id="e_payer_wrap" hidden><label for="e_payer_detail">รายละเอียดสิทธิ์</label><input type="text" id="e_payer_detail" maxlength="200" value="' + escapeHtml(r.payerDetail) + '"></div>' +
+      '<div class="row2">' +
+        '<div><label for="e_phone">เบอร์ติดต่อกลับ</label><input type="tel" id="e_phone" maxlength="30" value="' + escapeHtml(r.contactPhone) + '"></div>' +
+        '<div><label for="e_date">วันที่ต้องการไป</label><input type="date" id="e_date" value="' + escapeHtml(r.preferredDateIso || '') + '"></div>' +
+      '</div>' +
+      '<label for="e_hospital">โรงพยาบาล</label><select id="e_hospital">' + selOptions(hospitals, r.hospital) + '</select>' +
+      '<div style="height:12px"></div>';
+    ['e_patient', 'e_service', 'e_payer'].forEach(id => $e(id).addEventListener('change', syncEditFields));
+    syncEditFields();
+    $e('editModal').hidden = false;
+    document.body.style.overflow = 'hidden';
+    $e('editBody').scrollTop = 0;
+  }
+
+  /** โชว์/ซ่อนช่องรายละเอียดตามตัวเลือก (เหมือนฟอร์มของพนักงาน) */
+  function syncEditFields(){
+    const fo = FORM_OPTIONS || {};
+    const pt = EDIT_PATIENTS.find(x => x.id === $e('e_patient').value);
+    const isFamily = !!pt && pt.id !== 'self';
+    $e('e_patient_wrap').hidden = !isFamily;
+    if (isFamily) $e('e_patient_lbl').textContent = 'ชื่อ-สกุล' + pt.label;
+    const sv = (fo.serviceTypes || []).find(x => x.id === $e('e_service').value);
+    $e('e_service_wrap').hidden = !(sv && sv.needDetail);
+    $e('e_symptoms_lbl').textContent = (sv && sv.id === 'treatment') ? 'อาการ (จำเป็นต้องระบุ)' : 'อาการ';
+    const py = (fo.payerTypes || []).find(x => x.id === $e('e_payer').value);
+    $e('e_payer_wrap').hidden = !(py && py.needDetail);
+  }
+
+  function closeEditModal(){
+    $e('editModal').hidden = true;
+    document.body.style.overflow = '';
+    EDIT_ID = '';
+  }
+
+  function saveEditRequest(){
+    if (EDIT_BUSY || !EDIT_ID) return;
+    const g = id => ($e(id).value || '').trim();
+    const svcVisible = !$e('e_service_wrap').hidden, payVisible = !$e('e_payer_wrap').hidden, famVisible = !$e('e_patient_wrap').hidden;
+    const data = {
+      name: g('e_name'), age: g('e_age'), employeeId: g('e_empid'),
+      department: g('e_dept'), division: g('e_div'),
+      patientTypeId: g('e_patient'), patientName: famVisible ? g('e_patient_name') : '',
+      serviceTypeId: g('e_service'), serviceDetail: svcVisible ? g('e_service_detail') : '',
+      symptoms: g('e_symptoms'),
+      payerTypeId: g('e_payer'), payerDetail: payVisible ? g('e_payer_detail') : '',
+      contactPhone: g('e_phone'), preferredDate: g('e_date'), hospital: g('e_hospital')
+    };
+    const btn = $e('editSave'), label = btn.textContent;
+    EDIT_BUSY = true; btn.disabled = true; btn.textContent = 'กำลังบันทึก...';
+    callApi('updateReferralRequest', { accessCode: HR_CODE, requestId: EDIT_ID, data: data }).then(res => {
+      if (res.error === 'WRONG_CODE') { closeEditModal(); showToast('รหัสผ่านไม่ถูกต้องหรือหมดอายุ', 'err'); lockHr(); return; }
+      if (!res.success) return showToast(res.error || 'บันทึกไม่สำเร็จ', 'err');
+      closeEditModal();
+      showToast(res.unchanged ? 'ไม่มีการเปลี่ยนแปลง' : 'บันทึกการแก้ไขแล้ว', 'ok');
+      if (!res.unchanged) { HR_KEEP_PAGE = true; loadHrList(); }
+    }).catch(() => showToast('เชื่อมต่อระบบไม่สำเร็จ', 'err'))
+      .finally(() => { EDIT_BUSY = false; btn.disabled = false; btn.textContent = label; });
+  }
+
+  function deleteRequestUi(requestId){
+    const r = HR_REQUESTS.find(x => x.requestId === requestId);
+    if (!r) return;
+    fireAlert({
+      icon: 'warning',
+      title: 'ลบคำขอนี้ออกจากระบบ?',
+      html: '<b>' + escapeHtml(r.name) + '</b> <span style="color:var(--ink-soft)">' + escapeHtml(r.requestId) + '</span><br>' +
+            '<span style="font-size:.86em;line-height:1.7;">ลบแล้วรายการจะหายจากหน้านี้และตัวเลขสถิติทันที<br>' +
+            'ถ้าแค่ต้องการยกเลิกคำขอ ให้ใช้ปุ่ม "ยกเลิกคำขอ" แทน (เก็บประวัติไว้)</span>',
+      showCancelButton: true, confirmButtonText: 'ลบถาวร', cancelButtonText: 'ปิด', confirmButtonColor: true
+    }).then(res => {
+      if (!res.isConfirmed) return;
+      callApi('deleteReferralRequest', { accessCode: HR_CODE, requestId: requestId }).then(out => {
+        if (out.error === 'WRONG_CODE') { showToast('รหัสผ่านไม่ถูกต้องหรือหมดอายุ', 'err'); lockHr(); return; }
+        if (!out.success) return showToast(out.error || 'ลบไม่สำเร็จ', 'err');
+        showToast('ลบรายการแล้ว', 'ok');
+        HR_KEEP_PAGE = true;
+        loadHrList();
+      }).catch(() => showToast('เชื่อมต่อระบบไม่สำเร็จ', 'err'));
+    });
+  }
+
+  $e('editClose').addEventListener('click', closeEditModal);
+  $e('editCancel').addEventListener('click', closeEditModal);
+  $e('editBack').addEventListener('click', closeEditModal);
+  $e('editSave').addEventListener('click', saveEditRequest);
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && !$e('editModal').hidden && !Swal.isVisible()) closeEditModal(); });
 
   function escapeHtml(s){ return String(s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 
