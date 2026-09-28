@@ -555,6 +555,7 @@
           <button class="btn-mini" onclick="openPwModal()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="15" r="4"/><path d="M11 12l8-8M16 7l3 3"/></svg>จัดการรหัสผ่าน</button>
           <button class="btn-mini" onclick="openDeptModal()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7l3-3h5l2 2h8v11a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V7z"/></svg>จัดการแผนก</button>
           <button class="btn-mini" onclick="openDivModal()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 21V7l8-4 8 4v14"/><path d="M9 21v-6h6v6"/><path d="M9 11h.01M15 11h.01M9 15h.01M15 15h.01"/></svg>จัดการฝ่าย</button>
+          <button class="btn-mini" onclick="openHrEmailModal()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>อีเมล HR</button>
           <button class="btn-mini" onclick="confirmLogout()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 4H6a1 1 0 0 0-1 1v14a1 1 0 0 0 1 1h3"/><path d="M15 8l4 4-4 4M19 12H9"/></svg>ออกจากระบบ</button>
         </div>
       </div>
@@ -599,6 +600,18 @@
     </div>
     <div class="modal-body" id="deptList"></div>
     <div class="modal-foot"><button class="btn" id="deptAdd"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>เพิ่มแผนก</button></div>
+  </div>
+</div>
+
+<div class="modal" id="hrEmailModal" hidden>
+  <div class="modal-back" id="hrEmailBack"></div>
+  <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="hrEmailTitle">
+    <div class="modal-head">
+      <div><h3 id="hrEmailTitle">อีเมล HR ผู้รับแจ้ง</h3><p>อีเมลเหล่านี้จะได้รับแจ้งเมื่อมีคำขอใหม่ / ออกใบ / ยกเลิก (แบบละเอียด)</p></div>
+      <button class="modal-x" id="hrEmailClose" aria-label="ปิด"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    </div>
+    <div class="modal-body" id="hrEmailList"></div>
+    <div class="modal-foot"><button class="btn" id="hrEmailAdd"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>เพิ่มอีเมล</button></div>
   </div>
 </div>
 
@@ -1495,6 +1508,76 @@
   document.getElementById('divClose').addEventListener('click', closeDivModal);
   document.getElementById('divBack').addEventListener('click', closeDivModal);
   document.addEventListener('keydown', e => { if (e.key === 'Escape' && !document.getElementById('divModal').hidden && !Swal.isVisible()) closeDivModal(); });
+
+  // ================= อีเมล HR ผู้รับแจ้ง =================
+  let HR_EMAIL_ITEMS = [];
+  function openHrEmailModal(){
+    if (!HR_CODE) return;
+    document.getElementById('hrEmailModal').hidden = false;
+    document.body.style.overflow = 'hidden';
+    document.getElementById('hrEmailList').innerHTML = '<div class="empty">กำลังโหลด...</div>';
+    callApi('listHrEmails', { accessCode: HR_CODE }).then(res => {
+      if (res.error === 'WRONG_CODE') { closeHrEmailModal(); lockHr(); return; }
+      if (!res.success) return showToast(res.error || 'โหลดรายการอีเมลไม่สำเร็จ', 'err');
+      renderHrEmailList(res);
+    }).catch(() => showToast('เชื่อมต่อระบบไม่สำเร็จ', 'err'));
+    document.getElementById('hrEmailClose').focus();
+  }
+  function closeHrEmailModal(){
+    document.getElementById('hrEmailModal').hidden = true;
+    document.body.style.overflow = '';
+  }
+  function renderHrEmailList(res){
+    HR_EMAIL_ITEMS = res.items || [];
+    const box = document.getElementById('hrEmailList');
+    if (!HR_EMAIL_ITEMS.length) {
+      const fb = (res.fallback || []).map(escapeHtml).join(', ');
+      box.innerHTML = '<div class="empty">ยังไม่ได้ตั้งอีเมลที่นี่ ตอนนี้ระบบส่งไปที่ค่าเริ่มต้น:<br><b>' + fb + '</b><br>กด "เพิ่มอีเมล" เพื่อกำหนดเอง (เมื่อเพิ่มแล้วจะใช้รายการนี้แทนค่าเริ่มต้น)</div>';
+      return;
+    }
+    box.innerHTML = HR_EMAIL_ITEMS.map(d =>
+      '<div class="pw-item"><div class="pw-key">' + IC('<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/>') + '</div>' +
+      '<div class="pw-info"><div class="pw-label">' + escapeHtml(d.email) + '</div></div>' +
+      '<button class="btn-mini" onclick="hrEmailEdit(\'' + d.id + '\')">' + IC(PATHS.edit) + 'แก้ไข</button>' +
+      '<button class="btn-mini danger" onclick="hrEmailDelete(\'' + d.id + '\')">' + IC(PATHS.trash) + 'ลบ</button></div>'
+    ).join('');
+  }
+  function hrEmailForm(title, email, isEdit){
+    return fireAlert({
+      title: title, showCancelButton: true, focusConfirm: false,
+      confirmButtonText: isEdit ? 'บันทึก' : 'เพิ่ม', cancelButtonText: 'ปิด',
+      html: '<input id="hrEmailInput" class="swal2-input" type="email" maxlength="120" placeholder="อีเมล เช่น name@company.com" value="' + escapeHtml(email || '') + '">',
+      preConfirm: () => {
+        const e = document.getElementById('hrEmailInput').value.trim();
+        if (!e) { Swal.showValidationMessage('กรุณาระบุอีเมล'); return false; }
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e)) { Swal.showValidationMessage('รูปแบบอีเมลไม่ถูกต้อง'); return false; }
+        return { email: e };
+      }
+    });
+  }
+  function hrEmailSave(action, payload, okMsg){
+    callApi(action, Object.assign({ accessCode: HR_CODE }, payload)).then(res => {
+      if (!res.success) return showToast(res.error || 'บันทึกไม่สำเร็จ', 'err');
+      showToast(okMsg, 'ok');
+      renderHrEmailList(res);
+    }).catch(() => showToast('เชื่อมต่อระบบไม่สำเร็จ', 'err'));
+  }
+  function hrEmailAddFn(){
+    hrEmailForm('เพิ่มอีเมล HR', '', false).then(r => { if (r.isConfirmed) hrEmailSave('addHrEmail', { email: r.value.email }, 'เพิ่มอีเมลแล้ว'); });
+  }
+  function hrEmailEdit(id){
+    const d = HR_EMAIL_ITEMS.find(x => x.id === id); if (!d) return;
+    hrEmailForm('แก้ไขอีเมล', d.email, true).then(r => { if (r.isConfirmed) hrEmailSave('updateHrEmail', { id: id, email: r.value.email }, 'บันทึกการแก้ไขแล้ว'); });
+  }
+  function hrEmailDelete(id){
+    const d = HR_EMAIL_ITEMS.find(x => x.id === id); if (!d) return;
+    fireAlert({ icon: 'warning', title: 'ลบอีเมลนี้?', html: '<b>' + escapeHtml(d.email) + '</b> จะไม่ได้รับอีเมลแจ้งอีก' + (HR_EMAIL_ITEMS.length === 1 ? '<br>(ลบหมดแล้วระบบจะกลับไปใช้อีเมลค่าเริ่มต้น)' : ''), showCancelButton: true, confirmButtonText: 'ลบ', cancelButtonText: 'ปิด', confirmButtonColor: true })
+      .then(r => { if (r.isConfirmed) hrEmailSave('deleteHrEmail', { id: id }, 'ลบอีเมลแล้ว'); });
+  }
+  document.getElementById('hrEmailAdd').addEventListener('click', hrEmailAddFn);
+  document.getElementById('hrEmailClose').addEventListener('click', closeHrEmailModal);
+  document.getElementById('hrEmailBack').addEventListener('click', closeHrEmailModal);
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && !document.getElementById('hrEmailModal').hidden && !Swal.isVisible()) closeHrEmailModal(); });
 
   // ================= ออกจากระบบ (ฝ่ายบุคคล) =================
   function confirmLogout(){
