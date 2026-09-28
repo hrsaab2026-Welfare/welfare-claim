@@ -3,6 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#1B2A41">
+<script>try{var t=localStorage.getItem("referral_theme");if(t&&/^[a-z]+$/.test(t))document.documentElement.setAttribute("data-theme",t);}catch(e){}</script>
 <title>ระบบขอใบส่งตัว — Summit Auto Body Industry Co.Ltd. (Branch 2)</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -20,9 +22,27 @@
     --danger:#AB3B27; --danger-bg:rgba(171,59,39,0.08);
     --warning:#BD7A1E; --warning-bg:rgba(189,122,30,0.10);
     --info:#2E6C93; --info-bg:rgba(46,108,147,0.08);
+    --gold-ring:rgba(217,154,43,.35); --focus-ring:rgba(23,59,55,.12); --navy-bg:rgba(27,42,65,.09);
     --radius-sm:4px; --radius-md:8px;
     --shadow-sm:0 1px 2px rgba(20,30,45,0.06); --shadow-md:0 4px 16px rgba(20,30,45,0.08);
   }
+
+  /* ---- ธีมสี (เลือกได้ที่ปุ่ม "ธีมสี" ในหน้า admin) ---- */
+  :root[data-theme="emerald"]{--canvas:#EEF4F1;--navy:#0E3B32;--navy-2:#14493E;--gold:#3DBE8B;--gold-deep:#1F8A60;--gold-bg:rgba(61,190,139,.14);--gold-ring:rgba(61,190,139,.35);--focus-ring:rgba(14,59,50,.14);--navy-bg:rgba(14,59,50,.09);}
+  :root[data-theme="royal"]{--canvas:#F3F1F8;--navy:#2B2059;--navy-2:#35286B;--gold:#F2B84B;--gold-deep:#A8730F;--gold-bg:rgba(242,184,75,.14);--gold-ring:rgba(242,184,75,.35);--focus-ring:rgba(43,32,89,.14);--navy-bg:rgba(43,32,89,.09);}
+  :root[data-theme="ocean"]{--canvas:#EDF4F8;--navy:#0B3C5D;--navy-2:#124B72;--gold:#2FB5E0;--gold-deep:#167FA6;--gold-bg:rgba(47,181,224,.14);--gold-ring:rgba(47,181,224,.35);--focus-ring:rgba(11,60,93,.14);--navy-bg:rgba(11,60,93,.09);}
+  :root[data-theme="crimson"]{--canvas:#F7F1F2;--navy:#5B1A2B;--navy-2:#6A2235;--gold:#E8A24C;--gold-deep:#A9631A;--gold-bg:rgba(232,162,76,.14);--gold-ring:rgba(232,162,76,.35);--focus-ring:rgba(91,26,43,.14);--navy-bg:rgba(91,26,43,.09);}
+  :root[data-theme="graphite"]{--canvas:#F2F2F3;--navy:#23272E;--navy-2:#2D323A;--gold:#F28C1B;--gold-deep:#B8630A;--gold-bg:rgba(242,140,27,.14);--gold-ring:rgba(242,140,27,.35);--focus-ring:rgba(35,39,46,.14);--navy-bg:rgba(35,39,46,.09);}
+  .theme-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(112px,1fr));gap:10px;margin-top:6px;text-align:center;}
+  .theme-opt{position:relative;display:flex;flex-direction:column;align-items:center;gap:8px;padding:12px 8px 10px;border:2px solid var(--border);border-radius:var(--radius-md);background:#fff;font-family:inherit;cursor:pointer;color:var(--ink);transition:border-color .15s,transform .15s,box-shadow .15s;}
+  .theme-opt:hover{transform:translateY(-1px);box-shadow:var(--shadow-md);}
+  .theme-opt:focus-visible{outline:2px solid var(--gold);outline-offset:2px;}
+  .theme-opt[aria-pressed="true"]{border-color:var(--gold);box-shadow:0 0 0 3px var(--gold-bg);}
+  .theme-opt[aria-pressed="true"]::after{content:'\2713';position:absolute;top:-8px;right:-8px;width:20px;height:20px;border-radius:50%;background:var(--gold);color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;}
+  .theme-sw{display:flex;width:100%;height:34px;border-radius:6px;overflow:hidden;border:1px solid rgba(0,0,0,.08);}
+  .theme-sw i{flex:1;display:block;}
+  .theme-name{font-size:.8rem;font-weight:600;line-height:1.25;}
+  .theme-hint{margin:12px 0 0;font-size:.78rem;color:var(--ink-soft);}
   *{box-sizing:border-box;}
   html{-webkit-text-size-adjust:100%;}
   body{margin:0;font-family:'IBM Plex Sans Thai','IBM Plex Sans',-apple-system,sans-serif;background:var(--canvas);color:var(--ink);}
@@ -65,7 +85,7 @@
   .sidebar{position:sticky;top:0;align-self:start;height:100vh;height:100dvh;display:flex;flex-direction:column;
     background:var(--navy);color:#fff;overflow:hidden;z-index:60;}
   .sb-brand{display:flex;align-items:center;gap:12px;height:76px;flex-shrink:0;padding:0 18px;border-bottom:1px solid var(--sb-line);}
-  .seal{width:38px;height:38px;border-radius:9px;background:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 0 0 3px rgba(217,154,43,.35);}
+  .seal{width:38px;height:38px;border-radius:9px;background:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 0 0 3px var(--gold-ring);}
   .sb-title{min-width:0;line-height:1.3;}
   .sb-title strong{display:block;font-size:.98rem;font-weight:700;white-space:nowrap;}
   .sb-title span{display:block;font-size:.75rem;color:var(--sb-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
@@ -161,7 +181,7 @@
     width:100%;padding:11px 12px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-size:.95rem;
     font-family:'IBM Plex Sans Thai',sans-serif;background:#FFFDFA;color:var(--ink);
   }
-  input:focus,select:focus,textarea:focus{outline:none;border-color:var(--navy);box-shadow:0 0 0 3px rgba(23,59,55,.12);}
+  input:focus,select:focus,textarea:focus{outline:none;border-color:var(--navy);box-shadow:0 0 0 3px var(--focus-ring);}
   textarea{resize:vertical;min-height:60px;}
   .row2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
 
@@ -277,7 +297,7 @@
   .stat-note{display:block;margin-top:2px;min-height:1em;font-size:.72rem;color:var(--ink-soft);}
   .stat-note.late{color:var(--danger);font-weight:600;}
   .s-pending{--c:var(--gold-deep);--c-bg:var(--gold-bg);} .s-issued{--c:var(--success);--c-bg:var(--success-bg);}
-  .s-void{--c:var(--danger);--c-bg:var(--danger-bg);} .s-all{--c:var(--navy);--c-bg:rgba(27,42,65,.09);}
+  .s-void{--c:var(--danger);--c-bg:var(--danger-bg);} .s-all{--c:var(--navy);--c-bg:var(--navy-bg);}
   .hr-bar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:10px;}
   .search{position:relative;flex:1;min-width:220px;}
   .search svg{position:absolute;left:12px;top:50%;transform:translateY(-50%);width:18px;height:18px;color:var(--ink-soft);pointer-events:none;}
@@ -427,7 +447,7 @@
 <aside class="sidebar" id="sidebar" aria-label="เมนูหลัก">
   <div class="sb-brand">
     <div class="seal">
-      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#1B2A41" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" style="color:var(--navy)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
         <path d="M7 3h6l4 4v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"/><path d="M13 3v4h4"/>
         <line x1="8.5" y1="11" x2="13.3" y2="11"/><line x1="8.5" y1="14" x2="13.3" y2="14"/>
         <path d="M8.5 17.5h5.7"/><path d="M13 15.7l2 1.8-2 1.8"/>
@@ -605,6 +625,7 @@
         <div class="hr-actions">
           <button class="btn-mini" onclick="loadHrList()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.3-5.7"/><path d="M20 4v5h-5"/></svg>รีเฟรช</button>
           <button class="btn-mini" onclick="exportCsv()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11M7.5 10.5L12 15l4.5-4.5"/><path d="M5 19h14"/></svg>Export CSV</button>
+          <button class="btn-mini" onclick="openThemeModal()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a9 9 0 1 0 0 18c1.1 0 1.8-.8 1.8-1.7 0-.5-.2-.8-.5-1.2-.3-.3-.5-.7-.5-1.2 0-1 .8-1.7 1.8-1.7H17a4 4 0 0 0 4-4c0-4.4-4-8.2-9-8.2z"/><circle cx="7.5" cy="11" r="1"/><circle cx="10.5" cy="7" r="1"/><circle cx="15" cy="7.5" r="1"/></svg>ธีมสี</button>
           <button class="btn-mini" onclick="openPwModal()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="15" r="4"/><path d="M11 12l8-8M16 7l3 3"/></svg>จัดการรหัสผ่าน</button>
           <button class="btn-mini" onclick="openDeptModal()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7l3-3h5l2 2h8v11a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V7z"/></svg>จัดการแผนก</button>
           <button class="btn-mini" onclick="openDivModal()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 21V7l8-4 8 4v14"/><path d="M9 21v-6h6v6"/><path d="M9 11h.01M15 11h.01M9 15h.01M15 15h.01"/></svg>จัดการฝ่าย</button>
@@ -1521,6 +1542,42 @@
       URL.revokeObjectURL(url);
     }).catch(() => showToast('เชื่อมต่อระบบไม่สำเร็จ', 'err'));
   }
+
+  // ================= ธีมสี (บันทึกในเครื่องนี้) =================
+  const THEMES = [
+    { id: '',         name: 'กรมท่า-ทอง',   sw: ['#1B2A41', '#D99A2B', '#F0F3F7'] },
+    { id: 'emerald',  name: 'เขียวมรกต',    sw: ['#0E3B32', '#3DBE8B', '#EEF4F1'] },
+    { id: 'ocean',    name: 'ฟ้าทะเล',      sw: ['#0B3C5D', '#2FB5E0', '#EDF4F8'] },
+    { id: 'royal',    name: 'ม่วงรอยัล',    sw: ['#2B2059', '#F2B84B', '#F3F1F8'] },
+    { id: 'crimson',  name: 'แดงเลือดหมู',  sw: ['#5B1A2B', '#E8A24C', '#F7F1F2'] },
+    { id: 'graphite', name: 'เทากราไฟต์',   sw: ['#23272E', '#F28C1B', '#F2F2F3'] }
+  ];
+  function currentTheme(){ return document.documentElement.getAttribute('data-theme') || ''; }
+  function applyTheme(id, save){
+    const t = THEMES.find(x => x.id === id) || THEMES[0];
+    if (t.id) document.documentElement.setAttribute('data-theme', t.id);
+    else document.documentElement.removeAttribute('data-theme');
+    const m = document.querySelector('meta[name="theme-color"]'); if (m) m.setAttribute('content', t.sw[0]);
+    if (save) { try { if (t.id) localStorage.setItem('referral_theme', t.id); else localStorage.removeItem('referral_theme'); } catch (e) {} }
+  }
+  function openThemeModal(){
+    const cur = currentTheme();
+    const html = '<div class="theme-grid">' + THEMES.map(t =>
+      '<button type="button" class="theme-opt" data-theme-id="' + t.id + '" aria-pressed="' + (t.id === cur) + '">' +
+        '<span class="theme-sw">' + t.sw.map(c => '<i style="background:' + c + '"></i>').join('') + '</span>' +
+        '<span class="theme-name">' + t.name + '</span></button>').join('') +
+      '</div><p class="theme-hint">ธีมจะบันทึกไว้ในเครื่องนี้ (เครื่องอื่นและหน้าของพนักงานไม่เปลี่ยน)</p>';
+    fireAlert({
+      title: 'เลือกธีมสี', html: html, showConfirmButton: true, confirmButtonText: 'เสร็จสิ้น', width: 460,
+      didOpen: (el) => {
+        el.querySelectorAll('.theme-opt').forEach(b => b.addEventListener('click', () => {
+          applyTheme(b.dataset.themeId, true);
+          el.querySelectorAll('.theme-opt').forEach(x => x.setAttribute('aria-pressed', x === b ? 'true' : 'false'));
+        }));
+      }
+    });
+  }
+  window.addEventListener('DOMContentLoaded', () => applyTheme(currentTheme(), false));
 
   // ================= จัดการรหัสผ่านฝ่ายบุคคล =================
   let PW_CODES = [];
