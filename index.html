@@ -385,6 +385,34 @@
   .app-swal-confirm-danger:hover{opacity:.9;}
   .app-swal-cancel{background:#fff !important;color:var(--ink) !important;border:1px solid var(--border-strong) !important;padding:10px 22px !important;border-radius:var(--radius-sm) !important;font-size:14px !important;font-weight:600 !important;font-family:inherit !important;cursor:pointer !important;margin:0 6px !important;box-shadow:none !important;}
   .app-swal-cancel:hover{background:var(--surface-2) !important;}
+
+  /* ===== คู่มือการใช้งาน ===== */
+  .app-header[data-view="guide"] .ah-progress{display:none;}
+  .gd-top{display:flex;justify-content:flex-end;gap:8px;margin-bottom:12px;}
+  .gd-hero{background:var(--navy);color:#fff;border-radius:10px;padding:18px 20px;border-bottom:3px solid var(--gold);}
+  .gd-hero h2{margin:0;font-size:1.15rem;line-height:1.4;} .gd-hero p{margin:4px 0 14px;font-size:.84rem;color:#9FB0BC;}
+  .gd-flow{display:flex;flex-wrap:wrap;gap:8px;list-style:none;margin:0;padding:0;counter-reset:f;}
+  .gd-flow li{counter-increment:f;display:flex;align-items:center;gap:8px;padding:7px 12px;border-radius:20px;background:rgba(255,255,255,.09);font-size:.8rem;}
+  .gd-flow li::before{content:counter(f);width:20px;height:20px;border-radius:50%;background:var(--gold);color:var(--navy);font-weight:700;font-size:.72rem;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .gd-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px 18px;margin-top:12px;}
+  .gd-card h3{margin:0 0 8px;font-size:1rem;color:var(--navy);display:flex;align-items:center;gap:10px;}
+  .gd-num{width:26px;height:26px;border-radius:50%;background:var(--navy);color:#fff;font-size:.8rem;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .gd-card ul,.gd-card ol{margin:6px 0 0;padding-left:22px;font-size:.9rem;line-height:1.8;} .gd-card li::marker{color:var(--gold-deep);}
+  .gd-card p{margin:6px 0 0;font-size:.9rem;line-height:1.75;}
+  .gd-tip{margin-top:10px;padding:9px 12px;border-radius:var(--radius-sm);background:var(--info-bg);color:var(--info);font-size:.82rem;line-height:1.65;}
+  .gd-tip.warn{background:var(--warning-bg);color:var(--warning);} .gd-tip.bad{background:var(--danger-bg);color:var(--danger);}
+  .gd-tb{width:100%;border-collapse:collapse;margin-top:8px;font-size:.84rem;line-height:1.6;}
+  .gd-tb th,.gd-tb td{padding:8px 10px;border:1px solid var(--border);text-align:left;vertical-align:top;} .gd-tb th{background:var(--surface-2);color:var(--navy);white-space:nowrap;}
+  .gd-card dl{margin:6px 0 0;font-size:.88rem;line-height:1.7;} .gd-card dt{font-weight:600;color:var(--navy);margin-top:10px;} .gd-card dd{margin:2px 0 0;color:var(--ink);}
+  #admGuideModal .modal-card{max-width:720px;} #admGuideModal .modal-body{padding:2px 22px 16px;background:var(--canvas);}
+  #admGuideModal .modal-foot{display:flex;gap:8px;justify-content:flex-end;} #admGuideModal .modal-foot .btn{width:auto;padding-left:22px;padding-right:22px;}
+  @media print{
+    .sidebar,.app-header,.scrim,.no-print{display:none !important;} .app{display:block !important;} .wrap{max-width:none;padding:0;} body{background:#fff;}
+    .gd-card{break-inside:avoid;} .gd-hero,.gd-tip,.gd-tb th,.gd-num{-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+    body.print-modal .app{display:none !important;} body.print-modal .modal{position:static;display:block;padding:0;}
+    body.print-modal .modal-back,body.print-modal .modal-x,body.print-modal .modal-foot{display:none;}
+    body.print-modal .modal-card{max-width:none;max-height:none;box-shadow:none;} body.print-modal .modal-body{overflow:visible;}
+  }
 </style>
 </head>
 <body>
@@ -410,6 +438,10 @@
     <button class="nav-item" data-tab="employee" data-label="ขอใบส่งตัว" aria-current="page">
       <svg class="ni-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 21h16"/><path d="M6 21V9l6-5 6 5v12"/><path d="M10.5 21v-3.5h3V21"/><path class="acc" d="M12 10.5v4M10 12.5h4"/></svg>
       <span class="ni-label">ขอใบส่งตัว</span>
+    </button>
+    <button class="nav-item" data-tab="guide" data-label="คู่มือการใช้งาน">
+      <svg class="ni-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h9a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3z"/><path d="M5 17a3 3 0 0 1 3-3h9"/><path class="acc" d="M9 8h4"/></svg>
+      <span class="ni-label">คู่มือการใช้งาน</span>
     </button>
     <div class="sb-group-label">สำหรับฝ่ายบุคคล</div>
     <button class="nav-item locked" data-tab="hr" data-label="รายการคำขอ">
@@ -544,6 +576,8 @@
     </div>
   </div>
 
+  <div class="view" id="view-guide"><div class="gd-top no-print"><button class="btn-mini" onclick="window.print()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 9V4h10v5M7 17H5a1 1 0 0 1-1-1v-6a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v6a1 1 0 0 1-1 1h-2"/><path d="M7 14h10v6H7z"/></svg>พิมพ์ / บันทึกเป็น PDF</button></div><div class="gd-hero"><h2>ขอใบส่งตัวโรงพยาบาลราชธานี ทำเองได้ใน 3 ขั้นตอน</h2><p>ไม่ต้องล็อกอิน ใช้ได้ทั้งมือถือและคอมพิวเตอร์</p><ol class="gd-flow"><li>กรอกฟอร์มในเว็บนี้</li><li>ฝ่ายบุคคลได้รับอีเมลทันที</li><li>ฝ่ายบุคคลเตรียมใบส่งตัว</li><li>รับใบที่ HR แล้วไปโรงพยาบาล</li></ol></div><section class="gd-card"><h3>เตรียมข้อมูลนี้ไว้ก่อนเริ่ม</h3><ul><li>ชื่อ-สกุล อายุ และรหัสพนักงานของคุณ</li><li>แผนกและฝ่ายที่สังกัด</li><li>เบอร์โทรติดต่อกลับ</li><li>ถ้าใช้สิทธิ์ให้ครอบครัว: ชื่อ-สกุลของผู้เข้ารับบริการ</li></ul></section><section class="gd-card"><h3><span class="gd-num">1</span>ขั้นที่ 1 — ข้อมูลผู้ขอส่งตัว</h3><ul><li>เปิดเมนู <b>ขอใบส่งตัว</b> แล้วกรอกชื่อ-สกุล อายุ รหัสพนักงาน และเบอร์โทร</li><li><b>แผนก</b> และ <b>ฝ่าย</b>: คลิกช่อง พิมพ์ค้นหา แล้ว<b>กดเลือกจากรายการ</b> (พิมพ์เองไม่ได้)</li><li>ช่องที่มี * ต้องกรอกทุกช่อง จากนั้นกด <b>ถัดไป</b></li></ul><div class="gd-tip ">ไม่พบแผนกหรือฝ่ายของคุณในรายการ? แจ้งฝ่ายบุคคลให้เพิ่มให้</div></section><section class="gd-card"><h3><span class="gd-num">2</span>ขั้นที่ 2 — ผู้เข้ารับบริการและกรณี</h3><ul><li><b>ผู้เข้ารับบริการ:</b> ตัวพนักงานเอง / บิดา / มารดา / คู่สมรส / บุตร (ญาติต้องถูกต้องตามกฎหมาย และต้องกรอกชื่อ-สกุลของญาติ)</li><li><b>กรณี:</b> เข้ารับการรักษาพยาบาล, ขอใช้รถพยาบาล, ทันตกรรม, ตรวจสุขภาพก่อนเริ่มงาน, ตรวจสุขภาพประจำปี</li><li>กรณี<b>รักษาพยาบาล</b>ต้องเขียนอาการ ส่วน<b>ทันตกรรมและตรวจสุขภาพ</b>ต้องระบุรายละเอียดในช่องที่ขึ้นมา</li></ul></section><section class="gd-card"><h3><span class="gd-num">3</span>ขั้นที่ 3 — สิทธิ์การรักษาและส่งคำขอ</h3><ul><li>เลือกสิทธิ์ 1 ข้อ: บริษัทรับผิดชอบทั้งหมด / พนักงานรับผิดชอบเอง / กองทุนเงินทดแทน (ส่วนเกินเรียกเก็บจากบริษัทหรือพนักงาน) / อื่นๆ (ต้องระบุ)</li><li>เลือกวันที่ต้องการไปโรงพยาบาล (ไม่บังคับ)</li><li>กด <b>ส่งคำขอใบส่งตัว</b></li></ul><div class="gd-tip warn">ไม่แน่ใจเรื่องสิทธิ์? สอบถามฝ่ายบุคคลก่อนส่ง</div></section><section class="gd-card"><h3>ส่งแล้วทำอย่างไรต่อ</h3><ol><li>หน้าจอจะแสดง <b>เลขที่คำขอ</b> (เช่น RF20260928-001) จดหรือแคปหน้าจอเก็บไว้</li><li>รอฝ่ายบุคคลติดต่อกลับ หรือแวะไปที่ฝ่ายบุคคลได้เลย</li><li>เซ็นชื่อรับใบส่งตัว แล้วนำไปโรงพยาบาลได้ทันที</li></ol></section><section class="gd-card"><h3>กรอกผิด หรือต้องการแก้ไข / ยกเลิกคำขอ</h3><p>ผู้ขอแก้ไขเองในระบบไม่ได้ ให้แจ้งฝ่ายบุคคลพร้อม<b>เลขที่คำขอ</b> (หรือชื่อและรหัสพนักงาน) ฝ่ายบุคคลจะแก้ไขหรือยกเลิกให้</p><div class="gd-tip warn">อย่าส่งคำขอซ้ำ เพราะจะมีคำขอซ้อนกันสองรายการ</div></section><section class="gd-card"><h3>คำถามที่พบบ่อย</h3><dl><dt>ต้องล็อกอินไหม?</dt><dd>ไม่ต้อง กรอกฟอร์มได้เลย</dd><dt>ใครเห็นอาการของฉันบ้าง?</dt><dd>ฝ่ายบุคคลเท่านั้น ส่วนฝ่ายต้นสังกัด (ถ้ามีการตั้งอีเมลไว้) จะได้รับแจ้งแบบย่อ เห็นเพียงชื่อและสถานะ</dd><dt>ลืมเลขที่คำขอ?</dt><dd>แจ้งชื่อ-สกุลและรหัสพนักงานกับฝ่ายบุคคล ค้นให้ได้</dd><dt>ขึ้นว่า "กรุณาเลือกแผนก/ฝ่ายจากรายการที่มี"?</dt><dd>ต้องกดเลือกจากรายการที่แสดงใต้ช่อง ไม่ใช่พิมพ์ข้อความเอง</dd><dt>ส่งคำขอไม่ผ่าน?</dt><dd>ตรวจสัญญาณอินเทอร์เน็ตแล้วลองใหม่ ถ้ายังไม่ได้ให้แจ้งฝ่ายบุคคล</dd></dl></section></div>
+
   <!-- ================= HR VIEW ================= -->
   <div class="view" id="view-hr">
     <div class="card gate" id="hrGate">
@@ -571,6 +605,7 @@
           <button class="btn-mini" onclick="openDeptModal()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7l3-3h5l2 2h8v11a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V7z"/></svg>จัดการแผนก</button>
           <button class="btn-mini" onclick="openDivModal()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 21V7l8-4 8 4v14"/><path d="M9 21v-6h6v6"/><path d="M9 11h.01M15 11h.01M9 15h.01M15 15h.01"/></svg>จัดการฝ่าย</button>
           <button class="btn-mini" onclick="openHrEmailModal()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>อีเมล HR</button>
+          <button class="btn-mini" onclick="openAdmGuide()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h9a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3z"/><path d="M5 17a3 3 0 0 1 3-3h9"/><path class="acc" d="M9 8h4"/></svg>คู่มือ Admin</button>
           <button class="btn-mini danger" onclick="clearAllRequestsUi()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/></svg>ล้างประวัติ</button>
           <button class="btn-mini" onclick="confirmLogout()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 4H6a1 1 0 0 0-1 1v14a1 1 0 0 0 1 1h3"/><path d="M15 8l4 4-4 4M19 12H9"/></svg>ออกจากระบบ</button>
         </div>
@@ -604,6 +639,15 @@
     </div>
     <div class="modal-body" id="reqBody"></div>
     <div class="modal-foot" id="reqFoot" style="display:flex;flex-direction:column;gap:8px;"></div>
+  </div>
+</div>
+
+<div class="modal" id="admGuideModal" hidden>
+  <div class="modal-back" id="admGuideBack"></div>
+  <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="admGuideTitle">
+    <div class="modal-head"><div><h3 id="admGuideTitle">คู่มือสำหรับ Admin (ฝ่ายบุคคล)</h3><p>วิธีจัดการคำขอและตั้งค่าระบบ ทีละขั้นตอน</p></div><button class="modal-x" id="admGuideClose" aria-label="ปิด"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+    <div class="modal-body" id="admGuideBody"><section class="gd-card"><h3><span class="gd-num">1</span>เข้าสู่ระบบ / ออกจากระบบ</h3><ul><li>กดเมนู <b>รายการคำขอ</b> (ไอคอนแม่กุญแจ) แล้วกรอกรหัสผ่าน</li><li>ระบบ<b>จำรหัสผ่านไว้ในเครื่องนั้น</b> จึงต้องกด <b>ออกจากระบบ</b> ทุกครั้งเมื่อใช้เครื่องที่ไม่ใช่ของตัวเองหรือเครื่องที่ใช้ร่วมกัน</li></ul><div class="gd-tip warn">รหัสตั้งต้นคือ 1234 ซึ่งไม่ปลอดภัย ควรเปลี่ยนที่ "จัดการรหัสผ่าน" ก่อนใช้งานจริง</div></section><section class="gd-card"><h3><span class="gd-num">2</span>อ่านหน้ารายการคำขอ</h3><ul><li>การ์ดสถิติ 4 ใบ (รอ HR ออกใบ / ออกใบแล้ว / ยกเลิก / ทั้งหมด): กดเพื่อกรองตามสถานะ กดซ้ำเพื่อเอากรองออก</li><li>ข้อความ "เก่าสุดรอมา … วัน" จะเปลี่ยนสีเตือนเมื่อมีคำขอค้างเกิน 3 วัน</li><li>ค้นหาได้ด้วยชื่อ รหัสพนักงาน แผนก หรือเลขที่คำขอ</li><li>แสดงหน้าละ 10 รายการ เรียงใหม่สุดก่อน (สูงสุด 300 รายการล่าสุด)</li><li>ตัวเลขข้างเมนู <b>รายการคำขอ</b> คือจำนวนที่รอออกใบ</li></ul></section><section class="gd-card"><h3><span class="gd-num">3</span>ออกใบส่งตัว / ยกเลิกคำขอ (งานประจำ)</h3><ol><li>มีอีเมลแจ้งคำขอใหม่ เปิดเว็บด้วยปุ่มในอีเมล</li><li>กดที่แถวเพื่อดูรายละเอียดทั้งหมด</li><li>เตรียมใบส่งตัวกระดาษ แล้วกด <b>ออกใบแล้ว</b> (ใส่หมายเหตุได้ ไม่บังคับ)</li><li>ถ้าต้องยกเลิก กด <b>ยกเลิกคำขอ</b> และ<b>ต้องระบุเหตุผล</b></li></ol><div class="gd-tip ">ปุ่มออกใบ/ยกเลิก ใช้ได้เฉพาะคำขอสถานะ "รอ HR ออกใบ" และระบบส่งอีเมลแจ้งทุกครั้งที่เปลี่ยนสถานะ</div></section><section class="gd-card"><h3><span class="gd-num">4</span>แก้ไข / ลบรายการ (เมื่อผู้ขอแจ้งให้แก้ข้อมูล)</h3><ol><li>ตรวจเลขที่คำขอหรือชื่อกับผู้ขอ</li><li>กดไอคอน <b>ดินสอ</b> ในแถว (หรือ <b>แก้ไขข้อมูล</b> ในหน้ารายละเอียด)</li><li>แก้ไขข้อมูล แล้วกด <b>บันทึกการแก้ไข</b></li></ol><ul><li>แก้ได้ทุกช่องที่ผู้ขอกรอก แต่ไม่เปลี่ยนเลขที่คำขอ วันที่ยื่น และสถานะ ทั้งนี้<b>ไม่ส่งอีเมลซ้ำ</b></li><li>ถ้าแก้คำขอที่ "ออกใบแล้ว" ต้องแก้ใบส่งตัวกระดาษให้ตรงกันด้วย</li><li>ไอคอน <b>ถังขยะ</b> = ลบถาวร (ยืนยันก่อนลบ) หากแค่ไม่ใช้คำขอนี้แล้ว ให้ใช้ "ยกเลิกคำขอ" เพื่อเก็บประวัติ</li></ul><div class="gd-tip ">ทุกการแก้ไข/ลบถูกจดในชีท <b>AuditLog</b> (ใคร เมื่อไร แก้อะไร) และข้อมูลที่ลบจะมีสำเนาเก็บไว้ในชีทนี้ด้วย</div></section><section class="gd-card"><h3><span class="gd-num">5</span>Export CSV</h3><p>ส่งออกตามตัวกรองและคำค้นที่กำลังแสดงอยู่ (ถ้าต้องการทั้งหมดให้เอากรองออกก่อน) เปิดใน Excel ได้ ภาษาไทยไม่เพี้ยน</p></section><section class="gd-card"><h3><span class="gd-num">6</span>ตั้งค่าระบบ (ปุ่มบนแถบเครื่องมือ)</h3><table class="gd-tb"><tr><th>ปุ่ม</th><th>ใช้ทำอะไร</th></tr><tr><td>จัดการรหัสผ่าน</td><td>เพิ่ม/แก้ไข/ลบรหัสของผู้ดูแล ยาว 4–32 ตัว ไม่มีเว้นวรรค ไม่ซ้ำกัน ตั้งชื่อผู้ถือรหัสไว้ (ชื่อนี้จะขึ้นในประวัติ AuditLog) แนะนำ 1 คน 1 รหัส ลบรหัสที่ใช้อยู่หรือรหัสสุดท้ายไม่ได้</td></tr><tr><td>จัดการแผนก</td><td>รายชื่อตัวเลือกในช่อง "แผนก" ของฟอร์มพนักงาน</td></tr><tr><td>จัดการฝ่าย</td><td>รายชื่อตัวเลือกในช่อง "ฝ่าย" พร้อมอีเมลแจ้งเตือนของฝ่าย (ไม่บังคับ ใส่ได้ไม่เกิน 3 อีเมลต่อฝ่าย)</td></tr><tr><td>อีเมล HR</td><td>ผู้รับอีเมลแจ้งเตือนแบบละเอียด เพิ่มได้หลายคน</td></tr></table><div class="gd-tip ">ลบแผนก/ฝ่ายไม่กระทบคำขอเก่า แต่พนักงานจะไม่เห็นตัวเลือกนั้นอีก และฝ่ายที่ถูกลบจะไม่ได้รับอีเมล</div></section><section class="gd-card"><h3><span class="gd-num">7</span>อีเมลแจ้งเตือนอัตโนมัติ</h3><table class="gd-tb"><tr><th>เหตุการณ์</th><th>อีเมล HR</th><th>ฝ่ายต้นสังกัด</th></tr><tr><td>ยื่นคำขอใหม่</td><td>ละเอียด + ปุ่มเปิดเว็บ</td><td>แบบย่อ (ชื่อ + สถานะ)</td></tr><tr><td>ออกใบแล้ว</td><td>ละเอียด</td><td>แบบย่อ</td></tr><tr><td>ยกเลิกคำขอ</td><td>ละเอียด</td><td>แบบย่อ</td></tr><tr><td>แก้ไข / ลบ</td><td>ไม่ส่ง</td><td>ไม่ส่ง</td></tr></table><div class="gd-tip ">ถ้าส่งอีเมลไม่สำเร็จ (เช่น โควตาเต็ม) คำขอก็ยังบันทึกอยู่ในหน้ารายการตามปกติ</div></section><section class="gd-card"><h3><span class="gd-num">8</span>ล้างประวัติ (ใช้ก่อนขึ้นระบบจริงเท่านั้น)</h3><ul><li>ลบคำขอ<b>ทั้งหมดถาวร</b> ต้องยืนยัน 2 ชั้น: ติ๊ก "สำรองเป็นแท็บใหม่ในชีท" (ควรติ๊ก) แล้วพิมพ์คำว่า <b>ลบทั้งหมด</b></li><li>แผนก ฝ่าย อีเมล และรหัสผ่านไม่ถูกลบ เลขที่คำขอจะเริ่มนับ -001 ใหม่</li></ul><div class="gd-tip bad">ห้ามใช้หลังเริ่มใช้งานจริง เพราะกู้คืนไม่ได้ถ้าไม่ได้สำรองไว้</div></section><section class="gd-card"><h3>ข้อควรระวังเรื่องข้อมูล</h3><p>อาการและสิทธิ์การรักษาเป็นข้อมูลส่วนบุคคล ควรเปิดดูเฉพาะผู้ที่เกี่ยวข้อง และออกจากระบบทุกครั้งเมื่อเลิกใช้งาน</p></section></div>
+    <div class="modal-foot"><button class="btn-mini" onclick="printAdmGuide()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 9V4h10v5M7 17H5a1 1 0 0 1-1-1v-6a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v6a1 1 0 0 1-1 1h-2"/><path d="M7 14h10v6H7z"/></svg>พิมพ์ / PDF</button><button class="btn" id="admGuideOk">ปิด</button></div>
   </div>
 </div>
 
@@ -762,10 +806,12 @@
   // ---------- Sidebar navigation ----------
   const VIEWS = {
     employee: { title: 'ขอใบส่งตัว', desc: 'กรอกข้อมูล 3 ขั้นตอน ฝ่ายบุคคลจะเตรียมใบส่งตัวให้' },
+    guide: { title: 'คู่มือการใช้งาน', desc: 'วิธีขอใบส่งตัวสำหรับพนักงาน ทีละขั้นตอน' },
     hr: { title: 'รายการคำขอใบส่งตัว', desc: 'ตรวจสอบคำขอ ออกใบส่งตัว และส่งออกข้อมูล' }
   };
   const HEAD_ICONS = {
     employee: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21h16"/><path d="M6 21V9l6-5 6 5v12"/><path d="M10.5 21v-3.5h3V21"/><path class="acc" d="M12 10.5v4M10 12.5h4"/></svg>',
+    guide: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h9a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3z"/><path d="M5 17a3 3 0 0 1 3-3h9"/><path class="acc" d="M9 8h4"/></svg>',
     hr: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="4" width="12" height="17" rx="1.6"/><path d="M9 4h6v2.6H9z"/><path class="acc" d="M9.5 13.5l2 2 3.5-4"/></svg>'
   };
   const appEl = document.getElementById('app');
@@ -1398,6 +1444,14 @@
   $e('editBack').addEventListener('click', closeEditModal);
   $e('editSave').addEventListener('click', saveEditRequest);
   document.addEventListener('keydown', e => { if (e.key === 'Escape' && !$e('editModal').hidden && !Swal.isVisible()) closeEditModal(); });
+
+  // ================= คู่มือ Admin (modal ใน Admin Panel) =================
+  function openAdmGuide(){ document.getElementById('admGuideModal').hidden = false; document.body.style.overflow = 'hidden'; document.getElementById('admGuideBody').scrollTop = 0; }
+  function closeAdmGuide(){ document.getElementById('admGuideModal').hidden = true; document.body.style.overflow = ''; }
+  function printAdmGuide(){ document.body.classList.add('print-modal'); window.print(); }
+  window.addEventListener('afterprint', () => document.body.classList.remove('print-modal'));
+  ['admGuideClose', 'admGuideOk', 'admGuideBack'].forEach(id => document.getElementById(id).addEventListener('click', closeAdmGuide));
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && !document.getElementById('admGuideModal').hidden && !Swal.isVisible()) closeAdmGuide(); });
 
   function escapeHtml(s){ return String(s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 
