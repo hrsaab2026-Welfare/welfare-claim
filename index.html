@@ -432,6 +432,18 @@
   .swal2-timer-progress-bar{background:var(--navy) !important;}
   .swal2-input,.swal2-textarea{border-radius:var(--radius-sm) !important;border:1px solid var(--border) !important;font-family:inherit !important;font-size:14px !important;box-shadow:none !important;height:auto !important;padding:10px 12px !important;}
   .swal2-input:focus,.swal2-textarea:focus{border-color:var(--info) !important;box-shadow:0 0 0 3px rgba(46,108,147,0.15) !important;}
+  /* ---- modal แก้ไขคู่มือ: ย่อ/ขยายได้ ---- */
+  .swal2-popup.gd-swal{position:relative;max-height:94vh;overflow-y:auto;transition:width .18s ease;}
+  .swal2-popup.gd-swal.gd-wide{width:min(1100px,96vw) !important;}
+  .gd-swal .swal2-html-container{text-align:left;margin:14px 0 0 !important;}
+  .gd-swal .swal2-input,.gd-swal .swal2-textarea,.gd-swal select.swal2-input{width:100% !important;max-width:100% !important;margin:10px 0 0 !important;box-sizing:border-box !important;}
+  .gd-swal .swal2-textarea{resize:vertical;}
+  .gd-swal #gdBody{min-height:180px;}
+  .gd-swal.gd-wide #gdBody{min-height:46vh;}
+  .gd-swal.gd-wide #gdCalloutText{min-height:110px;}
+  .gd-expand{position:absolute;top:12px;right:12px;width:36px;height:36px;border:1px solid var(--border);background:#fff;color:var(--ink-soft);border-radius:var(--radius-sm);cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;}
+  .gd-expand:hover{background:var(--surface-2);color:var(--ink);}
+  .gd-expand svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
   .swal2-validation-message{border-radius:var(--radius-sm) !important;font-size:13px !important;background:var(--danger-bg) !important;color:var(--danger) !important;}
 
   .app-swal-popup{font-family:'IBM Plex Sans Thai','IBM Plex Sans',-apple-system,sans-serif !important;border-radius:var(--radius-md) !important;box-shadow:var(--shadow-md) !important;}
@@ -2093,6 +2105,7 @@
   // ---- จัดการคู่มือ (modal ฝั่ง HR): เพิ่ม / แก้ไข / ลบ / เลื่อนลำดับ ----
   let GUIDE_ITEMS = { employee: [], admin: [] };
   let GUIDE_TAB = 'employee';
+  let GUIDE_WIDE = false; // จำสถานะย่อ/ขยายของหน้าต่างแก้ไขคู่มือ
 
   function openGuideModal(){
     if (!HR_CODE) return;
@@ -2139,8 +2152,24 @@
   }
   function guideForm(title, item){
     const it = item || {};
+    const ICON_EXPAND = '<svg viewBox="0 0 24 24"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>';
+    const ICON_SHRINK = '<svg viewBox="0 0 24 24"><path d="M14 10h6V4M10 14H4v6M20 4l-7 7M4 20l7-7"/></svg>';
     return fireAlert({
       title: title, showCancelButton: true, focusConfirm: false, width: 560,
+      customClass: { popup: 'gd-swal' + (GUIDE_WIDE ? ' gd-wide' : '') },
+      didOpen: (popup) => {
+        const b = document.createElement('button');
+        b.type = 'button'; b.className = 'gd-expand';
+        const sync = () => {
+          popup.classList.toggle('gd-wide', GUIDE_WIDE);
+          b.innerHTML = GUIDE_WIDE ? ICON_SHRINK : ICON_EXPAND;
+          b.title = GUIDE_WIDE ? 'ย่อหน้าต่าง' : 'ขยายหน้าต่าง';
+          b.setAttribute('aria-label', b.title);
+        };
+        b.onclick = () => { GUIDE_WIDE = !GUIDE_WIDE; sync(); };
+        sync();
+        popup.appendChild(b);
+      },
       confirmButtonText: item ? 'บันทึก' : 'เพิ่ม', cancelButtonText: 'ปิด',
       html:
         '<input id="gdTitle" class="swal2-input" maxlength="150" placeholder="หัวข้อ" value="' + escapeHtml(it.title || '') + '">' +
