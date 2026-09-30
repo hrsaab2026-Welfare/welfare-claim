@@ -379,6 +379,13 @@
   #editModal .modal-foot{display:flex;gap:8px;}
   #editModal .modal-foot .btn{flex:1;width:auto;} #editModal .modal-foot .btn-mini{padding-left:20px;padding-right:20px;justify-content:center;}
   @media (max-width:560px){ #editModal .row2{grid-template-columns:1fr;gap:0;} }
+  .gd-tabs{display:flex;gap:4px;padding:14px 22px 0;}
+  .gd-tabbtn{padding:8px 4px 10px;margin-right:18px;border:0;background:none;font-family:inherit;font-size:.86rem;font-weight:700;color:var(--ink-soft);cursor:pointer;border-bottom:2px solid transparent;}
+  .gd-tabbtn.active{color:var(--navy);border-color:var(--gold);}
+  .gd-tabbtn:focus-visible{outline:2px solid var(--gold);outline-offset:2px;}
+  .ib:disabled{opacity:.3;cursor:not-allowed;background:none !important;color:var(--ink-soft) !important;}
+  #guideModal .modal-card{max-width:600px;}
+  #guideModal .pw-key b{font-size:1rem;color:var(--navy);}
   .pagination{display:flex;align-items:center;justify-content:center;gap:14px;margin-top:14px;}
   .pagination button{width:36px;height:36px;border-radius:9px;border:1.5px solid var(--border);background:var(--surface);color:var(--navy);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:border-color .15s,background .15s;}
   .pagination button svg{width:17px;height:17px;}
@@ -649,7 +656,7 @@
     </section>
   </div>
 
-  <div class="view" id="view-guide"><div class="gd-top no-print"><button class="btn-mini" onclick="window.print()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 9V4h10v5M7 17H5a1 1 0 0 1-1-1v-6a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v6a1 1 0 0 1-1 1h-2"/><path d="M7 14h10v6H7z"/></svg>พิมพ์ / บันทึกเป็น PDF</button></div><div class="gd-hero"><h2>ขอใบส่งตัวโรงพยาบาลราชธานี ทำเองได้ใน 3 ขั้นตอน</h2><p>ไม่ต้องล็อกอิน ใช้ได้ทั้งมือถือและคอมพิวเตอร์</p><ol class="gd-flow"><li>กรอกฟอร์มในเว็บนี้</li><li>ฝ่ายบุคคลได้รับอีเมลทันที</li><li>ฝ่ายบุคคลเตรียมใบส่งตัว</li><li>รับใบที่ HR แล้วไปโรงพยาบาล</li></ol></div><section class="gd-card"><h3>เตรียมข้อมูลนี้ไว้ก่อนเริ่ม</h3><ul><li>ชื่อ-สกุล อายุ และรหัสพนักงานของคุณ</li><li>แผนกและฝ่ายที่สังกัด</li><li>เบอร์โทรติดต่อกลับ</li><li>ถ้าใช้สิทธิ์ให้ครอบครัว: ชื่อ-สกุลของผู้เข้ารับบริการ</li></ul></section><section class="gd-card"><h3><span class="gd-num">1</span>ขั้นที่ 1 — ข้อมูลผู้ขอส่งตัว</h3><ul><li>เปิดเมนู <b>ขอใบส่งตัว</b> แล้วกรอกชื่อ-สกุล อายุ รหัสพนักงาน และเบอร์โทร</li><li><b>แผนก</b> และ <b>ฝ่าย</b>: คลิกช่อง พิมพ์ค้นหา แล้ว<b>กดเลือกจากรายการ</b> (พิมพ์เองไม่ได้)</li><li>ช่องที่มี * ต้องกรอกทุกช่อง จากนั้นกด <b>ถัดไป</b></li></ul><div class="gd-tip ">ไม่พบแผนกหรือฝ่ายของคุณในรายการ? แจ้งฝ่ายบุคคลให้เพิ่มให้</div></section><section class="gd-card"><h3><span class="gd-num">2</span>ขั้นที่ 2 — ผู้เข้ารับบริการและกรณี</h3><ul><li><b>ผู้เข้ารับบริการ:</b> ตัวพนักงานเอง / บิดา / มารดา / คู่สมรส / บุตร (ญาติต้องถูกต้องตามกฎหมาย และต้องกรอกชื่อ-สกุลของญาติ)</li><li><b>กรณี:</b> เข้ารับการรักษาพยาบาล, ขอใช้รถพยาบาล, ทันตกรรม, ตรวจสุขภาพก่อนเริ่มงาน, ตรวจสุขภาพประจำปี</li><li>กรณี<b>รักษาพยาบาล</b>ต้องเขียนอาการ ส่วน<b>ทันตกรรมและตรวจสุขภาพ</b>ต้องระบุรายละเอียดในช่องที่ขึ้นมา</li></ul></section><section class="gd-card"><h3><span class="gd-num">3</span>ขั้นที่ 3 — สิทธิ์การรักษาและส่งคำขอ</h3><ul><li>เลือกสิทธิ์ 1 ข้อ: บริษัทรับผิดชอบทั้งหมด / พนักงานรับผิดชอบเอง / กองทุนเงินทดแทน (ส่วนเกินเรียกเก็บจากบริษัทหรือพนักงาน) / อื่นๆ (ต้องระบุ)</li><li>เลือกวันที่ต้องการไปโรงพยาบาล (ไม่บังคับ)</li><li>กด <b>ส่งคำขอใบส่งตัว</b></li></ul><div class="gd-tip warn">ไม่แน่ใจเรื่องสิทธิ์? สอบถามฝ่ายบุคคลก่อนส่ง</div></section><section class="gd-card"><h3>ส่งแล้วทำอย่างไรต่อ</h3><ol><li>หน้าจอจะแสดง <b>เลขที่คำขอ</b> (เช่น RF20260928-001) จดหรือแคปหน้าจอเก็บไว้</li><li>รอฝ่ายบุคคลติดต่อกลับ หรือแวะไปที่ฝ่ายบุคคลได้เลย</li><li>เซ็นชื่อรับใบส่งตัว แล้วนำไปโรงพยาบาลได้ทันที</li></ol></section><section class="gd-card"><h3>กรอกผิด หรือต้องการแก้ไข / ยกเลิกคำขอ</h3><p>ผู้ขอแก้ไขเองในระบบไม่ได้ ให้แจ้งฝ่ายบุคคลพร้อม<b>เลขที่คำขอ</b> (หรือชื่อและรหัสพนักงาน) ฝ่ายบุคคลจะแก้ไขหรือยกเลิกให้</p><div class="gd-tip warn">อย่าส่งคำขอซ้ำ เพราะจะมีคำขอซ้อนกันสองรายการ</div></section><section class="gd-card"><h3>คำถามที่พบบ่อย</h3><dl><dt>ต้องล็อกอินไหม?</dt><dd>ไม่ต้อง กรอกฟอร์มได้เลย</dd><dt>ใครเห็นอาการของฉันบ้าง?</dt><dd>ฝ่ายบุคคลเท่านั้น ส่วนฝ่ายต้นสังกัด (ถ้ามีการตั้งอีเมลไว้) จะได้รับแจ้งแบบย่อ เห็นเพียงชื่อและสถานะ</dd><dt>ลืมเลขที่คำขอ?</dt><dd>แจ้งชื่อ-สกุลและรหัสพนักงานกับฝ่ายบุคคล ค้นให้ได้</dd><dt>ขึ้นว่า "กรุณาเลือกแผนก/ฝ่ายจากรายการที่มี"?</dt><dd>ต้องกดเลือกจากรายการที่แสดงใต้ช่อง ไม่ใช่พิมพ์ข้อความเอง</dd><dt>ส่งคำขอไม่ผ่าน?</dt><dd>ตรวจสัญญาณอินเทอร์เน็ตแล้วลองใหม่ ถ้ายังไม่ได้ให้แจ้งฝ่ายบุคคล</dd></dl></section></div>
+  <div class="view" id="view-guide"><div class="gd-top no-print"><button class="btn-mini" onclick="window.print()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 9V4h10v5M7 17H5a1 1 0 0 1-1-1v-6a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v6a1 1 0 0 1-1 1h-2"/><path d="M7 14h10v6H7z"/></svg>พิมพ์ / บันทึกเป็น PDF</button></div><div class="gd-hero"><h2>ขอใบส่งตัวโรงพยาบาลราชธานี ทำเองได้ใน 3 ขั้นตอน</h2><p>ไม่ต้องล็อกอิน ใช้ได้ทั้งมือถือและคอมพิวเตอร์</p><ol class="gd-flow"><li>กรอกฟอร์มในเว็บนี้</li><li>ฝ่ายบุคคลได้รับอีเมลทันที</li><li>ฝ่ายบุคคลเตรียมใบส่งตัว</li><li>รับใบที่ HR แล้วไปโรงพยาบาล</li></ol></div><div id="guideBody" class="gd-body"><div class="empty">กำลังโหลด...</div></div></div>
 
   <!-- ================= HR VIEW ================= -->
   <div class="view" id="view-hr">
@@ -720,7 +727,7 @@
   <div class="modal-back" id="admGuideBack"></div>
   <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="admGuideTitle">
     <div class="modal-head"><div><h3 id="admGuideTitle">คู่มือสำหรับ Admin (ฝ่ายบุคคล)</h3><p>วิธีจัดการคำขอและตั้งค่าระบบ ทีละขั้นตอน</p></div><button class="modal-x" id="admGuideClose" aria-label="ปิด"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
-    <div class="modal-body" id="admGuideBody"><section class="gd-card"><h3><span class="gd-num">1</span>เข้าสู่ระบบ / ออกจากระบบ</h3><ul><li>กดเมนู <b>รายการคำขอ</b> (ไอคอนแม่กุญแจ) แล้วกรอกรหัสผ่าน</li><li>ระบบ<b>จำรหัสผ่านไว้ในเครื่องนั้น</b> จึงต้องกด <b>ออกจากระบบ</b> ทุกครั้งเมื่อใช้เครื่องที่ไม่ใช่ของตัวเองหรือเครื่องที่ใช้ร่วมกัน</li></ul><div class="gd-tip warn">รหัสตั้งต้นคือ 1234 ซึ่งไม่ปลอดภัย ควรเปลี่ยนที่ "จัดการรหัสผ่าน" ก่อนใช้งานจริง</div></section><section class="gd-card"><h3><span class="gd-num">2</span>อ่านหน้ารายการคำขอ</h3><ul><li>การ์ดสถิติ 4 ใบ (รอ HR ออกใบ / ออกใบแล้ว / ยกเลิก / ทั้งหมด): กดเพื่อกรองตามสถานะ กดซ้ำเพื่อเอากรองออก</li><li>ข้อความ "เก่าสุดรอมา … วัน" จะเปลี่ยนสีเตือนเมื่อมีคำขอค้างเกิน 3 วัน</li><li>ค้นหาได้ด้วยชื่อ รหัสพนักงาน แผนก หรือเลขที่คำขอ</li><li>แสดงหน้าละ 10 รายการ เรียงใหม่สุดก่อน (สูงสุด 300 รายการล่าสุด)</li><li>ตัวเลขข้างเมนู <b>รายการคำขอ</b> คือจำนวนที่รอออกใบ</li></ul></section><section class="gd-card"><h3><span class="gd-num">3</span>ออกใบส่งตัว / ยกเลิกคำขอ (งานประจำ)</h3><ol><li>มีอีเมลแจ้งคำขอใหม่ เปิดเว็บด้วยปุ่มในอีเมล</li><li>กดที่แถวเพื่อดูรายละเอียดทั้งหมด</li><li>เตรียมใบส่งตัวกระดาษ แล้วกด <b>ออกใบแล้ว</b> (ใส่หมายเหตุได้ ไม่บังคับ)</li><li>ถ้าต้องยกเลิก กด <b>ยกเลิกคำขอ</b> และ<b>ต้องระบุเหตุผล</b></li></ol><div class="gd-tip ">ปุ่มออกใบ/ยกเลิก ใช้ได้เฉพาะคำขอสถานะ "รอ HR ออกใบ" และระบบส่งอีเมลแจ้งทุกครั้งที่เปลี่ยนสถานะ</div></section><section class="gd-card"><h3><span class="gd-num">4</span>แก้ไข / ลบรายการ (เมื่อผู้ขอแจ้งให้แก้ข้อมูล)</h3><ol><li>ตรวจเลขที่คำขอหรือชื่อกับผู้ขอ</li><li>กดไอคอน <b>ดินสอ</b> ในแถว (หรือ <b>แก้ไขข้อมูล</b> ในหน้ารายละเอียด)</li><li>แก้ไขข้อมูล แล้วกด <b>บันทึกการแก้ไข</b></li></ol><ul><li>แก้ได้ทุกช่องที่ผู้ขอกรอก แต่ไม่เปลี่ยนเลขที่คำขอ วันที่ยื่น และสถานะ ทั้งนี้<b>ไม่ส่งอีเมลซ้ำ</b></li><li>ถ้าแก้คำขอที่ "ออกใบแล้ว" ต้องแก้ใบส่งตัวกระดาษให้ตรงกันด้วย</li><li>ไอคอน <b>ถังขยะ</b> = ลบถาวร (ยืนยันก่อนลบ) หากแค่ไม่ใช้คำขอนี้แล้ว ให้ใช้ "ยกเลิกคำขอ" เพื่อเก็บประวัติ</li></ul><div class="gd-tip ">ทุกการแก้ไข/ลบถูกจดในชีท <b>AuditLog</b> (ใคร เมื่อไร แก้อะไร) และข้อมูลที่ลบจะมีสำเนาเก็บไว้ในชีทนี้ด้วย</div></section><section class="gd-card"><h3><span class="gd-num">5</span>Export CSV</h3><p>ส่งออกตามตัวกรองและคำค้นที่กำลังแสดงอยู่ (ถ้าต้องการทั้งหมดให้เอากรองออกก่อน) เปิดใน Excel ได้ ภาษาไทยไม่เพี้ยน</p></section><section class="gd-card"><h3><span class="gd-num">6</span>ตั้งค่าระบบ (ปุ่มบนแถบเครื่องมือ)</h3><table class="gd-tb"><tr><th>ปุ่ม</th><th>ใช้ทำอะไร</th></tr><tr><td>จัดการรหัสผ่าน</td><td>เพิ่ม/แก้ไข/ลบรหัสของผู้ดูแล ยาว 4–32 ตัว ไม่มีเว้นวรรค ไม่ซ้ำกัน ตั้งชื่อผู้ถือรหัสไว้ (ชื่อนี้จะขึ้นในประวัติ AuditLog) แนะนำ 1 คน 1 รหัส ลบรหัสที่ใช้อยู่หรือรหัสสุดท้ายไม่ได้</td></tr><tr><td>จัดการแผนก</td><td>รายชื่อตัวเลือกในช่อง "แผนก" ของฟอร์มพนักงาน</td></tr><tr><td>จัดการฝ่าย</td><td>รายชื่อตัวเลือกในช่อง "ฝ่าย" พร้อมอีเมลแจ้งเตือนของฝ่าย (ไม่บังคับ ใส่ได้ไม่เกิน 3 อีเมลต่อฝ่าย)</td></tr><tr><td>อีเมล HR</td><td>ผู้รับอีเมลแจ้งเตือนแบบละเอียด เพิ่มได้หลายคน</td></tr></table><div class="gd-tip ">ลบแผนก/ฝ่ายไม่กระทบคำขอเก่า แต่พนักงานจะไม่เห็นตัวเลือกนั้นอีก และฝ่ายที่ถูกลบจะไม่ได้รับอีเมล</div></section><section class="gd-card"><h3><span class="gd-num">7</span>อีเมลแจ้งเตือนอัตโนมัติ</h3><table class="gd-tb"><tr><th>เหตุการณ์</th><th>อีเมล HR</th><th>ฝ่ายต้นสังกัด</th></tr><tr><td>ยื่นคำขอใหม่</td><td>ละเอียด + ปุ่มเปิดเว็บ</td><td>แบบย่อ (ชื่อ + สถานะ)</td></tr><tr><td>ออกใบแล้ว</td><td>ละเอียด</td><td>แบบย่อ</td></tr><tr><td>ยกเลิกคำขอ</td><td>ละเอียด</td><td>แบบย่อ</td></tr><tr><td>แก้ไข / ลบ</td><td>ไม่ส่ง</td><td>ไม่ส่ง</td></tr></table><div class="gd-tip ">ถ้าส่งอีเมลไม่สำเร็จ (เช่น โควตาเต็ม) คำขอก็ยังบันทึกอยู่ในหน้ารายการตามปกติ</div></section><section class="gd-card"><h3><span class="gd-num">8</span>ล้างประวัติ (ใช้ก่อนขึ้นระบบจริงเท่านั้น)</h3><ul><li>ลบคำขอ<b>ทั้งหมดถาวร</b> ต้องยืนยัน 2 ชั้น: ติ๊ก "สำรองเป็นแท็บใหม่ในชีท" (ควรติ๊ก) แล้วพิมพ์คำว่า <b>ลบทั้งหมด</b></li><li>แผนก ฝ่าย อีเมล และรหัสผ่านไม่ถูกลบ เลขที่คำขอจะเริ่มนับ -001 ใหม่</li></ul><div class="gd-tip bad">ห้ามใช้หลังเริ่มใช้งานจริง เพราะกู้คืนไม่ได้ถ้าไม่ได้สำรองไว้</div></section><section class="gd-card"><h3>ข้อควรระวังเรื่องข้อมูล</h3><p>อาการและสิทธิ์การรักษาเป็นข้อมูลส่วนบุคคล ควรเปิดดูเฉพาะผู้ที่เกี่ยวข้อง และออกจากระบบทุกครั้งเมื่อเลิกใช้งาน</p></section></div>
+    <div class="modal-body" id="admGuideBody"><div class="empty">กำลังโหลด...</div></div>
     <div class="modal-foot"><button class="btn-mini" onclick="printAdmGuide()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 9V4h10v5M7 17H5a1 1 0 0 1-1-1v-6a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v6a1 1 0 0 1-1 1h-2"/><path d="M7 14h10v6H7z"/></svg>พิมพ์ / PDF</button><button class="btn" id="admGuideOk">ปิด</button></div>
   </div>
 </div>
@@ -737,6 +744,22 @@
       <button class="btn-mini" id="editCancel" type="button">ยกเลิก</button>
       <button class="btn" id="editSave" type="button">บันทึกการแก้ไข</button>
     </div>
+  </div>
+</div>
+
+<div class="modal" id="guideModal" hidden>
+  <div class="modal-back" id="guideBack"></div>
+  <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="guideTitle">
+    <div class="modal-head">
+      <div><h3 id="guideTitle">จัดการคู่มือการใช้งาน</h3><p>แก้ไขเนื้อหาคู่มือที่พนักงานและฝ่ายบุคคลเห็นในระบบ เรียงจากบนลงล่าง</p></div>
+      <button class="modal-x" id="guideClose" aria-label="ปิด"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    </div>
+    <div class="gd-tabs">
+      <button type="button" class="gd-tabbtn active" id="guideTabEmp" onclick="switchGuideTab('employee')">คู่มือพนักงาน</button>
+      <button type="button" class="gd-tabbtn" id="guideTabAdm" onclick="switchGuideTab('admin')">คู่มือ Admin</button>
+    </div>
+    <div class="modal-body" id="guideList"><div class="empty">กำลังโหลด...</div></div>
+    <div class="modal-foot"><button class="btn" id="guideAdd"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>เพิ่มหัวข้อ</button></div>
   </div>
 </div>
 
@@ -1115,6 +1138,7 @@
     syncHeaderChip();
     renderOptionList('serviceList', res.serviceTypes, 'service');
     renderOptionList('payerList', res.payerTypes, 'payer');
+    renderGuideSections(res.guideEmployee, document.getElementById('guideBody'));
   }).catch(() => showToast('เชื่อมต่อระบบไม่สำเร็จ ลองรีเฟรชหน้าเว็บ', 'err'));
 
   function renderOptionList(containerId, options, groupName){
@@ -1263,7 +1287,7 @@
   const statusClass = s => s === 'รอ HR ออกใบ' ? 'pending' : (s === 'ออกใบแล้ว' ? 'issued' : 'void');
 
   const IC = p => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + p + '</svg>';
-  const PATHS = {clock: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>', ok: '<circle cx="12" cy="12" r="9"/><path d="M8.5 12.5l2.5 2.5 4.5-5"/>', no: '<circle cx="12" cy="12" r="9"/><path d="M9 9l6 6M15 9l-6 6"/>', all: '<path d="M5 6h14M5 12h14M5 18h9"/>', search: '<circle cx="11" cy="11" r="6.5"/><path d="M16 16l4 4"/>', refresh: '<path d="M20 12a8 8 0 1 1-2.3-5.7"/><path d="M20 4v5h-5"/>', dl: '<path d="M12 4v11M7.5 10.5L12 15l4.5-4.5"/><path d="M5 19h14"/>', key: '<circle cx="8" cy="15" r="4"/><path d="M11 12l8-8M16 7l3 3"/>', lock: '<rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>', plus: '<path d="M12 5v14M5 12h14"/>', edit: '<path d="M4 20h4l10-10-4-4L4 16z"/>', trash: '<path d="M5 7h14M10 7V4h4v3M7 7l1 13h8l1-13"/>', x: '<path d="M6 6l12 12M18 6L6 18"/>', doc: '<path d="M14 3H7a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V7z"/><path d="M14 3v4h4"/>'};
+  const PATHS = {clock: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>', ok: '<circle cx="12" cy="12" r="9"/><path d="M8.5 12.5l2.5 2.5 4.5-5"/>', no: '<circle cx="12" cy="12" r="9"/><path d="M9 9l6 6M15 9l-6 6"/>', all: '<path d="M5 6h14M5 12h14M5 18h9"/>', search: '<circle cx="11" cy="11" r="6.5"/><path d="M16 16l4 4"/>', refresh: '<path d="M20 12a8 8 0 1 1-2.3-5.7"/><path d="M20 4v5h-5"/>', dl: '<path d="M12 4v11M7.5 10.5L12 15l4.5-4.5"/><path d="M5 19h14"/>', key: '<circle cx="8" cy="15" r="4"/><path d="M11 12l8-8M16 7l3 3"/>', lock: '<rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>', plus: '<path d="M12 5v14M5 12h14"/>', edit: '<path d="M4 20h4l10-10-4-4L4 16z"/>', trash: '<path d="M5 7h14M10 7V4h4v3M7 7l1 13h8l1-13"/>', x: '<path d="M6 6l12 12M18 6L6 18"/>', doc: '<path d="M14 3H7a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V7z"/><path d="M14 3v4h4"/>', up: '<path d="M12 19V6M6 12l6-6 6 6"/>', down: '<path d="M12 5v13M18 12l-6 6-6-6"/>'};
 
   function renderStats(st){
     if (!st) return;
@@ -1532,7 +1556,18 @@
   document.addEventListener('keydown', e => { if (e.key === 'Escape' && !$e('editModal').hidden && !Swal.isVisible()) closeEditModal(); });
 
   // ================= คู่มือ Admin (modal ใน Admin Panel) =================
-  function openAdmGuide(){ document.getElementById('admGuideModal').hidden = false; document.body.style.overflow = 'hidden'; document.getElementById('admGuideBody').scrollTop = 0; }
+  function openAdmGuide(){
+    document.getElementById('admGuideModal').hidden = false;
+    document.body.style.overflow = 'hidden';
+    const body = document.getElementById('admGuideBody');
+    body.innerHTML = '<div class="empty">กำลังโหลด...</div>';
+    body.scrollTop = 0;
+    callApi('listGuideSections', { accessCode: HR_CODE, audience: 'admin' }).then(res => {
+      if (res.error === 'WRONG_CODE') { closeAdmGuide(); lockHr(); return; }
+      if (!res.success) return showToast(res.error || 'โหลดคู่มือไม่สำเร็จ', 'err');
+      renderGuideSections(res.items, body);
+    }).catch(() => showToast('เชื่อมต่อระบบไม่สำเร็จ', 'err'));
+  }
   function closeAdmGuide(){ document.getElementById('admGuideModal').hidden = true; document.body.style.overflow = ''; }
   function printAdmGuide(){ document.body.classList.add('print-modal'); window.print(); }
   window.addEventListener('afterprint', () => document.body.classList.remove('print-modal'));
@@ -2009,6 +2044,172 @@
         .then(() => { try { sessionStorage.setItem('app_url_sent', '1'); } catch (e) {} }).catch(() => {});
     } catch (e) {}
   }
+
+  // ================= คู่มือการใช้งาน (แสดงผล + จัดการเพิ่ม/แก้ไข/ลบ/จัดลำดับ — ฝั่ง HR) =================
+
+  /** escape + รองรับ **ตัวหนา** และ `โค้ด` แบบง่ายๆ ในข้อความคู่มือ */
+  function guideInline_(s){
+    return escapeHtml(s).replace(/\*\*(.+?)\*\*/g, '<b>$1</b>').replace(/`(.+?)`/g, '<code>$1</code>');
+  }
+  /** แปลงข้อความดิบของหัวข้อคู่มือเป็น HTML: บรรทัดว่าง = ย่อหน้าใหม่, ขึ้นต้นด้วย "- " = bullet, ขึ้นต้นด้วย "1. " = ลำดับเลข */
+  function guideBodyHtml_(text){
+    const lines = String(text || '').split('\n');
+    let html = '', i = 0;
+    while (i < lines.length) {
+      const line = lines[i];
+      if (!line.trim()) { i++; continue; }
+      if (/^-\s+/.test(line)) {
+        const items = [];
+        while (i < lines.length && /^-\s+/.test(lines[i])) { items.push(guideInline_(lines[i].replace(/^-\s+/, ''))); i++; }
+        html += '<ul>' + items.map(t => '<li>' + t + '</li>').join('') + '</ul>';
+        continue;
+      }
+      if (/^\d+\.\s+/.test(line)) {
+        const items = [];
+        while (i < lines.length && /^\d+\.\s+/.test(lines[i])) { items.push(guideInline_(lines[i].replace(/^\d+\.\s+/, ''))); i++; }
+        html += '<ol>' + items.map(t => '<li>' + t + '</li>').join('') + '</ol>';
+        continue;
+      }
+      const para = [line]; i++;
+      while (i < lines.length && lines[i].trim() && !/^-\s+/.test(lines[i]) && !/^\d+\.\s+/.test(lines[i])) { para.push(lines[i]); i++; }
+      html += '<p>' + para.map(guideInline_).join('<br>') + '</p>';
+    }
+    return html;
+  }
+  /** เรนเดอร์รายการหัวข้อคู่มือ (ทั้งฝั่งพนักงานและฝั่ง Admin ใช้ตัวเดียวกัน) ลงใน container ที่กำหนด */
+  function renderGuideSections(list, container){
+    if (!container) return;
+    if (!list || !list.length) { container.innerHTML = '<div class="empty">ยังไม่มีเนื้อหาคู่มือ</div>'; return; }
+    let num = 0;
+    container.innerHTML = list.map(sec => {
+      const badge = sec.numbered ? (++num, '<span class="gd-num">' + num + '</span>') : '';
+      const callout = sec.calloutType
+        ? '<div class="gd-tip' + (sec.calloutType !== 'info' ? ' ' + sec.calloutType : '') + '">' + guideBodyHtml_(sec.calloutText) + '</div>'
+        : '';
+      return '<section class="gd-card"><h3>' + badge + escapeHtml(sec.title) + '</h3>' + guideBodyHtml_(sec.body) + callout + '</section>';
+    }).join('');
+  }
+
+  // ---- จัดการคู่มือ (modal ฝั่ง HR): เพิ่ม / แก้ไข / ลบ / เลื่อนลำดับ ----
+  let GUIDE_ITEMS = { employee: [], admin: [] };
+  let GUIDE_TAB = 'employee';
+
+  function openGuideModal(){
+    if (!HR_CODE) return;
+    document.getElementById('guideModal').hidden = false;
+    document.body.style.overflow = 'hidden';
+    document.getElementById('guideList').innerHTML = '<div class="empty">กำลังโหลด...</div>';
+    document.getElementById('guideClose').focus();
+    Promise.all([
+      callApi('listGuideSections', { accessCode: HR_CODE, audience: 'employee' }),
+      callApi('listGuideSections', { accessCode: HR_CODE, audience: 'admin' })
+    ]).then(([e, a]) => {
+      if (e.error === 'WRONG_CODE' || a.error === 'WRONG_CODE') { closeGuideModal(); lockHr(); return; }
+      if (!e.success || !a.success) return showToast(e.error || a.error || 'โหลดคู่มือไม่สำเร็จ', 'err');
+      GUIDE_ITEMS.employee = e.items; GUIDE_ITEMS.admin = a.items;
+      renderGuideManageList();
+    }).catch(() => showToast('เชื่อมต่อระบบไม่สำเร็จ', 'err'));
+  }
+  function closeGuideModal(){
+    document.getElementById('guideModal').hidden = true;
+    document.body.style.overflow = '';
+  }
+  function switchGuideTab(tab){
+    GUIDE_TAB = tab;
+    renderGuideManageList();
+  }
+  function renderGuideManageList(){
+    document.getElementById('guideTabEmp').classList.toggle('active', GUIDE_TAB === 'employee');
+    document.getElementById('guideTabAdm').classList.toggle('active', GUIDE_TAB === 'admin');
+    const list = GUIDE_ITEMS[GUIDE_TAB] || [];
+    if (!list.length) {
+      document.getElementById('guideList').innerHTML = '<div class="empty">ยังไม่มีหัวข้อคู่มือ กด "เพิ่มหัวข้อ" เพื่อเริ่มต้น</div>';
+      return;
+    }
+    document.getElementById('guideList').innerHTML = list.map((s, idx) => {
+      const snippet = (s.body || s.calloutText || '').replace(/\n/g, ' ').replace(/^[-\d.]+\s*/, '');
+      return '<div class="pw-item">' +
+        '<div class="pw-key">' + (s.numbered ? '<b>' + (idx + 1) + '</b>' : IC('<path d="M5 4h9a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3z"/><path d="M5 17a3 3 0 0 1 3-3h9"/>')) + '</div>' +
+        '<div class="pw-info"><div class="pw-label">' + escapeHtml(s.title) + '</div><div class="pw-meta">' + escapeHtml(snippet.slice(0, 70)) + (snippet.length > 70 ? '…' : '') + '</div></div>' +
+        '<button type="button" class="ib" title="เลื่อนขึ้น" aria-label="เลื่อนหัวข้อนี้ขึ้น"' + (idx === 0 ? ' disabled' : '') + ' onclick="guideMove(\'' + s.id + '\',-1)">' + IC(PATHS.up) + '</button>' +
+        '<button type="button" class="ib" title="เลื่อนลง" aria-label="เลื่อนหัวข้อนี้ลง"' + (idx === list.length - 1 ? ' disabled' : '') + ' onclick="guideMove(\'' + s.id + '\',1)">' + IC(PATHS.down) + '</button>' +
+        '<button class="btn-mini" onclick="guideEdit(\'' + s.id + '\')">' + IC(PATHS.edit) + 'แก้ไข</button>' +
+        '<button class="btn-mini danger" onclick="guideDelete(\'' + s.id + '\')">' + IC(PATHS.trash) + 'ลบ</button></div>';
+    }).join('');
+  }
+  function guideForm(title, item){
+    const it = item || {};
+    return fireAlert({
+      title: title, showCancelButton: true, focusConfirm: false, width: 560,
+      confirmButtonText: item ? 'บันทึก' : 'เพิ่ม', cancelButtonText: 'ปิด',
+      html:
+        '<input id="gdTitle" class="swal2-input" maxlength="150" placeholder="หัวข้อ" value="' + escapeHtml(it.title || '') + '">' +
+        '<textarea id="gdBody" class="swal2-textarea" placeholder="เนื้อหา — ขึ้นบรรทัดใหม่ = ย่อหน้าใหม่, ขึ้นต้นบรรทัดด้วย &quot;- &quot; = bullet, &quot;1. &quot; = ลำดับเลข, **ตัวหนา**" style="min-height:130px;">' + escapeHtml(it.body || '') + '</textarea>' +
+        '<label style="display:flex;align-items:center;gap:8px;margin:10px 6px 2px;font-size:.84rem;color:var(--ink-soft);cursor:pointer;"><input type="checkbox" id="gdNumbered" style="width:16px;height:16px;"' + (it.numbered !== false ? ' checked' : '') + '> แสดงเลขลำดับหน้าหัวข้อนี้</label>' +
+        '<select id="gdCallout" class="swal2-input" style="margin-top:8px;">' +
+          '<option value=""' + (!it.calloutType ? ' selected' : '') + '>ไม่มีกล่องข้อความเสริม</option>' +
+          '<option value="info"' + (it.calloutType === 'info' ? ' selected' : '') + '>กล่องข้อมูล (สีฟ้า)</option>' +
+          '<option value="warn"' + (it.calloutType === 'warn' ? ' selected' : '') + '>กล่องเตือน (สีเหลือง)</option>' +
+          '<option value="bad"' + (it.calloutType === 'bad' ? ' selected' : '') + '>กล่องอันตราย (สีแดง)</option>' +
+        '</select>' +
+        '<textarea id="gdCalloutText" class="swal2-textarea" placeholder="ข้อความในกล่องเสริม (ถ้าเลือกไว้ด้านบน)" style="min-height:60px;margin-top:8px;">' + escapeHtml(it.calloutText || '') + '</textarea>',
+      preConfirm: () => {
+        const gdTitle = document.getElementById('gdTitle').value.trim();
+        if (!gdTitle) { Swal.showValidationMessage('กรุณาระบุหัวข้อ'); return false; }
+        const body = document.getElementById('gdBody').value.trim();
+        const numbered = document.getElementById('gdNumbered').checked;
+        const calloutType = document.getElementById('gdCallout').value;
+        const calloutText = document.getElementById('gdCalloutText').value.trim();
+        if (calloutType && !calloutText) { Swal.showValidationMessage('กรุณาระบุข้อความในกล่องเสริม หรือเลือก "ไม่มีกล่องข้อความเสริม"'); return false; }
+        if (!body && !calloutText) { Swal.showValidationMessage('กรุณากรอกเนื้อหา'); return false; }
+        return { title: gdTitle, body: body, numbered: numbered, calloutType: calloutType, calloutText: calloutText };
+      }
+    });
+  }
+  function guideSave(action, payload, okMsg){
+    callApi(action, Object.assign({ accessCode: HR_CODE, audience: GUIDE_TAB }, payload)).then(res => {
+      if (res.error === 'WRONG_CODE') { closeGuideModal(); lockHr(); return; }
+      if (!res.success) return showToast(res.error || 'บันทึกไม่สำเร็จ', 'err');
+      showToast(okMsg, 'ok');
+      GUIDE_ITEMS[GUIDE_TAB] = res.items;
+      renderGuideManageList();
+    }).catch(() => showToast('เชื่อมต่อระบบไม่สำเร็จ', 'err'));
+  }
+  function guideAddFn(){
+    guideForm('เพิ่มหัวข้อคู่มือ', null).then(r => {
+      if (r.isConfirmed) guideSave('saveGuideSection', { id: '', data: r.value }, 'เพิ่มหัวข้อแล้ว');
+    });
+  }
+  function guideEdit(id){
+    const s = (GUIDE_ITEMS[GUIDE_TAB] || []).find(x => x.id === id); if (!s) return;
+    guideForm('แก้ไขหัวข้อคู่มือ', s).then(r => {
+      if (r.isConfirmed) guideSave('saveGuideSection', { id: id, data: r.value }, 'บันทึกการแก้ไขแล้ว');
+    });
+  }
+  function guideDelete(id){
+    const s = (GUIDE_ITEMS[GUIDE_TAB] || []).find(x => x.id === id); if (!s) return;
+    fireAlert({
+      icon: 'warning', title: 'ลบหัวข้อนี้?', html: 'หัวข้อ <b>' + escapeHtml(s.title) + '</b> จะหายจากคู่มือทันที',
+      showCancelButton: true, confirmButtonText: 'ลบ', cancelButtonText: 'ปิด', confirmButtonColor: true
+    }).then(r => { if (r.isConfirmed) guideSave('deleteGuideSection', { id: id }, 'ลบหัวข้อแล้ว'); });
+  }
+  function guideMove(id, dir){
+    const list = (GUIDE_ITEMS[GUIDE_TAB] || []).slice();
+    const i = list.findIndex(x => x.id === id), j = i + dir;
+    if (i < 0 || j < 0 || j >= list.length) return;
+    const tmp = list[i]; list[i] = list[j]; list[j] = tmp;
+    callApi('reorderGuideSections', { accessCode: HR_CODE, audience: GUIDE_TAB, orderedIds: list.map(x => x.id) }).then(res => {
+      if (res.error === 'WRONG_CODE') { closeGuideModal(); lockHr(); return; }
+      if (!res.success) return showToast(res.error || 'จัดลำดับไม่สำเร็จ', 'err');
+      GUIDE_ITEMS[GUIDE_TAB] = res.items;
+      renderGuideManageList();
+    }).catch(() => showToast('เชื่อมต่อระบบไม่สำเร็จ', 'err'));
+  }
+  document.getElementById('guideAdd').addEventListener('click', guideAddFn);
+  document.getElementById('guideClose').addEventListener('click', closeGuideModal);
+  document.getElementById('guideBack').addEventListener('click', closeGuideModal);
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && !document.getElementById('guideModal').hidden && !Swal.isVisible()) closeGuideModal(); });
+
 </script>
 </body>
 </html>
