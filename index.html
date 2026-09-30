@@ -386,6 +386,7 @@
   .ib:disabled{opacity:.3;cursor:not-allowed;background:none !important;color:var(--ink-soft) !important;}
   #guideModal .modal-card{max-width:600px;}
   #svcModal .modal-card{max-width:600px;}
+  #payModal .modal-card{max-width:600px;}
   #guideModal .pw-key b{font-size:1rem;color:var(--navy);}
   .pagination{display:flex;align-items:center;justify-content:center;gap:14px;margin-top:14px;}
   .pagination button{width:36px;height:36px;border-radius:9px;border:1.5px solid var(--border);background:var(--surface);color:var(--navy);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:border-color .15s,background .15s;}
@@ -699,6 +700,7 @@
           <button class="btn-mini" onclick="openDeptModal()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7l3-3h5l2 2h8v11a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V7z"/></svg>จัดการแผนก</button>
           <button class="btn-mini" onclick="openDivModal()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 21V7l8-4 8 4v14"/><path d="M9 21v-6h6v6"/><path d="M9 11h.01M15 11h.01M9 15h.01M15 15h.01"/></svg>จัดการฝ่าย</button>
           <button class="btn-mini" onclick="openSvcModal()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 6h12M8 12h12M8 18h12"/><path d="M3.5 6h.01M3.5 12h.01M3.5 18h.01"/></svg>จัดการกรณี</button>
+          <button class="btn-mini" onclick="openPayModal()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l7 3v5c0 4.5-3 8-7 10-4-2-7-5.5-7-10V6z"/><path d="M9 12l2 2 4-4"/></svg>จัดการสิทธิ์รักษา</button>
           <button class="btn-mini" onclick="openHrEmailModal()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>อีเมล HR</button><button class="btn-mini" onclick="openGuideModal()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h9a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3z"/><path d="M5 17a3 3 0 0 1 3-3h9"/><path d="M9 8h4"/><path d="M15.5 13.5l1.7-1.7 2 2-1.7 1.7z"/><path d="M17.2 11.8L20 9l1.3 1.3-2.8 2.8"/></svg>จัดการคู่มือ</button>
           <button class="btn-mini" onclick="openAdmGuide()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h9a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3z"/><path d="M5 17a3 3 0 0 1 3-3h9"/><path class="acc" d="M9 8h4"/></svg>คู่มือ Admin</button>
           <button class="btn-mini danger" onclick="clearAllRequestsUi()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/></svg>ล้างประวัติ</button>
@@ -786,6 +788,18 @@
     </div>
     <div class="modal-body" id="svcList"><div class="empty">กำลังโหลด...</div></div>
     <div class="modal-foot"><button class="btn" id="svcAdd"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>เพิ่มกรณี</button></div>
+  </div>
+</div>
+
+<div class="modal" id="payModal" hidden>
+  <div class="modal-back" id="payBack"></div>
+  <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="payTitle">
+    <div class="modal-head">
+      <div><h3 id="payTitle">จัดการสิทธิ์การรักษา</h3><p>รายการตรงนี้คือตัวเลือกหัวข้อ "โดยขอใช้สิทธิ์รักษา" ในฟอร์มของพนักงาน เรียงจากบนลงล่าง</p></div>
+      <button class="modal-x" id="payClose" aria-label="ปิด"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    </div>
+    <div class="modal-body" id="payList"><div class="empty">กำลังโหลด...</div></div>
+    <div class="modal-foot"><button class="btn" id="payAdd"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>เพิ่มสิทธิ์การรักษา</button></div>
   </div>
 </div>
 
@@ -1470,8 +1484,9 @@
     const r = HR_REQUESTS.find(x => x.requestId === requestId);
     if (!r) return;
     const fo = FORM_OPTIONS || {};
-    const services = (fo.serviceTypes || []).slice(), payers = fo.payerTypes || [], hospitals = fo.hospitals || [];
+    const services = (fo.serviceTypes || []).slice(), payers = (fo.payerTypes || []).slice(), hospitals = fo.hospitals || [];
     if (r.serviceTypeId && !services.some(x => x.id === r.serviceTypeId)) services.push({ id: r.serviceTypeId, label: r.serviceTypeLabel || r.serviceTypeId, needDetail: !!r.serviceDetail });
+    if (r.payerTypeId && !payers.some(x => x.id === r.payerTypeId)) payers.push({ id: r.payerTypeId, label: r.payerTypeLabel || r.payerTypeId, needDetail: !!r.payerDetail });
     EDIT_ID = requestId;
     $e('editTitle').textContent = 'แก้ไขข้อมูลคำขอ';
     $e('editSub').innerHTML = escapeHtml(r.requestId) + ' • ยื่นเมื่อ ' + escapeHtml(r.timestamp) + ' • <span class="badge ' + statusClass(r.status) + '">' + escapeHtml(r.status) + '</span>';
@@ -2337,6 +2352,91 @@
   document.getElementById('svcClose').addEventListener('click', closeSvcModal);
   document.getElementById('svcBack').addEventListener('click', closeSvcModal);
   document.addEventListener('keydown', e => { if (e.key === 'Escape' && !document.getElementById('svcModal').hidden && !Swal.isVisible()) closeSvcModal(); });
+
+  // ---- จัดการสิทธิ์การรักษา (modal ฝั่ง HR): เพิ่ม / แก้ไข / ลบ / เลื่อนลำดับ ----
+  let PAY_ITEMS = [];
+  function openPayModal(){
+    if (!HR_CODE) return;
+    document.getElementById('payModal').hidden = false;
+    document.body.style.overflow = 'hidden';
+    document.getElementById('payList').innerHTML = '<div class="empty">กำลังโหลด...</div>';
+    document.getElementById('payClose').focus();
+    callApi('listPayerTypes', { accessCode: HR_CODE }).then(res => {
+      if (res.error === 'WRONG_CODE') { closePayModal(); lockHr(); return; }
+      if (!res.success) return showToast(res.error || 'โหลดรายการไม่สำเร็จ', 'err');
+      PAY_ITEMS = res.items; renderPayList();
+    }).catch(() => showToast('เชื่อมต่อระบบไม่สำเร็จ', 'err'));
+  }
+  function closePayModal(){
+    document.getElementById('payModal').hidden = true;
+    document.body.style.overflow = '';
+  }
+  function renderPayList(){
+    const box = document.getElementById('payList');
+    if (!PAY_ITEMS.length) { box.innerHTML = '<div class="empty">ยังไม่มีสิทธิ์การรักษา กด "เพิ่มสิทธิ์การรักษา" เพื่อเริ่มต้น</div>'; return; }
+    box.innerHTML = PAY_ITEMS.map((s, idx) =>
+      '<div class="pw-item">' +
+        '<div class="pw-key"><b>' + (idx + 1) + '</b></div>' +
+        '<div class="pw-info"><div class="pw-label">' + escapeHtml(s.label) + '</div><div class="pw-meta">' +
+          (s.needDetail ? 'มีช่องกรอกรายละเอียดเพิ่ม' : 'ไม่มีช่องรายละเอียด') + '</div></div>' +
+        '<button type="button" class="ib" title="เลื่อนขึ้น" aria-label="เลื่อนสิทธิ์นี้ขึ้น"' + (idx === 0 ? ' disabled' : '') + ' onclick="payMove(\'' + s.id + '\',-1)">' + IC(PATHS.up) + '</button>' +
+        '<button type="button" class="ib" title="เลื่อนลง" aria-label="เลื่อนสิทธิ์นี้ลง"' + (idx === PAY_ITEMS.length - 1 ? ' disabled' : '') + ' onclick="payMove(\'' + s.id + '\',1)">' + IC(PATHS.down) + '</button>' +
+        '<button class="btn-mini" onclick="payEdit(\'' + s.id + '\')">' + IC(PATHS.edit) + 'แก้ไข</button>' +
+        '<button class="btn-mini danger" onclick="payDelete(\'' + s.id + '\')">' + IC(PATHS.trash) + 'ลบ</button>' +
+      '</div>').join('');
+  }
+  function payForm(title, item){
+    const it = item || {};
+    return fireAlert({
+      title: title, showCancelButton: true, focusConfirm: false, width: 480,
+      confirmButtonText: item ? 'บันทึก' : 'เพิ่ม', cancelButtonText: 'ปิด',
+      html:
+        '<input id="pyLabel" class="swal2-input" maxlength="120" placeholder="ชื่อสิทธิ์ เช่น ประกันสังคม" value="' + escapeHtml(it.label || '') + '" style="width:100%;margin:10px 0 0;box-sizing:border-box;">' +
+        '<label style="display:flex;align-items:center;gap:8px;margin:14px 2px 0;font-size:.86rem;color:var(--ink-soft);cursor:pointer;text-align:left;"><input type="checkbox" id="pyNeedDetail" style="width:16px;height:16px;"' + (it.needDetail ? ' checked' : '') + '> ให้พนักงานกรอกรายละเอียดเพิ่ม (มีช่องพิมพ์ใต้ตัวเลือก)</label>',
+      preConfirm: () => {
+        const label = document.getElementById('pyLabel').value.trim();
+        if (!label) { Swal.showValidationMessage('กรุณาระบุชื่อสิทธิ์การรักษา'); return false; }
+        return { label: label, needDetail: document.getElementById('pyNeedDetail').checked };
+      }
+    });
+  }
+  function payApply(res, okMsg){
+    if (res.error === 'WRONG_CODE') { closePayModal(); lockHr(); return; }
+    if (!res.success) return showToast(res.error || 'บันทึกไม่สำเร็จ', 'err');
+    if (okMsg) showToast(okMsg, 'ok');
+    PAY_ITEMS = res.items; renderPayList();
+    if (FORM_OPTIONS) FORM_OPTIONS.payerTypes = res.items; // ให้หน้าแก้ไขคำขอใช้รายการล่าสุดทันที
+  }
+  function payAddFn(){
+    payForm('เพิ่มสิทธิ์การรักษา', null).then(r => {
+      if (r.isConfirmed) callApi('savePayerType', { accessCode: HR_CODE, id: '', data: r.value }).then(res => payApply(res, 'เพิ่มสิทธิ์การรักษาแล้ว')).catch(() => showToast('เชื่อมต่อระบบไม่สำเร็จ', 'err'));
+    });
+  }
+  function payEdit(id){
+    const s = PAY_ITEMS.find(x => x.id === id); if (!s) return;
+    payForm('แก้ไขสิทธิ์การรักษา', s).then(r => {
+      if (r.isConfirmed) callApi('savePayerType', { accessCode: HR_CODE, id: id, data: r.value }).then(res => payApply(res, 'บันทึกการแก้ไขแล้ว')).catch(() => showToast('เชื่อมต่อระบบไม่สำเร็จ', 'err'));
+    });
+  }
+  function payDelete(id){
+    const s = PAY_ITEMS.find(x => x.id === id); if (!s) return;
+    fireAlert({
+      icon: 'warning', title: 'ลบสิทธิ์การรักษานี้?',
+      html: 'สิทธิ์ <b>' + escapeHtml(s.label) + '</b> จะหายจากตัวเลือกในฟอร์มทันที<br><small>คำขอเก่าที่เคยเลือกสิทธิ์นี้ยังอยู่ครบ ไม่ถูกลบ</small>',
+      showCancelButton: true, confirmButtonText: 'ลบ', cancelButtonText: 'ปิด', confirmButtonColor: true
+    }).then(r => { if (r.isConfirmed) callApi('deletePayerType', { accessCode: HR_CODE, id: id }).then(res => payApply(res, 'ลบสิทธิ์การรักษาแล้ว')).catch(() => showToast('เชื่อมต่อระบบไม่สำเร็จ', 'err')); });
+  }
+  function payMove(id, dir){
+    const list = PAY_ITEMS.slice();
+    const i = list.findIndex(x => x.id === id), j = i + dir;
+    if (i < 0 || j < 0 || j >= list.length) return;
+    const tmp = list[i]; list[i] = list[j]; list[j] = tmp;
+    callApi('reorderPayerTypes', { accessCode: HR_CODE, orderedIds: list.map(x => x.id) }).then(res => payApply(res, '')).catch(() => showToast('เชื่อมต่อระบบไม่สำเร็จ', 'err'));
+  }
+  document.getElementById('payAdd').addEventListener('click', payAddFn);
+  document.getElementById('payClose').addEventListener('click', closePayModal);
+  document.getElementById('payBack').addEventListener('click', closePayModal);
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && !document.getElementById('payModal').hidden && !Swal.isVisible()) closePayModal(); });
 
 </script>
 </body>
