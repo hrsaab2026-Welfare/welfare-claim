@@ -806,6 +806,54 @@
     .tools.open .tool{animation:none;}
     .tool:hover,.tool:hover .tool-ic,.tools-toggle:hover{transform:none;}
   }
+
+  /* =====================================================================
+     หน้า HR: รายการจัดกลุ่มตามแผนก (การ์ดพับ/กางได้) + สวิตช์มุมมอง
+     ===================================================================== */
+  .lt-bar{display:flex;align-items:center;justify-content:space-between;gap:10px 14px;flex-wrap:wrap;margin:0 0 12px;}
+  .lt-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+  .lt-actions .btn-mini[hidden]{display:none;}
+  .view-seg{display:inline-flex;gap:3px;padding:3px;background:var(--surface-2);border:1px solid var(--border);border-radius:13px;}
+  .view-seg button{display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border:0;border-radius:10px;background:transparent;color:var(--ink-soft);font:inherit;font-size:.8rem;font-weight:600;cursor:pointer;transition:background-color .15s,color .15s,box-shadow .15s;}
+  .view-seg button svg{width:15px;height:15px;}
+  .view-seg button:hover{color:var(--navy);}
+  .view-seg button[aria-pressed="true"]{background:#fff;color:var(--navy);box-shadow:0 1px 3px rgba(20,30,45,.14),0 0 0 1px var(--border);}
+  .view-seg button:focus-visible{outline:2px solid var(--gold);outline-offset:1px;}
+
+  .dg-wrap{display:flex;flex-direction:column;gap:12px;}
+  .dg{background:var(--surface);border:1px solid var(--border);border-radius:16px;box-shadow:var(--shadow-sm);overflow:hidden;transition:box-shadow .2s,border-color .2s;}
+  .dg:hover{box-shadow:var(--shadow-md);}
+  .dg.has-pending{border-color:var(--gold-ring);}
+  .dg-h{display:flex;align-items:center;gap:12px;width:100%;margin:0;padding:13px 16px;border:0;background:linear-gradient(180deg,var(--surface-2),var(--surface));color:inherit;font:inherit;text-align:left;cursor:pointer;}
+  .dg-h:hover{background:var(--surface-2);}
+  .dg-h:focus-visible{outline:3px solid var(--gold-ring);outline-offset:-3px;}
+  .dg-ic{width:38px;height:38px;border-radius:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:var(--navy-bg);color:var(--navy);transition:background-color .2s,color .2s;}
+  .dg-ic svg{width:19px;height:19px;}
+  .dg.has-pending .dg-ic{background:var(--gold-bg);color:var(--gold-deep);}
+  .dg.open .dg-ic{background:var(--navy);color:var(--gold);}
+  .dg-t{display:flex;flex-direction:column;gap:1px;min-width:0;flex:1;}
+  .dg-t b{font-size:.98rem;font-weight:700;line-height:1.3;color:var(--navy);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .dg-t small{font-size:.74rem;color:var(--ink-soft);}
+  .dg-pills{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end;}
+  .dg-pill{padding:3px 10px;border-radius:12px;font-size:.72rem;font-weight:700;white-space:nowrap;font-variant-numeric:tabular-nums;}
+  .dg-pill.p{background:var(--gold-bg);color:var(--gold-deep);}
+  .dg-pill.i{background:var(--success-bg);color:var(--success);}
+  .dg-pill.v{background:var(--danger-bg);color:var(--danger);}
+  .dg-chev{display:flex;width:26px;height:26px;border-radius:50%;align-items:center;justify-content:center;flex-shrink:0;background:var(--navy-bg);color:var(--navy);transition:transform .3s cubic-bezier(.4,0,.2,1);}
+  .dg-chev svg{width:15px;height:15px;}
+  .dg.open .dg-chev{transform:rotate(180deg);}
+  .dg-body{display:grid;grid-template-rows:0fr;transition:grid-template-rows .3s cubic-bezier(.4,0,.2,1);}
+  .dg.open .dg-body{grid-template-rows:1fr;}
+  .dg-in{min-height:0;overflow:hidden;visibility:hidden;transition:visibility 0s .3s;}
+  .dg.open .dg-in{visibility:visible;transition:visibility 0s;}
+  .dg .req-list{border:0;border-top:1px solid var(--border);border-radius:0;box-shadow:none;}
+  @media (max-width:560px){
+    .dg-h{padding:12px;gap:10px;flex-wrap:wrap;}
+    .dg-t{flex:1 1 60%;}
+    .dg-pills{order:3;flex:1 1 100%;justify-content:flex-start;padding-left:48px;margin-top:-4px;}
+    .view-seg button{padding:7px 10px;}
+  }
+  @media (prefers-reduced-motion:reduce){.dg,.dg-body,.dg-in,.dg-chev,.dg-ic{transition:none !important;}}
 </style>
 </head>
 <body>
@@ -1222,7 +1270,7 @@
         </div>
       </div>
       <div class="tools" id="hrTools"><div class="tools-in"><div class="tools-body"><section class="tg"><div class="tg-h"><h3>ตัวเลือกในฟอร์ม</h3><p>สิ่งที่พนักงานเห็นและเลือกในหน้าขอเอกสาร</p></div><div class="tg-grid"><button type="button" class="tool t-info" onclick="openDeptModal()"><span class="tool-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7l3-3h5l2 2h8v11a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V7z"/></svg></span><span class="tool-tx"><b>จัดการแผนก</b><small>รายชื่อในช่อง "แผนก"</small></span><span class="tool-go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></span></button><button type="button" class="tool t-info" onclick="openDivModal()"><span class="tool-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 21V7l8-4 8 4v14"/><path d="M9 21v-6h6v6"/><path d="M9 11h.01M15 11h.01M9 15h.01M15 15h.01"/></svg></span><span class="tool-tx"><b>จัดการฝ่าย</b><small>รายชื่อฝ่าย + อีเมลแจ้งฝ่าย</small></span><span class="tool-go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></span></button><button type="button" class="tool t-info" onclick="openSvcModal()"><span class="tool-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 6h12M8 12h12M8 18h12"/><path d="M3.5 6h.01M3.5 12h.01M3.5 18h.01"/></svg></span><span class="tool-tx"><b>จัดการกรณี</b><small>กรณีเข้ารับบริการ</small></span><span class="tool-go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></span></button><button type="button" class="tool t-info" onclick="openPayModal()"><span class="tool-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l7 3v5c0 4.5-3 8-7 10-4-2-7-5.5-7-10V6z"/><path d="M9 12l2 2 4-4"/></svg></span><span class="tool-tx"><b>จัดการสิทธิ์รักษา</b><small>สิทธิ์การรักษาพยาบาล</small></span><span class="tool-go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></span></button></div></section><section class="tg"><div class="tg-h"><h3>ความปลอดภัยและการแจ้งเตือน</h3><p>ใครเข้าระบบได้ และใครได้รับอีเมล</p></div><div class="tg-grid"><button type="button" class="tool t-gold" onclick="openPwModal()"><span class="tool-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="15" r="4"/><path d="M11 12l8-8M16 7l3 3"/></svg></span><span class="tool-tx"><b>จัดการรหัสผ่าน</b><small>รหัสเข้าระบบของทีม HR</small></span><span class="tool-go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></span></button><button type="button" class="tool t-gold" onclick="openHrEmailModal()"><span class="tool-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg></span><span class="tool-tx"><b>อีเมล HR</b><small>ผู้รับอีเมลแจ้งคำขอใหม่</small></span><span class="tool-go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></span></button><button type="button" class="tool t-gold" onclick="openIdleModal()"><span class="tool-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2M9.5 3h5"/></svg></span><span class="tool-tx"><b>เวลาล็อกอัตโนมัติ</b><small>ล็อกเมื่อไม่มีการใช้งาน</small></span><span class="tool-go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></span></button></div></section><section class="tg"><div class="tg-h"><h3>คู่มือและหน้าตา</h3><p>เนื้อหาคู่มือ และโทนสีของเว็บ</p></div><div class="tg-grid"><button type="button" class="tool t-ok" onclick="openGuideModal()"><span class="tool-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h9a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3z"/><path d="M5 17a3 3 0 0 1 3-3h9"/><path d="M9 8h4"/><path d="M15.5 13.5l1.7-1.7 2 2-1.7 1.7z"/></svg></span><span class="tool-tx"><b>จัดการคู่มือ</b><small>แก้ไขเนื้อหาคู่มือทุกเล่ม</small></span><span class="tool-go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></span></button><button type="button" class="tool t-ok" onclick="openAdmGuide()"><span class="tool-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h9a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3z"/><path d="M5 17a3 3 0 0 1 3-3h9"/><path d="M9 8h4"/></svg></span><span class="tool-tx"><b>คู่มือ Admin</b><small>วิธีใช้งานฝั่งฝ่ายบุคคล</small></span><span class="tool-go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></span></button><button type="button" class="tool t-ok" onclick="openThemeModal()"><span class="tool-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a9 9 0 1 0 0 18c1.1 0 1.8-.8 1.8-1.7 0-.5-.2-.8-.5-1.2-.3-.3-.5-.7-.5-1.2 0-1 .8-1.7 1.8-1.7H17a4 4 0 0 0 4-4c0-4.4-4-8.2-9-8.2z"/><circle cx="7.5" cy="11" r="1"/><circle cx="10.5" cy="7" r="1"/><circle cx="15" cy="7.5" r="1"/></svg></span><span class="tool-tx"><b>ธีมสี</b><small>เปลี่ยนโทนสีของเว็บ</small></span><span class="tool-go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></span></button></div></section><section class="tg"><div class="tg-h"><h3>บัญชีและข้อมูล</h3><p>การจัดการที่ควรระวัง</p></div><div class="tg-grid"><button type="button" class="tool t-bad" onclick="clearAllRequestsUi()"><span class="tool-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/></svg></span><span class="tool-tx"><b>ล้างประวัติ</b><small>ลบคำขอทั้งหมด (ใช้ก่อนขึ้นระบบจริง)</small></span><span class="tool-go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></span></button><button type="button" class="tool t-mute" onclick="confirmLogout()"><span class="tool-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 4H6a1 1 0 0 0-1 1v14a1 1 0 0 0 1 1h3"/><path d="M15 8l4 4-4 4M19 12H9"/></svg></span><span class="tool-tx"><b>ออกจากระบบ</b><small>ล้างรหัสผ่านออกจากเครื่องนี้</small></span><span class="tool-go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></span></button></div></section></div></div></div>
-      <div id="hrPendingSummary" class="hint" style="margin:0 0 10px;"></div>
+      <div class="lt-bar"><div id="hrPendingSummary" class="hint" style="margin:0;"></div><div class="lt-actions"><div class="view-seg" id="grpSeg" role="group" aria-label="มุมมองรายการ"><button type="button" data-g="1" aria-pressed="true" onclick="setHrGroup(true)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7l3-3h5l2 2h8v11a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V7z"/></svg>จัดกลุ่มตามแผนก</button><button type="button" data-g="0" aria-pressed="false" onclick="setHrGroup(false)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 6h14M5 12h14M5 18h14"/></svg>เรียงตามเวลา</button></div><button type="button" class="btn-mini" id="grpAllBtn" onclick="toggleAllGroups()">ขยายทั้งหมด</button></div></div>
       <div id="hrList"></div>
       <div class="pagination" id="hrPagination" hidden></div>
     </div>
@@ -2154,21 +2202,7 @@
     renderHrPage();
   }
 
-  function renderHrPage(){
-    const list = document.getElementById('hrList');
-    const pager = document.getElementById('hrPagination');
-    const n = HR_REQUESTS.length;
-    if (!n) {
-      list.innerHTML = '<div class="card empty">' + IC(PATHS.doc) + 'ไม่พบคำขอที่ตรงกับเงื่อนไข</div>';
-      pager.hidden = true;
-      return;
-    }
-    const totalPages = Math.max(1, Math.ceil(n / HR_PAGE_SIZE));
-    if (HR_PAGE > totalPages) HR_PAGE = totalPages;
-    const start = (HR_PAGE - 1) * HR_PAGE_SIZE;
-    const pageItems = HR_REQUESTS.slice(start, start + HR_PAGE_SIZE);
-
-    list.innerHTML = '<div class="req-list">' + pageItems.map(r => {
+  function refRowHtml_(r){
       const cls = statusClass(r.status), pending = r.status === 'รอ HR ออกใบ';
       const wait = pending && r.waitDays >= 1 ? '<span class="wait' + (r.waitDays >= 3 ? ' late' : '') + '">รอมา ' + r.waitDays + ' วัน</span>' : '';
       const metaBits = [
@@ -2190,7 +2224,24 @@
           '</span>' +
           '<span class="rr-chev">' + IC('<path d="M9 6l6 6-6 6"/>') + '</span></div>' +
       '</div>';
-    }).join('') + '</div>';
+  }
+
+  function renderHrPage(){
+    if (HR_GROUP) return renderGrouped_('ref');
+    const list = document.getElementById('hrList');
+    const pager = document.getElementById('hrPagination');
+    const n = HR_REQUESTS.length;
+    if (!n) {
+      list.innerHTML = '<div class="card empty">' + IC(PATHS.doc) + 'ไม่พบคำขอที่ตรงกับเงื่อนไข</div>';
+      pager.hidden = true;
+      return;
+    }
+    const totalPages = Math.max(1, Math.ceil(n / HR_PAGE_SIZE));
+    if (HR_PAGE > totalPages) HR_PAGE = totalPages;
+    const start = (HR_PAGE - 1) * HR_PAGE_SIZE;
+    const pageItems = HR_REQUESTS.slice(start, start + HR_PAGE_SIZE);
+
+    list.innerHTML = '<div class="req-list">' + pageItems.map(refRowHtml_).join('') + '</div>';
 
     pager.hidden = totalPages <= 1;
     if (!pager.hidden) {
@@ -2308,14 +2359,7 @@
     renderCertPage();
   }
 
-  function renderCertPage(){
-    const list = document.getElementById('hrList'), pager = document.getElementById('hrPagination');
-    const n = CERT_ROWS.length;
-    if (!n) { list.innerHTML = '<div class="card empty">' + IC(PATHS.doc) + 'ไม่พบคำขอที่ตรงกับเงื่อนไข</div>'; pager.hidden = true; pager.innerHTML = ''; return; }
-    const totalPages = Math.max(1, Math.ceil(n / HR_PAGE_SIZE));
-    if (CERT_PAGE > totalPages) CERT_PAGE = totalPages;
-    const items = CERT_ROWS.slice((CERT_PAGE - 1) * HR_PAGE_SIZE, CERT_PAGE * HR_PAGE_SIZE);
-    list.innerHTML = '<div class="req-list">' + items.map(r => {
+  function certRowHtml_(r){
       const cls = statusClass(r.status), pending = r.status === 'รอ HR ออกใบ';
       const wait = pending && r.waitDays >= 1 ? '<span class="wait' + (r.waitDays >= 3 ? ' late' : '') + '">รอมา ' + r.waitDays + ' วัน</span>' : '';
       const meta = [escapeHtml(r.department) + (r.division ? '/' + escapeHtml(r.division) : ''), escapeHtml(r.certTypes)].filter(Boolean).join(' • ');
@@ -2327,7 +2371,17 @@
         '<div class="rr-side">' + wait + '<span class="badge ' + cls + '">' + certStatusText(r.status) + '</span>' +
           '<span class="rr-act"><button type="button" class="ib del" title="ลบ" aria-label="ลบรายการนี้" onclick="event.stopPropagation();deleteCertUi(\'' + r.requestId + '\')">' + IC(PATHS.trash) + '</button></span>' +
           '<span class="rr-chev">' + IC('<path d="M9 6l6 6-6 6"/>') + '</span></div></div>';
-    }).join('') + '</div>';
+  }
+
+  function renderCertPage(){
+    if (HR_GROUP) return renderGrouped_('cert');
+    const list = document.getElementById('hrList'), pager = document.getElementById('hrPagination');
+    const n = CERT_ROWS.length;
+    if (!n) { list.innerHTML = '<div class="card empty">' + IC(PATHS.doc) + 'ไม่พบคำขอที่ตรงกับเงื่อนไข</div>'; pager.hidden = true; pager.innerHTML = ''; return; }
+    const totalPages = Math.max(1, Math.ceil(n / HR_PAGE_SIZE));
+    if (CERT_PAGE > totalPages) CERT_PAGE = totalPages;
+    const items = CERT_ROWS.slice((CERT_PAGE - 1) * HR_PAGE_SIZE, CERT_PAGE * HR_PAGE_SIZE);
+    list.innerHTML = '<div class="req-list">' + items.map(certRowHtml_).join('') + '</div>';
     pager.hidden = totalPages <= 1;
     if (pager.hidden) pager.innerHTML = '';
     if (!pager.hidden) {
@@ -3483,6 +3537,91 @@
     let o = false; try { o = localStorage.getItem('hr_tools_open') === '1'; } catch (e) {}
     toggleHrTools(o);
   })();
+
+  // ================= จัดกลุ่มรายการตามแผนก (ใช้ทั้งแท็บใบส่งตัวและหนังสือรับรอง) =================
+  let HR_GROUP = (function(){ try { return localStorage.getItem('hr_group') !== '0'; } catch (e) { return true; } })();
+  const HR_GRP_STATE = { ref: {}, cert: {} };   // แผนก -> พับ/กางที่ผู้ใช้เลือกไว้
+  const HR_GRP_CACHE = { ref: [], cert: [] };
+  const HR_GRP_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7l3-3h5l2 2h8v11a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V7z"/></svg>';
+
+  function hrGroups_(rows){
+    const m = {};
+    rows.forEach(r => {
+      const k = String(r.department || '').trim() || 'ไม่ระบุแผนก';
+      const g = m[k] || (m[k] = { name: k, rows: [], pending: 0, issued: 0, void: 0 });
+      g.rows.push(r);
+      if (r.status === 'รอ HR ออกใบ') g.pending++; else if (r.status === 'ออกใบแล้ว') g.issued++; else g.void++;
+    });
+    // แผนกที่มีงานค้างขึ้นก่อน แล้วเรียงตามชื่อ (ในกลุ่มยังเรียงใหม่สุดก่อนตามเดิม)
+    return Object.keys(m).map(k => m[k]).sort((a, b) => (b.pending - a.pending) || a.name.localeCompare(b.name, 'th'));
+  }
+  function hrFilterActive_(){
+    return !!(document.getElementById('hrKeyword').value.trim() || document.getElementById('hrStatus').value);
+  }
+  function renderGrouped_(mode){
+    const list = document.getElementById('hrList'), pager = document.getElementById('hrPagination');
+    pager.hidden = true; pager.innerHTML = '';
+    const rows = mode === 'cert' ? CERT_ROWS : HR_REQUESTS;
+    if (!rows.length) { list.innerHTML = '<div class="card empty">' + IC(PATHS.doc) + 'ไม่พบคำขอที่ตรงกับเงื่อนไข</div>'; syncGroupUi_(); return; }
+    const rowFn = mode === 'cert' ? certRowHtml_ : refRowHtml_;
+    const groups = hrGroups_(rows);
+    HR_GRP_CACHE[mode] = groups;
+    const force = hrFilterActive_(); // กำลังค้นหา/กรองสถานะ → กางทุกกลุ่มให้เห็นผลลัพธ์ครบ
+    list.innerHTML = '<div class="dg-wrap">' + groups.map((g, i) => {
+      const st = HR_GRP_STATE[mode][g.name];
+      const open = force ? true : (st === undefined ? g.pending > 0 : st);
+      const pills =
+        (g.pending ? '<span class="dg-pill p">รอ ' + g.pending + '</span>' : '') +
+        (g.issued ? '<span class="dg-pill i">ออกแล้ว ' + g.issued + '</span>' : '') +
+        (g.void ? '<span class="dg-pill v">ยกเลิก ' + g.void + '</span>' : '');
+      return '<section class="dg' + (open ? ' open' : '') + (g.pending ? ' has-pending' : '') + '" id="dg_' + mode + '_' + i + '">' +
+        '<button type="button" class="dg-h" aria-expanded="' + open + '" onclick="toggleDeptGroup(\'' + mode + '\',' + i + ')">' +
+          '<span class="dg-ic">' + HR_GRP_ICON + '</span>' +
+          '<span class="dg-t"><b>' + escapeHtml(g.name) + '</b><small>' + g.rows.length + ' รายการ</small></span>' +
+          '<span class="dg-pills">' + pills + '</span>' +
+          '<span class="dg-chev">' + IC('<path d="M6 9l6 6 6-6"/>') + '</span>' +
+        '</button>' +
+        '<div class="dg-body"><div class="dg-in"><div class="req-list">' + g.rows.map(rowFn).join('') + '</div></div></div>' +
+      '</section>';
+    }).join('') + '</div>';
+    syncGroupUi_();
+  }
+  function setGroupOpen_(mode, i, open){
+    const g = HR_GRP_CACHE[mode][i], el = document.getElementById('dg_' + mode + '_' + i);
+    if (!g || !el) return;
+    el.classList.toggle('open', open);
+    el.querySelector('.dg-h').setAttribute('aria-expanded', String(open));
+    HR_GRP_STATE[mode][g.name] = open;
+  }
+  function toggleDeptGroup(mode, i){
+    const el = document.getElementById('dg_' + mode + '_' + i);
+    if (!el) return;
+    setGroupOpen_(mode, i, !el.classList.contains('open'));
+    syncGroupUi_();
+  }
+  function toggleAllGroups(){
+    const mode = HR_MODE, gs = HR_GRP_CACHE[mode] || [];
+    const allOpen = gs.length && gs.every((g, i) => (document.getElementById('dg_' + mode + '_' + i) || {}).classList && document.getElementById('dg_' + mode + '_' + i).classList.contains('open'));
+    gs.forEach((g, i) => setGroupOpen_(mode, i, !allOpen));
+    syncGroupUi_();
+  }
+  function syncGroupUi_(){
+    document.querySelectorAll('#grpSeg button').forEach(b => b.setAttribute('aria-pressed', String((b.dataset.g === '1') === HR_GROUP)));
+    const btn = document.getElementById('grpAllBtn');
+    if (!btn) return;
+    btn.hidden = !HR_GROUP;
+    const gs = HR_GRP_CACHE[HR_MODE] || [];
+    const allOpen = gs.length && gs.every((g, i) => { const el = document.getElementById('dg_' + HR_MODE + '_' + i); return el && el.classList.contains('open'); });
+    btn.textContent = allOpen ? 'พับทั้งหมด' : 'ขยายทั้งหมด';
+  }
+  function setHrGroup(on){
+    if (HR_GROUP === on) return;
+    HR_GROUP = on;
+    try { localStorage.setItem('hr_group', on ? '1' : '0'); } catch (e) {}
+    syncGroupUi_();
+    if (HR_MODE === 'cert') renderCertPage(); else renderHrPage();
+  }
+  syncGroupUi_();
 </script>
 </body>
 </html>
