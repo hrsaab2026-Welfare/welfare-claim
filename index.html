@@ -512,8 +512,10 @@
     border-bottom:3px solid var(--gold);box-shadow:var(--shadow-md);}
   .cert-hero > *{position:relative;z-index:1;}
   .cert-hero-head{display:flex;align-items:center;gap:12px;}
-  .cert-hero-ic{width:38px;height:38px;border-radius:11px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.10);color:var(--gold);flex-shrink:0;}
-  .cert-hero-ic svg{width:21px;height:21px;}
+  .cert-hero-ic{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--navy);
+    background:var(--gold);background:linear-gradient(145deg,color-mix(in srgb,var(--gold) 62%,#fff),var(--gold));
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.55),0 6px 16px rgba(0,0,0,.28),0 0 0 4px rgba(255,255,255,.07);}
+  .cert-hero-ic svg{width:23px;height:23px;stroke-width:2;}
   .cert-hero h2{margin:0;font-size:1.12rem;font-weight:700;line-height:1.3;}
   .cert-checks{list-style:none;margin:20px 0 0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));}
   .cert-checks li{display:flex;flex-direction:column;gap:11px;padding:0 20px;font-size:.88rem;line-height:1.65;color:rgba(255,255,255,.9);}
@@ -521,9 +523,12 @@
   .cert-checks li:last-child{padding-right:0;}
   .cert-checks li + li{border-left:1px solid rgba(255,255,255,.15);}
   .cert-checks b{color:var(--gold);font-weight:700;}
-  .cert-checks .ci{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.10);color:var(--gold);flex-shrink:0;}
-  .cert-checks .ci svg{width:17px;height:17px;}
-  .cert-checks .warn .ci{background:var(--gold);color:var(--navy);}
+  .cert-checks .ci{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--navy);
+    background:var(--gold);background:linear-gradient(145deg,color-mix(in srgb,var(--gold) 62%,#fff),var(--gold));
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.55),0 6px 14px rgba(0,0,0,.28),0 0 0 4px rgba(255,255,255,.07);}
+  .cert-checks .ci svg{width:21px;height:21px;stroke-width:2.2;}
+  .cert-checks .warn .ci{color:#fff;background:linear-gradient(145deg,#FF9A76,#F2542D);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.4),0 6px 16px rgba(242,84,45,.45),0 0 0 4px rgba(255,138,101,.18);}
 
   /* --- การ์ดแต่ละหัวข้อ --- */
   .cert-sec{background:var(--surface);border:1px solid var(--border);border-radius:16px;box-shadow:var(--shadow-sm);}
@@ -621,7 +626,8 @@
     .cert-checks li,.cert-checks li:first-child,.cert-checks li:last-child{flex-direction:row;align-items:flex-start;gap:12px;padding:14px 0 0;}
     .cert-checks li:first-child{padding-top:0;}
     .cert-checks li + li{border-left:0;border-top:1px solid rgba(255,255,255,.14);margin-top:14px;}
-    .cert-checks .ci{width:30px;height:30px;}
+    .cert-checks .ci{width:36px;height:36px;}
+    .cert-checks .ci svg{width:19px;height:19px;}
     .cert-sec-head{padding:14px 18px;}
     .cert-sec-body{padding:20px 18px 22px;}
     .cert-types,.cert-purposes{grid-template-columns:1fr !important;}
