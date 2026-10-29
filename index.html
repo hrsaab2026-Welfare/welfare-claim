@@ -460,7 +460,7 @@
   .app-swal-cancel:hover{background:var(--surface-2) !important;}
 
   /* ===== คู่มือการใช้งาน ===== */
-  .app-header[data-view="guide"] .ah-progress{display:none;}
+  .app-header[data-view="guide"] .ah-progress,.app-header[data-view="guideCert"] .ah-progress{display:none;}
   .gd-top{display:flex;justify-content:flex-end;gap:8px;margin-bottom:12px;}
   .gd-hero{background:var(--navy);color:#fff;border-radius:10px;padding:18px 20px;border-bottom:3px solid var(--gold);}
   .gd-hero h2{margin:0;font-size:1.15rem;line-height:1.4;} .gd-hero p{margin:4px 0 14px;font-size:.84rem;color:#9FB0BC;}
@@ -768,9 +768,14 @@
       <svg class="ni-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h9l3 3v15H6z"/><path d="M14.5 3v3.5H18"/><path d="M9 10.5h6M9 13.5h4"/><path class="acc" d="M9.5 17.5l1.8 1.8 3.2-3.6"/></svg>
       <span class="ni-label">ขอหนังสือรับรอง</span>
     </button>
-    <button class="nav-item" data-tab="guide" data-label="คู่มือการใช้งาน">
+    <div class="sb-group-label">คู่มือ</div>
+    <button class="nav-item" data-tab="guide" data-label="คู่มือขอใบส่งตัว">
       <svg class="ni-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h9a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3z"/><path d="M5 17a3 3 0 0 1 3-3h9"/><path class="acc" d="M9 8h4"/></svg>
-      <span class="ni-label">คู่มือการใช้งาน</span>
+      <span class="ni-label">คู่มือขอใบส่งตัว</span>
+    </button>
+    <button class="nav-item" data-tab="guideCert" data-label="คู่มือขอหนังสือรับรอง">
+      <svg class="ni-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h9a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3z"/><path d="M5 17a3 3 0 0 1 3-3h9"/><path class="acc" d="M9 8h4M9 11h4"/></svg>
+      <span class="ni-label">คู่มือขอหนังสือรับรอง</span>
     </button>
     <div class="sb-group-label">สำหรับฝ่ายบุคคล</div>
     <button class="nav-item locked" data-tab="hr" data-label="รายการคำขอ">
@@ -1042,6 +1047,81 @@
   </div>
 
   <div class="view" id="view-guide"><div class="gd-top no-print"><button class="btn-mini" onclick="window.print()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 9V4h10v5M7 17H5a1 1 0 0 1-1-1v-6a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v6a1 1 0 0 1-1 1h-2"/><path d="M7 14h10v6H7z"/></svg>พิมพ์ / บันทึกเป็น PDF</button></div><div class="gd-hero"><h2>ขอใบส่งตัวโรงพยาบาลราชธานี ทำเองได้ใน 3 ขั้นตอน</h2><p>ไม่ต้องล็อกอิน ใช้ได้ทั้งมือถือและคอมพิวเตอร์</p><ol class="gd-flow"><li>กรอกฟอร์มในเว็บนี้</li><li>ฝ่ายบุคคลได้รับอีเมลทันที</li><li>ฝ่ายบุคคลเตรียมใบส่งตัว</li><li>รับใบที่ HR แล้วไปโรงพยาบาล</li></ol></div><div id="guideBody" class="gd-body"><div class="empty">กำลังโหลด...</div></div></div>
+
+  <!-- ================= คู่มือขอหนังสือรับรอง (เนื้อหาคงที่ ไม่ผ่านชีท) ================= -->
+  <div class="view" id="view-guideCert">
+    <div class="gd-top no-print"><button class="btn-mini" onclick="window.print()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 9V4h10v5M7 17H5a1 1 0 0 1-1-1v-6a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v6a1 1 0 0 1-1 1h-2"/><path d="M7 14h10v6H7z"/></svg>พิมพ์ / บันทึกเป็น PDF</button></div>
+    <div class="gd-hero">
+      <h2>ขอหนังสือรับรอง ทำเองได้ใน 3 ขั้นตอน</h2>
+      <p>ไม่ต้องล็อกอิน ใช้ได้ทั้งมือถือและคอมพิวเตอร์ · ส่งคำขอล่วงหน้า 5 วัน</p>
+      <ol class="gd-flow">
+        <li>กรอกฟอร์มในเว็บนี้</li>
+        <li>ฝ่ายบุคคลได้รับอีเมลทันที</li>
+        <li>ฝ่ายบุคคลเตรียมหนังสือรับรอง</li>
+        <li>รับหนังสือที่ฝ่ายบุคคล</li>
+      </ol>
+    </div>
+    <div class="gd-body">
+      <section class="gd-card"><h3>เตรียมข้อมูลนี้ไว้ก่อนเริ่ม</h3>
+        <ul>
+          <li>รหัสประจำตัว ตำแหน่ง แผนก และฝ่ายที่สังกัด</li>
+          <li>วันที่เริ่มงาน และเบอร์โทรศัพท์ภายในแผนก</li>
+          <li>ถ้าต้องใช้ทำบัตรผ่อนชำระหรือค้ำประกัน: ข้อมูลที่เกี่ยวข้อง เช่น ชื่อบริษัท ชื่อบุคคลค้ำประกัน ชื่อหมู่บ้าน ชื่อธนาคารและเจ้าหน้าที่ที่ติดต่อ</li>
+        </ul>
+        <div class="gd-tip warn"><p>ส่งแบบฟอร์มล่วงหน้า <b>5 วัน</b> · กรณีที่ใช้ Slip เงินเดือนแทนได้ บริษัทฯ จะไม่ออกหนังสือรับรองให้</p></div>
+      </section>
+
+      <section class="gd-card"><h3><span class="gd-num">1</span>ข้อมูลผู้ขอ</h3>
+        <ul>
+          <li>เปิดเมนู <b>ขอหนังสือรับรอง</b> แล้วกรอก วันที่ยื่นขอ รหัสประจำตัว คำนำหน้า ชื่อ นามสกุล และตำแหน่ง</li>
+          <li><b>แผนก</b> และ <b>ฝ่าย</b>: คลิกช่อง พิมพ์ค้นหา แล้วกดเลือกจากรายการ</li>
+          <li>กรอก <b>เริ่มงานวันที่</b> และ <b>เบอร์โทรศัพท์ภายในแผนก</b></li>
+          <li>ช่องที่มีเครื่องหมาย <b>*</b> จำเป็นต้องกรอก</li>
+        </ul>
+        <div class="gd-tip"><p>ไม่พบแผนกหรือฝ่ายของคุณในรายการ? แจ้งฝ่ายบุคคลให้เพิ่มให้</p></div>
+      </section>
+
+      <section class="gd-card"><h3><span class="gd-num">2</span>เลือกประเภทหนังสือรับรอง</h3>
+        <p>เลือกได้มากกว่า 1 รายการ</p>
+        <ul>
+          <li><b>การทำงาน</b></li>
+          <li><b>เงินเดือน</b></li>
+          <li><b>อื่นๆ</b> (ต้องระบุรายละเอียด)</li>
+        </ul>
+      </section>
+
+      <section class="gd-card"><h3><span class="gd-num">3</span>เลือกวัตถุประสงค์ "เพื่อนำไปทำ"</h3>
+        <p>เลือกได้มากกว่า 1 รายการ เมื่อเลือกข้อใด ระบบจะแสดงช่องให้กรอกข้อมูลเพิ่มของข้อนั้น</p>
+        <ul>
+          <li><b>บัตรผ่อนชำระสินค้า</b></li>
+          <li><b>ค้ำประกันเข้าทำงานที่บริษัท</b>: ระบุชื่อบริษัท และชื่อ-สกุลบุคคลค้ำประกัน</li>
+          <li><b>ค้ำประกันเรื่องบ้าน</b>: ระบุชื่อหมู่บ้าน</li>
+          <li><b>อื่นๆ</b>: ระบุวัตถุประสงค์</li>
+        </ul>
+        <p>ถ้ามี ให้กรอก <b>ชื่อธนาคาร</b> <b>ชื่อเจ้าหน้าที่ที่ติดต่อ</b> และ<b>เบอร์โทรศัพท์</b> เพื่อให้ฝ่ายบุคคลระบุในหนังสือได้ถูกต้อง (ไม่บังคับ)</p>
+      </section>
+
+      <section class="gd-card"><h3>ส่งแล้วทำอย่างไรต่อ</h3>
+        <ol>
+          <li>กดปุ่ม <b>ส่งคำขอหนังสือรับรอง</b> หน้าจอจะแสดง <b>เลขที่คำขอ</b> (เช่น CT20261029-001) จดหรือแคปหน้าจอเก็บไว้</li>
+          <li>ฝ่ายบุคคลได้รับอีเมลแจ้งทันที รอการติดต่อกลับ หรือสอบถามที่ฝ่ายบุคคลได้เลย</li>
+          <li>รับหนังสือรับรองที่ฝ่ายบุคคล</li>
+        </ol>
+      </section>
+
+      <section class="gd-card"><h3>กรอกผิด หรือต้องการแก้ไข / ยกเลิกคำขอ</h3>
+        <p>ผู้ขอแก้ไขเองในระบบไม่ได้ ให้แจ้งฝ่ายบุคคลพร้อม<b>เลขที่คำขอ</b> (หรือชื่อและรหัสประจำตัว) ฝ่ายบุคคลจะแก้ไขหรือยกเลิกให้</p>
+        <div class="gd-tip warn"><p>อย่าส่งคำขอซ้ำ เพราะจะมีคำขอซ้อนกันสองรายการ</p></div>
+      </section>
+
+      <section class="gd-card"><h3>คำถามที่พบบ่อย</h3>
+        <p><b>ต้องล็อกอินไหม?</b> ไม่ต้อง กรอกฟอร์มได้เลย</p>
+        <p><b>ต้องส่งคำขอล่วงหน้ากี่วัน?</b> ล่วงหน้า 5 วัน</p>
+        <p><b>ขอหลายประเภทในคำขอเดียวได้ไหม?</b> ได้ เลือกประเภทและวัตถุประสงค์ได้มากกว่า 1 รายการ</p>
+        <p><b>ใช้ Slip เงินเดือนแทนได้ไหม?</b> ถ้าใช้ Slip เงินเดือนแทนได้ บริษัทฯ จะไม่ออกหนังสือรับรองให้</p>
+      </section>
+    </div>
+  </div>
 
   <!-- ================= HR VIEW ================= -->
   <div class="view" id="view-hr">
@@ -1387,7 +1467,8 @@
   const VIEWS = {
     employee: { title: 'ขอใบส่งตัว', desc: 'กรอกข้อมูล 3 ขั้นตอน ฝ่ายบุคคลจะเตรียมใบส่งตัวให้' },
     cert: { title: 'ขอหนังสือรับรอง', desc: 'กรอกแบบฟอร์ม HR 4-1-010 ฝ่ายบุคคลจะเตรียมหนังสือรับรองให้' },
-    guide: { title: 'คู่มือการใช้งาน', desc: 'วิธีขอใบส่งตัวสำหรับพนักงาน ทีละขั้นตอน' },
+    guide: { title: 'คู่มือขอใบส่งตัว', desc: 'วิธีขอใบส่งตัวสำหรับพนักงาน ทีละขั้นตอน' },
+    guideCert: { title: 'คู่มือขอหนังสือรับรอง', desc: 'วิธีขอหนังสือรับรองสำหรับพนักงาน ทีละขั้นตอน' },
     hr: { title: 'รายการคำขอ', desc: 'ตรวจสอบคำขอ ออกเอกสาร และส่งออกข้อมูล' }
   };
   // หัวข้อหน้า HR เปลี่ยนตามแท็บ (เฉพาะตอนปลดล็อกแล้ว) — ตอนล็อกอยู่ใช้ชื่อกลาง
@@ -1408,6 +1489,7 @@
     guide: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h9a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3z"/><path d="M5 17a3 3 0 0 1 3-3h9"/><path class="acc" d="M9 8h4"/></svg>',
     hr: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="4" width="12" height="17" rx="1.6"/><path d="M9 4h6v2.6H9z"/><path class="acc" d="M9.5 13.5l2 2 3.5-4"/></svg>'
   };
+  HEAD_ICONS.guideCert = HEAD_ICONS.guide;
   const appEl = document.getElementById('app');
   const sidebarEl = document.getElementById('sidebar');
   const menuBtn = document.getElementById('menuBtn');
