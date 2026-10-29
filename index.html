@@ -963,14 +963,52 @@
 
   let FORM_OPTIONS = null;
   // รหัสผ่าน HR เก็บใน sessionStorage = หายเองเมื่อปิดแท็บ/หน้าต่าง (เปิดใหม่ต้องเข้าสู่ระบบใหม่) — รีเฟรชในแท็บเดิมยังไม่หลุด
-  const HR_CODE_KEY = 'referral_hr_code';
+  const HR_CODE_KEY = 'referral_hr_code', HR_LAST_KEY = 'referral_hr_last';
+  const HR_IDLE_MS = 15 * 60 * 1000;   // ไม่มีการใช้งานครบ 15 นาที = ล็อกอัตโนมัติ
   const hrCodeStore = {
-    get(){ try { return sessionStorage.getItem(HR_CODE_KEY) || ''; } catch (e) { return ''; } },
-    set(v){ try { sessionStorage.setItem(HR_CODE_KEY, v); } catch (e) {} },
-    clear(){ try { sessionStorage.removeItem(HR_CODE_KEY); } catch (e) {} }
+    get(){
+      try {
+        const code = sessionStorage.getItem(HR_CODE_KEY) || '';
+        const last = Number(sessionStorage.getItem(HR_LAST_KEY)) || 0;
+        // เซสชันที่ถูกกู้คืนกลับมา (เช่น เปิดแท็บที่เพิ่งปิด) แต่ไม่ได้ใช้งานเกินกำหนด → ไม่เชื่อ ต้องล็อกอินใหม่
+        if (code && (!last || Date.now() - last > HR_IDLE_MS)) { this.clear(); return ''; }
+        return code;
+      } catch (e) { return ''; }
+    },
+    set(v){ try { sessionStorage.setItem(HR_CODE_KEY, v); sessionStorage.setItem(HR_LAST_KEY, String(Date.now())); } catch (e) {} },
+    touch(){ try { sessionStorage.setItem(HR_LAST_KEY, String(Date.now())); } catch (e) {} },
+    clear(){ try { sessionStorage.removeItem(HR_CODE_KEY); sessionStorage.removeItem(HR_LAST_KEY); } catch (e) {} }
   };
   try { localStorage.removeItem(HR_CODE_KEY); } catch (e) {} // ล้างรหัสที่เคยจำถาวรไว้ในเครื่องจากเวอร์ชันเก่า
   let HR_CODE = hrCodeStore.get();
+
+  // ---- ล็อกอัตโนมัติเมื่อไม่มีการใช้งาน ----
+  let HR_LAST_ACTIVE = Date.now();
+  function hrMarkActive(){
+    if (!HR_CODE) return;
+    const now = Date.now();
+    if (now - HR_LAST_ACTIVE < 5000) return;   // เขียนไม่ถี่เกินไป
+    HR_LAST_ACTIVE = now; hrCodeStore.touch();
+  }
+  function hrIdleCheck(){
+    if (!HR_CODE) return;
+    // เทียบกับเวลาที่บันทึกไว้ด้วย (ตัวจับเวลาของแท็บที่ถูกพักอาจเดินช้า) — ถ้าเกินกำหนด ล็อกทันที
+    let last = HR_LAST_ACTIVE;
+    try { last = Math.max(last, Number(sessionStorage.getItem(HR_LAST_KEY)) || 0); } catch (e) {}
+    if (Date.now() - last >= HR_IDLE_MS) hrAutoLock();
+  }
+  function hrAutoLock(){
+    try { if (typeof Swal !== 'undefined' && Swal.isVisible()) Swal.close(); } catch (e) {}
+    try { document.getElementById('reqModal').hidden = true; document.body.style.overflow = ''; } catch (e) {}
+    lockHr();
+    showToast('ล็อกหน้าฝ่ายบุคคลอัตโนมัติ เนื่องจากไม่มีการใช้งานนาน 15 นาที กรุณาเข้าสู่ระบบอีกครั้ง', 'err');
+  }
+  ['pointerdown', 'keydown', 'touchstart', 'scroll', 'mousemove'].forEach(ev =>
+    window.addEventListener(ev, hrMarkActive, { passive: true, capture: true }));
+  setInterval(hrIdleCheck, 20000);
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) hrIdleCheck(); });
+  window.addEventListener('pageshow', hrIdleCheck);
+  window.addEventListener('focus', hrIdleCheck);
   let HR_MODE = 'ref';                 // 'ref' = ใบส่งตัว, 'cert' = หนังสือรับรอง (แท็บฝั่ง HR)
   const HR_PEND = { ref: 0, cert: 0 }; // จำนวนรอดำเนินการของแต่ละแท็บ ใช้โชว์ตัวเลขบนปุ่มสลับ
 
@@ -1579,7 +1617,7 @@
       if (seq !== HR_LOAD_SEQ && HR_CODE) return; // มีการโหลดรายการใหม่แทรกแล้ว
       if (res.error === 'WRONG_CODE') { if (!silent) showToast('รหัสผ่านไม่ถูกต้อง', 'err'); return; }
       HR_CODE = code;
-      hrCodeStore.set(code);
+      hrCodeStore.set(code); HR_LAST_ACTIVE = Date.now();
       document.getElementById('hrGate').style.display = 'none';
       document.getElementById('hrPanel').style.display = 'block';
       if (HR_MODE === 'cert') {
@@ -1599,6 +1637,12 @@
     document.getElementById('hrPanel').style.display = 'none';
     document.getElementById('hrCodeInput').value = '';
     toggleHrCodeVisible(false);
+    // ล้างข้อมูลคำขอที่ค้างบนหน้าจอ/ในหน่วยความจำ ไม่ให้เห็นหลังล็อก
+    try {
+      HR_LOAD_SEQ++; HR_REQUESTS = []; CERT_ROWS = [];
+      document.getElementById('hrList').innerHTML = '';
+      const pg = document.getElementById('hrPagination'); pg.hidden = true; pg.innerHTML = '';
+    } catch (e) {}
   }
 
   // ตัวนับคำขอโหลดรายการ — กันผลตอบกลับเก่าของอีกแท็บ (ใบส่งตัว/หนังสือรับรอง) มาเขียนทับรายการที่กำลังแสดง
