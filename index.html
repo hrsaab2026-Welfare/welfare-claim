@@ -485,6 +485,18 @@
     body.print-modal .modal-back,body.print-modal .modal-x,body.print-modal .modal-foot{display:none;}
     body.print-modal .modal-card{max-width:none;max-height:none;box-shadow:none;} body.print-modal .modal-body{overflow:visible;}
   }
+
+  /* ===== ขอหนังสือรับรอง + สลับโหมดฝั่ง HR ===== */
+  .cert-note{margin:0 0 16px;padding:12px 14px;border-radius:var(--radius-sm);background:var(--warning-bg);color:var(--warning);font-size:.82rem;line-height:1.6;}
+  .cert-note b{color:inherit;}
+  .cert-note ul{margin:6px 0 0;padding-left:18px;}
+  .opt .opt-detail + .opt-detail{margin-top:7px;}
+  .hr-seg{display:inline-flex;gap:4px;padding:4px;background:var(--surface-2);border:1px solid var(--border);border-radius:11px;margin-bottom:14px;}
+  .hr-seg button{display:inline-flex;align-items:center;gap:8px;padding:8px 16px;border:0;border-radius:8px;background:transparent;color:var(--ink-soft);font-family:inherit;font-size:.9rem;font-weight:600;cursor:pointer;}
+  .hr-seg button[aria-pressed="true"]{background:var(--navy);color:#fff;}
+  .hr-seg .seg-n{display:none;min-width:20px;height:20px;padding:0 6px;border-radius:10px;background:var(--gold);color:#1B2A41;font-size:.74rem;align-items:center;justify-content:center;}
+  .hr-seg .seg-n.show{display:inline-flex;}
+  .purpose-lines{margin:0;padding-left:18px;}
 </style>
 </head>
 <body>
@@ -510,6 +522,10 @@
     <button class="nav-item" data-tab="employee" data-label="ขอใบส่งตัว" aria-current="page">
       <svg class="ni-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 21h16"/><path d="M6 21V9l6-5 6 5v12"/><path d="M10.5 21v-3.5h3V21"/><path class="acc" d="M12 10.5v4M10 12.5h4"/></svg>
       <span class="ni-label">ขอใบส่งตัว</span>
+    </button>
+    <button class="nav-item" data-tab="cert" data-label="ขอหนังสือรับรอง">
+      <svg class="ni-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h9l3 3v15H6z"/><path d="M14.5 3v3.5H18"/><path d="M9 10.5h6M9 13.5h4"/><path class="acc" d="M9.5 17.5l1.8 1.8 3.2-3.6"/></svg>
+      <span class="ni-label">ขอหนังสือรับรอง</span>
     </button>
     <button class="nav-item" data-tab="guide" data-label="คู่มือการใช้งาน">
       <svg class="ni-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h9a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3z"/><path d="M5 17a3 3 0 0 1 3-3h9"/><path class="acc" d="M9 8h4"/></svg>
@@ -670,6 +686,100 @@
     </section>
   </div>
 
+  <!-- ================= CERT VIEW (ขอหนังสือรับรอง — แบบฟอร์ม HR 4-1-010) ================= -->
+  <div class="view" id="view-cert">
+    <div class="card" id="certFormCard">
+      <div class="cert-note">
+        <b>ก่อนกรอกแบบฟอร์ม</b>
+        <ul>
+          <li>กรุณากรอกรายละเอียดให้ครบถ้วน</li>
+          <li>ให้ส่งแบบฟอร์มขอหนังสือรับรองล่วงหน้า 5 วัน</li>
+          <li>ในกรณีที่ใช้ Slip เงินเดือนแทนได้ บริษัทฯ จะไม่ออกหนังสือรับรองให้</li>
+        </ul>
+      </div>
+
+      <div class="section-title"><span class="step-num">1</span><span class="txt">ข้อมูลผู้ขอ</span></div>
+      <label for="c_date">วันที่ยื่นขอ *</label>
+      <input type="date" id="c_date">
+      <div class="row2">
+        <div>
+          <label for="c_prefix">คำนำหน้า *</label>
+          <select id="c_prefix"><option value="">เลือก</option><option value="นาย">นาย</option><option value="นาง">นาง</option><option value="นางสาว">นางสาว</option></select>
+        </div>
+        <div>
+          <label for="c_empid">รหัสประจำตัว *</label>
+          <input type="text" id="c_empid" placeholder="เช่น SA12345" autocomplete="off">
+        </div>
+      </div>
+      <div class="row2">
+        <div><label for="c_first">ชื่อ *</label><input type="text" id="c_first" maxlength="60" placeholder="เช่น สมชาย" autocomplete="off"></div>
+        <div><label for="c_last">นามสกุล *</label><input type="text" id="c_last" maxlength="60" placeholder="เช่น ใจดี" autocomplete="off"></div>
+      </div>
+      <label for="c_pos">ตำแหน่ง *</label>
+      <input type="text" id="c_pos" maxlength="100" placeholder="เช่น พนักงานฝ่ายผลิต" autocomplete="off">
+      <div class="row2">
+        <div>
+          <label for="c_dept">แผนก *</label>
+          <div class="combo" id="cDeptCombo">
+            <input type="text" id="c_dept" class="combo-input" placeholder="ค้นหา / เลือกแผนก" autocomplete="off">
+            <span class="combo-chevron"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></span>
+            <div class="combo-panel" id="cDeptPanel" hidden></div>
+          </div>
+        </div>
+        <div>
+          <label for="c_division">ฝ่าย *</label>
+          <div class="combo" id="cDivCombo">
+            <input type="text" id="c_division" class="combo-input" placeholder="ค้นหา / เลือกฝ่าย" autocomplete="off">
+            <span class="combo-chevron"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></span>
+            <div class="combo-panel" id="cDivPanel" hidden></div>
+          </div>
+        </div>
+      </div>
+      <div class="row2">
+        <div><label for="c_start">เริ่มงานวันที่ *</label><input type="date" id="c_start"></div>
+        <div><label for="c_phone">เบอร์โทรศัพท์ภายในแผนก *</label><input type="tel" id="c_phone" maxlength="30" placeholder="เช่น 1234" autocomplete="off"></div>
+      </div>
+
+      <div class="section-title"><span class="step-num">2</span><span class="txt">ขอหนังสือรับรอง (เลือกได้มากกว่า 1 รายการ)</span></div>
+      <div class="opt-list" id="certTypeList"></div>
+
+      <div class="section-title"><span class="step-num">3</span><span class="txt">เพื่อนำไปทำ (เลือกได้มากกว่า 1 รายการ)</span></div>
+      <div class="opt-list" id="certPurposeList"></div>
+      <label for="c_bank">ชื่อธนาคาร</label>
+      <input type="text" id="c_bank" maxlength="100" placeholder="เช่น ธนาคารกรุงไทย" autocomplete="off">
+      <div class="row2">
+        <div><label for="c_contact">ติดต่อเจ้าหน้าที่ชื่อ</label><input type="text" id="c_contact" maxlength="100" placeholder="ชื่อเจ้าหน้าที่ที่ติดต่อ" autocomplete="off"></div>
+        <div><label for="c_contact_phone">หมายเลขโทรศัพท์</label><input type="tel" id="c_contact_phone" maxlength="30" placeholder="เบอร์ติดต่อเจ้าหน้าที่" autocomplete="off"></div>
+      </div>
+      <div class="hint">ชื่อธนาคาร และเจ้าหน้าที่ที่ติดต่อ — ถ้ามีกรุณากรอกเพื่อให้ฝ่ายบุคคลระบุในหนังสือได้ถูกต้อง</div>
+
+      <div class="step-nav" style="margin-top:22px;">
+        <button class="btn-primary" id="certSubmitBtn" onclick="submitCert()">ส่งคำขอหนังสือรับรอง</button>
+      </div>
+      <div class="hint" style="text-align:center;margin-top:10px;">
+        ส่งคำขอแล้วระบบจะแจ้งฝ่ายบุคคลทันที กรุณารอการติดต่อกลับ หรือแวะมารับหนังสือรับรองที่ฝ่ายบุคคล
+      </div>
+    </div>
+
+    <div class="card" id="certSuccessCard" style="display:none;">
+      <div class="success-box">
+        <div class="stamp"><div class="stamp-ring"><span>✓</span></div></div>
+        <div class="success-title">ส่งคำขอเรียบร้อยแล้ว</div>
+        <div class="hint">ฝ่ายบุคคลได้รับแจ้งเตือนทางอีเมลทันที</div>
+        <div class="ticket">
+          <span class="ticket-label">เลขที่คำขอ</span>
+          <span class="ticket-id" id="certSuccessReqId"></span>
+        </div>
+        <div class="next-steps">
+          <div class="next-step"><span class="ns-dot">1</span>ฝ่ายบุคคลตรวจสอบคำขอและเตรียมหนังสือรับรอง</div>
+          <div class="next-step"><span class="ns-dot">2</span>รอการติดต่อกลับ หรือสอบถามที่ฝ่ายบุคคลได้เลย</div>
+          <div class="next-step"><span class="ns-dot">3</span>รับหนังสือรับรองที่ฝ่ายบุคคล</div>
+        </div>
+        <button class="btn secondary" onclick="resetCertForm()">ส่งคำขอใหม่อีกครั้ง</button>
+      </div>
+    </div>
+  </div>
+
   <div class="view" id="view-guide"><div class="gd-top no-print"><button class="btn-mini" onclick="window.print()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 9V4h10v5M7 17H5a1 1 0 0 1-1-1v-6a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v6a1 1 0 0 1-1 1h-2"/><path d="M7 14h10v6H7z"/></svg>พิมพ์ / บันทึกเป็น PDF</button></div><div class="gd-hero"><h2>ขอใบส่งตัวโรงพยาบาลราชธานี ทำเองได้ใน 3 ขั้นตอน</h2><p>ไม่ต้องล็อกอิน ใช้ได้ทั้งมือถือและคอมพิวเตอร์</p><ol class="gd-flow"><li>กรอกฟอร์มในเว็บนี้</li><li>ฝ่ายบุคคลได้รับอีเมลทันที</li><li>ฝ่ายบุคคลเตรียมใบส่งตัว</li><li>รับใบที่ HR แล้วไปโรงพยาบาล</li></ol></div><div id="guideBody" class="gd-body"><div class="empty">กำลังโหลด...</div></div></div>
 
   <!-- ================= HR VIEW ================= -->
@@ -683,6 +793,10 @@
     </div>
 
     <div id="hrPanel" style="display:none;">
+      <div class="hr-seg" id="hrSeg" role="group" aria-label="ประเภทคำขอ">
+        <button type="button" data-mode="ref" aria-pressed="true">ใบส่งตัว<span class="seg-n" id="segRef"></span></button>
+        <button type="button" data-mode="cert" aria-pressed="false">หนังสือรับรอง<span class="seg-n" id="segCert"></span></button>
+      </div>
       <div class="stat-grid" id="hrStats">
         <button class="stat s-pending" data-status="รอ HR ออกใบ"><span class="stat-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span><span class="stat-num" id="stPending">–</span><span class="stat-label">รอออกใบ</span><span class="stat-note" id="stPendingNote"></span></button>
         <button class="stat s-issued" data-status="ออกใบแล้ว"><span class="stat-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M8.5 12.5l2.5 2.5 4.5-5"/></svg></span><span class="stat-num" id="stIssued">–</span><span class="stat-label">ออกใบแล้ว</span><span class="stat-note"></span></button>
@@ -848,6 +962,8 @@
 
   let FORM_OPTIONS = null;
   let HR_CODE = localStorage.getItem('referral_hr_code') || '';
+  let HR_MODE = 'ref';                 // 'ref' = ใบส่งตัว, 'cert' = หนังสือรับรอง (แท็บฝั่ง HR)
+  const HR_PEND = { ref: 0, cert: 0 }; // จำนวนรอดำเนินการของแต่ละแท็บ ใช้โชว์ตัวเลขบนปุ่มสลับ
 
   function callApi(action, payload){
     return fetch(API_URL, {
@@ -943,10 +1059,12 @@
   // ---------- Sidebar navigation ----------
   const VIEWS = {
     employee: { title: 'ขอใบส่งตัว', desc: 'กรอกข้อมูล 3 ขั้นตอน ฝ่ายบุคคลจะเตรียมใบส่งตัวให้' },
+    cert: { title: 'ขอหนังสือรับรอง', desc: 'กรอกแบบฟอร์ม HR 4-1-010 ฝ่ายบุคคลจะเตรียมหนังสือรับรองให้' },
     guide: { title: 'คู่มือการใช้งาน', desc: 'วิธีขอใบส่งตัวสำหรับพนักงาน ทีละขั้นตอน' },
     hr: { title: 'รายการคำขอใบส่งตัว', desc: 'ตรวจสอบคำขอ ออกใบส่งตัว และส่งออกข้อมูล' }
   };
   const HEAD_ICONS = {
+    cert: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h9l3 3v15H6z"/><path d="M14.5 3v3.5H18"/><path d="M9 10.5h6M9 13.5h4"/><path class="acc" d="M9.5 17.5l1.8 1.8 3.2-3.6"/></svg>',
     employee: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21h16"/><path d="M6 21V9l6-5 6 5v12"/><path d="M10.5 21v-3.5h3V21"/><path class="acc" d="M12 10.5v4M10 12.5h4"/></svg>',
     guide: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h9a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3z"/><path d="M5 17a3 3 0 0 1 3-3h9"/><path class="acc" d="M9 8h4"/></svg>',
     hr: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="4" width="12" height="17" rx="1.6"/><path d="M9 4h6v2.6H9z"/><path class="acc" d="M9.5 13.5l2 2 3.5-4"/></svg>'
@@ -972,6 +1090,7 @@
     document.getElementById('headIcon').innerHTML = HEAD_ICONS[name];
     document.getElementById('appHeader').dataset.view = name;
     syncHeaderChip();
+    if (name === 'cert') updateCertProgress(); else if (name === 'employee') setHeadProgress(Math.round(currentStep / TOTAL_STEPS * 100));
     window.scrollTo(0, 0);
     if (name === 'hr' && HR_CODE) tryAutoUnlock();
   }
@@ -1011,7 +1130,7 @@
     const chip = document.getElementById('headChip');
     let text = '', locked = false;
     if (currentView === 'hr') { locked = !HR_CODE; text = locked ? 'ล็อกอยู่' : 'ปลดล็อกแล้ว'; }
-    else if (FORM_OPTIONS && FORM_OPTIONS.hospitals && FORM_OPTIONS.hospitals[0]) text = 'ส่งตัวไป ' + FORM_OPTIONS.hospitals[0];
+    else if (currentView === 'employee' && FORM_OPTIONS && FORM_OPTIONS.hospitals && FORM_OPTIONS.hospitals[0]) text = 'ส่งตัวไป ' + FORM_OPTIONS.hospitals[0];
     chip.hidden = !text;
     chip.classList.toggle('status', currentView === 'hr');
     chip.classList.toggle('locked', locked);
@@ -1262,9 +1381,167 @@
     document.getElementById('successCard').style.display = 'none';
     ['f_name','f_age','f_empid','f_dept','f_division','f_phone','f_symptoms','f_date'].forEach(id => document.getElementById(id).value = '');
     document.querySelectorAll('input[type=radio]').forEach(r => r.checked = false);
-    document.querySelectorAll('.opt').forEach(o => { o.classList.remove('checked'); const d=o.querySelector('.opt-detail'); if(d){d.classList.remove('show'); d.value='';} });
+    document.querySelectorAll('#view-employee .opt').forEach(o => { o.classList.remove('checked'); const d=o.querySelector('.opt-detail'); if(d){d.classList.remove('show'); d.value='';} });
     currentStep = 1;
     updateStepUI();
+  }
+
+  // ================= ขอหนังสือรับรอง (ฝั่งพนักงาน) =================
+  const CERT_TYPES = [
+    { id: 'work', label: 'การทำงาน' },
+    { id: 'salary', label: 'เงินเดือน' },
+    { id: 'other', label: 'อื่นๆ', details: [{ key: 'detail', label: 'ประเภทหนังสือรับรอง', placeholder: 'ระบุประเภทหนังสือรับรอง...' }] }
+  ];
+  const CERT_PURPOSES = [
+    { id: 'installment', label: 'บัตรผ่อนชำระสินค้า', details: [] },
+    { id: 'guarantee_work', label: 'ค้ำประกันเข้าทำงานที่บริษัท', details: [
+      { key: 'company', label: 'ชื่อบริษัท', placeholder: 'ชื่อบริษัท' }, { key: 'guarantor', label: 'ชื่อ-สกุลบุคคลค้ำประกัน', placeholder: 'ชื่อ-สกุลบุคคลค้ำประกัน' } ] },
+    { id: 'guarantee_house', label: 'ค้ำประกันเรื่องบ้าน', details: [{ key: 'village', label: 'ชื่อหมู่บ้าน', placeholder: 'ชื่อหมู่บ้าน' }] },
+    { id: 'other', label: 'อื่นๆ', details: [{ key: 'detail', label: 'รายละเอียด', placeholder: 'ระบุ...' }] }
+  ];
+
+  function renderCertChecks(containerId, group, options){
+    document.getElementById(containerId).innerHTML = options.map(o =>
+      '<label class="opt" id="' + group + '_opt_' + o.id + '">' +
+        '<input type="checkbox" name="' + group + '" value="' + o.id + '" onchange="onCertCheck(this)">' +
+        '<span class="box"></span>' +
+        '<div style="flex:1;"><div class="opt-label">' + escapeHtml(o.label) + '</div>' +
+        (o.details || []).map(d => '<input type="text" class="opt-detail" maxlength="150" id="' + group + '_' + o.id + '_' + d.key + '" placeholder="' + escapeHtml(d.placeholder) + '">').join('') +
+        '</div></label>').join('');
+  }
+  function onCertCheck(input){
+    const opt = input.closest('.opt');
+    opt.classList.toggle('checked', input.checked);
+    opt.querySelectorAll('.opt-detail').forEach(d => d.classList.toggle('show', input.checked));
+    updateCertProgress();
+  }
+  renderCertChecks('certTypeList', 'certType', CERT_TYPES);
+  renderCertChecks('certPurposeList', 'certPurpose', CERT_PURPOSES);
+
+  function todayIso_(){
+    const d = new Date(), p = n => String(n).padStart(2, '0');
+    return d.getFullYear() + '-' + p(d.getMonth() + 1) + '-' + p(d.getDate());
+  }
+  document.getElementById('c_date').value = todayIso_();
+
+  // ดรอปดาวน์ค้นหาได้ (แผนก/ฝ่าย) — ใช้รายการเดียวกับฟอร์มใบส่งตัว
+  function initComboGeneric(inputId, panelId, getList){
+    const input = document.getElementById(inputId), panel = document.getElementById(panelId);
+    let activeIdx = -1;
+    const filtered = () => { const q = input.value.trim().toLowerCase(), l = getList(); return q ? l.filter(d => d.toLowerCase().indexOf(q) !== -1) : l; };
+    const updateActive = opts => { opts.forEach((o, i) => o.classList.toggle('active', i === activeIdx)); if (activeIdx >= 0) opts[activeIdx].scrollIntoView({ block: 'nearest' }); };
+    const renderPanel = () => {
+      activeIdx = -1;
+      if (!getList().length) { panel.hidden = true; return; }
+      const items = filtered();
+      panel.innerHTML = items.length
+        ? items.map((d, i) => '<div class="combo-opt" data-i="' + i + '">' + escapeHtml(d) + '</div>').join('')
+        : '<div class="combo-empty">ไม่พบรายการที่ค้นหา</div>';
+      panel.hidden = false;
+    };
+    input.addEventListener('focus', renderPanel);
+    input.addEventListener('input', renderPanel);
+    input.addEventListener('blur', () => { setTimeout(() => { panel.hidden = true; updateCertProgress(); }, 120); });
+    panel.addEventListener('mousedown', e => {
+      const opt = e.target.closest('.combo-opt'); if (!opt) return;
+      e.preventDefault();
+      input.value = filtered()[Number(opt.dataset.i)]; panel.hidden = true; updateCertProgress();
+    });
+    input.addEventListener('keydown', e => {
+      if (panel.hidden) return;
+      const opts = panel.querySelectorAll('.combo-opt'); if (!opts.length) return;
+      if (e.key === 'ArrowDown') { e.preventDefault(); activeIdx = Math.min(opts.length - 1, activeIdx + 1); updateActive(opts); }
+      else if (e.key === 'ArrowUp') { e.preventDefault(); activeIdx = Math.max(0, activeIdx - 1); updateActive(opts); }
+      else if (e.key === 'Enter') { if (activeIdx >= 0) { e.preventDefault(); input.value = opts[activeIdx].textContent; panel.hidden = true; } }
+      else if (e.key === 'Escape') { panel.hidden = true; }
+    });
+  }
+  initComboGeneric('c_dept', 'cDeptPanel', () => DEPT_LIST);
+  initComboGeneric('c_division', 'cDivPanel', () => DIV_LIST);
+  const inList_ = (list, v) => !list.length || list.some(d => d.toLowerCase() === String(v || '').trim().toLowerCase());
+
+  // เส้นทองใต้ header = ความคืบหน้าการกรอกฟอร์มหนังสือรับรอง
+  function updateCertProgress(){
+    if (currentView !== 'cert') return;
+    const ids = ['c_prefix', 'c_empid', 'c_first', 'c_last', 'c_pos', 'c_dept', 'c_division', 'c_start', 'c_phone'];
+    let done = ids.filter(id => document.getElementById(id).value.trim()).length;
+    if (document.querySelector('input[name="certType"]:checked')) done++;
+    if (document.querySelector('input[name="certPurpose"]:checked')) done++;
+    setHeadProgress(Math.round(done / (ids.length + 2) * 100));
+  }
+  document.getElementById('view-cert').addEventListener('input', updateCertProgress);
+  document.getElementById('view-cert').addEventListener('change', updateCertProgress);
+
+  /** รวบรวม + ตรวจข้อมูลฟอร์ม (คืน {error} หรือ {data}) */
+  function collectCert(){
+    const v = id => document.getElementById(id).value.trim();
+    const need = (id, msg) => { if (!v(id)) { document.getElementById(id).focus(); return msg; } return ''; };
+    let err = need('c_prefix', 'กรุณาเลือกคำนำหน้า') || need('c_first', 'กรุณากรอกชื่อ') || need('c_last', 'กรุณากรอกนามสกุล') ||
+      need('c_empid', 'กรุณากรอกรหัสประจำตัว') || need('c_pos', 'กรุณากรอกตำแหน่ง') || need('c_dept', 'กรุณาเลือกแผนก');
+    if (err) return { error: err };
+    if (!inList_(DEPT_LIST, v('c_dept'))) return { error: 'กรุณาเลือกแผนกจากรายการที่มี' };
+    err = need('c_division', 'กรุณาเลือกฝ่าย');
+    if (err) return { error: err };
+    if (!inList_(DIV_LIST, v('c_division'))) return { error: 'กรุณาเลือกฝ่ายจากรายการที่มี' };
+    err = need('c_start', 'กรุณาระบุวันที่เริ่มงาน') || need('c_phone', 'กรุณากรอกเบอร์โทรศัพท์ภายในแผนก');
+    if (err) return { error: err };
+
+    const types = [...document.querySelectorAll('input[name="certType"]:checked')].map(x => x.value);
+    if (!types.length) return { error: 'กรุณาเลือกประเภทหนังสือรับรองอย่างน้อย 1 รายการ' };
+    let typeOther = '';
+    if (types.indexOf('other') !== -1) {
+      typeOther = v('certType_other_detail');
+      if (!typeOther) { document.getElementById('certType_other_detail').focus(); return { error: 'กรุณาระบุประเภทหนังสือรับรอง (อื่นๆ)' }; }
+    }
+    const purposes = {};
+    const checked = [...document.querySelectorAll('input[name="certPurpose"]:checked')].map(x => x.value);
+    if (!checked.length) return { error: 'กรุณาเลือกวัตถุประสงค์ (เพื่อนำไปทำ) อย่างน้อย 1 รายการ' };
+    for (const pid of checked) {
+      const def = CERT_PURPOSES.find(x => x.id === pid), vals = {};
+      for (const d of def.details) {
+        const el = document.getElementById('certPurpose_' + pid + '_' + d.key);
+        if (!el.value.trim()) { el.focus(); return { error: 'เพื่อนำไปทำ "' + def.label + '" กรุณากรอก' + d.label }; }
+        vals[d.key] = el.value.trim();
+      }
+      purposes[pid] = vals;
+    }
+    return { data: {
+      formDate: v('c_date'), prefix: v('c_prefix'), firstName: v('c_first'), lastName: v('c_last'), employeeId: v('c_empid'),
+      position: v('c_pos'), department: v('c_dept'), division: v('c_division'), startDate: v('c_start'), deptPhone: v('c_phone'),
+      certTypes: types, certTypeOther: typeOther, purposes: purposes,
+      bankName: v('c_bank'), contactPerson: v('c_contact'), contactPhone: v('c_contact_phone')
+    } };
+  }
+
+  function submitCert(){
+    const r = collectCert();
+    if (r.error) return showToast(r.error, 'err');
+    const btn = document.getElementById('certSubmitBtn');
+    btn.disabled = true; btn.textContent = 'กำลังส่งคำขอ...';
+    callApi('submitCertRequest', { data: r.data }).then(res => {
+      btn.disabled = false; btn.textContent = 'ส่งคำขอหนังสือรับรอง';
+      if (!res.success) return showToast(res.error || 'ส่งคำขอไม่สำเร็จ', 'err');
+      document.getElementById('certFormCard').style.display = 'none';
+      document.getElementById('certSuccessCard').style.display = 'block';
+      document.getElementById('certSuccessReqId').textContent = res.requestId;
+      setHeadProgress(100);
+      window.scrollTo(0, 0);
+    }).catch(() => {
+      btn.disabled = false; btn.textContent = 'ส่งคำขอหนังสือรับรอง';
+      showToast('เชื่อมต่อระบบไม่สำเร็จ กรุณาลองใหม่', 'err');
+    });
+  }
+
+  function resetCertForm(){
+    document.getElementById('certFormCard').style.display = 'block';
+    document.getElementById('certSuccessCard').style.display = 'none';
+    ['c_prefix', 'c_empid', 'c_first', 'c_last', 'c_pos', 'c_dept', 'c_division', 'c_start', 'c_phone', 'c_bank', 'c_contact', 'c_contact_phone']
+      .forEach(id => document.getElementById(id).value = '');
+    document.getElementById('c_date').value = todayIso_();
+    document.querySelectorAll('#view-cert input[type=checkbox]').forEach(c => { c.checked = false; });
+    document.querySelectorAll('#view-cert .opt').forEach(o => { o.classList.remove('checked'); o.querySelectorAll('.opt-detail').forEach(d => { d.classList.remove('show'); d.value = ''; }); });
+    updateCertProgress();
+    window.scrollTo(0, 0);
   }
 
   // ================= HR SIDE =================
@@ -1294,13 +1571,17 @@
       localStorage.setItem('referral_hr_code', code);
       document.getElementById('hrGate').style.display = 'none';
       document.getElementById('hrPanel').style.display = 'block';
-      renderHrList(res);
+      if (HR_MODE === 'cert') {
+        HR_PEND.ref = res.stats ? res.stats.pending : 0; HR_PEND.cert = res.certPendingCount || 0;
+        syncHrSeg(); syncHrNav(res.pendingCount || 0); loadCertList();
+      } else renderHrList(res);
       registerAppUrl_();
     }).catch(() => showToast('เชื่อมต่อระบบไม่สำเร็จ', 'err'));
   }
 
   function lockHr(){
     HR_CODE = '';
+    HR_MODE = 'ref'; HR_PEND.ref = 0; HR_PEND.cert = 0; syncHrSeg();
     localStorage.removeItem('referral_hr_code');
     syncHrNav();
     document.getElementById('hrGate').style.display = 'block';
@@ -1311,6 +1592,7 @@
 
   function loadHrList(){
     if (!HR_CODE) return;
+    if (HR_MODE === 'cert') return loadCertList();
     const filters = {
       keyword: document.getElementById('hrKeyword').value.trim(),
       status: document.getElementById('hrStatus').value
@@ -1364,6 +1646,7 @@
     HR_KEEP_PAGE = false;
     const n = HR_REQUESTS.length;
     document.getElementById('hrPendingSummary').textContent = 'พบ ' + n + ' รายการ' + (document.getElementById('hrStatus').value ? ' • กรองตามสถานะ' : '');
+    HR_PEND.ref = res.stats ? res.stats.pending : 0; HR_PEND.cert = res.certPendingCount || 0; syncHrSeg();
     syncHrNav(res.pendingCount || 0);
     renderHrPage();
   }
@@ -1461,6 +1744,144 @@
   document.getElementById('reqClose').addEventListener('click', closeReqModal);
   document.getElementById('reqBack').addEventListener('click', closeReqModal);
   document.addEventListener('keydown', e => { if (e.key === 'Escape' && !document.getElementById('reqModal').hidden && !Swal.isVisible()) closeReqModal(); });
+
+  // ================= หนังสือรับรอง (ฝั่งฝ่ายบุคคล) =================
+  let CERT_ROWS = [];
+  let CERT_PAGE = 1;
+  let CERT_KEEP_PAGE = false;
+  const certStatusText = s => s === 'รอ HR ออกใบ' ? 'รอ HR ออกหนังสือ' : (s === 'ออกใบแล้ว' ? 'ออกหนังสือแล้ว' : s);
+
+  function syncHrSeg(){
+    document.querySelectorAll('#hrSeg button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.mode === HR_MODE)));
+    [['segRef', HR_PEND.ref], ['segCert', HR_PEND.cert]].forEach(([id, n]) => {
+      const el = document.getElementById(id); if (!el) return;
+      el.textContent = n > 99 ? '99+' : n; el.classList.toggle('show', n > 0);
+    });
+    // ป้ายการ์ดสถิติเปลี่ยนตามแท็บ
+    const cert = HR_MODE === 'cert';
+    const l1 = document.querySelector('.s-pending .stat-label'), l2 = document.querySelector('.s-issued .stat-label');
+    if (l1) l1.textContent = cert ? 'รอออกหนังสือ' : 'รอออกใบ';
+    if (l2) l2.textContent = cert ? 'ออกหนังสือแล้ว' : 'ออกใบแล้ว';
+  }
+  function setHrMode(mode){
+    if (HR_MODE === mode) return;
+    HR_MODE = mode;
+    document.getElementById('hrKeyword').value = '';
+    document.getElementById('hrStatus').value = '';
+    syncHrSeg();
+    document.getElementById('hrList').innerHTML = '<div class="card empty">กำลังโหลด...</div>';
+    document.getElementById('hrPagination').hidden = true;
+    loadHrList();
+  }
+  document.getElementById('hrSeg').addEventListener('click', e => {
+    const b = e.target.closest('button[data-mode]'); if (b) setHrMode(b.dataset.mode);
+  });
+
+  function loadCertList(){
+    if (!HR_CODE) return;
+    const filters = { keyword: document.getElementById('hrKeyword').value.trim(), status: document.getElementById('hrStatus').value };
+    callApi('listCertRequests', { accessCode: HR_CODE, filters }).then(res => {
+      if (res.error === 'WRONG_CODE') { showToast('รหัสผ่านไม่ถูกต้องหรือหมดอายุ', 'err'); lockHr(); return; }
+      if (!res.success) { document.getElementById('hrList').innerHTML = ''; return showToast(res.error || 'โหลดรายการไม่สำเร็จ (ถ้าเพิ่งอัปเดตโค้ด อย่าลืม Deploy เวอร์ชันใหม่)', 'err'); }
+      renderCertList(res);
+    }).catch(() => showToast('โหลดรายการไม่สำเร็จ', 'err'));
+  }
+
+  function renderCertList(res){
+    renderStats(res.stats);
+    syncStatActive();
+    CERT_ROWS = res.requests || [];
+    CERT_PAGE = CERT_KEEP_PAGE ? CERT_PAGE : 1;
+    CERT_KEEP_PAGE = false;
+    document.getElementById('hrPendingSummary').textContent = 'พบ ' + CERT_ROWS.length + ' รายการ' + (document.getElementById('hrStatus').value ? ' • กรองตามสถานะ' : '');
+    HR_PEND.cert = res.stats ? res.stats.pending : 0; HR_PEND.ref = res.referralPendingCount || 0; syncHrSeg();
+    syncHrNav(res.pendingCount || 0);
+    renderCertPage();
+  }
+
+  function renderCertPage(){
+    const list = document.getElementById('hrList'), pager = document.getElementById('hrPagination');
+    const n = CERT_ROWS.length;
+    if (!n) { list.innerHTML = '<div class="card empty">' + IC(PATHS.doc) + 'ไม่พบคำขอที่ตรงกับเงื่อนไข</div>'; pager.hidden = true; return; }
+    const totalPages = Math.max(1, Math.ceil(n / HR_PAGE_SIZE));
+    if (CERT_PAGE > totalPages) CERT_PAGE = totalPages;
+    const items = CERT_ROWS.slice((CERT_PAGE - 1) * HR_PAGE_SIZE, CERT_PAGE * HR_PAGE_SIZE);
+    list.innerHTML = '<div class="req-list">' + items.map(r => {
+      const cls = statusClass(r.status), pending = r.status === 'รอ HR ออกใบ';
+      const wait = pending && r.waitDays >= 1 ? '<span class="wait' + (r.waitDays >= 3 ? ' late' : '') + '">รอมา ' + r.waitDays + ' วัน</span>' : '';
+      const meta = [escapeHtml(r.department) + (r.division ? '/' + escapeHtml(r.division) : ''), escapeHtml(r.certTypes)].filter(Boolean).join(' • ');
+      return '<div class="req-row ' + cls + '" onclick="openCertDetail(\'' + r.requestId + '\')">' +
+        '<div class="avatar">' + escapeHtml(String(r.name || '?').replace(/^(นางสาว|นาย|นาง)/, '').trim().charAt(0) || '?') + '</div>' +
+        '<div class="rr-main"><div class="rr-line1"><span class="rr-name">' + escapeHtml(r.name) + '</span><span class="req-id-sm">' + r.requestId + '</span></div>' +
+        '<div class="rr-sub">' + escapeHtml(r.timestamp) + '</div></div>' +
+        '<div class="rr-meta">' + meta + '</div>' +
+        '<div class="rr-side">' + wait + '<span class="badge ' + cls + '">' + certStatusText(r.status) + '</span>' +
+          '<span class="rr-act"><button type="button" class="ib del" title="ลบ" aria-label="ลบรายการนี้" onclick="event.stopPropagation();deleteCertUi(\'' + r.requestId + '\')">' + IC(PATHS.trash) + '</button></span>' +
+          '<span class="rr-chev">' + IC('<path d="M9 6l6 6-6 6"/>') + '</span></div></div>';
+    }).join('') + '</div>';
+    pager.hidden = totalPages <= 1;
+    if (!pager.hidden) {
+      pager.innerHTML =
+        '<button id="hrPrev" ' + (CERT_PAGE <= 1 ? 'disabled' : '') + ' aria-label="ก่อนหน้า">' + IC('<path d="M15 6l-6 6 6 6"/>') + '</button>' +
+        '<span class="page-info">หน้า ' + CERT_PAGE + ' จาก ' + totalPages + ' (' + n + ' รายการ)</span>' +
+        '<button id="hrNext" ' + (CERT_PAGE >= totalPages ? 'disabled' : '') + ' aria-label="ถัดไป">' + IC('<path d="M9 6l6 6-6 6"/>') + '</button>';
+      document.getElementById('hrPrev').onclick = () => { CERT_PAGE--; renderCertPage(); scrollHrListTop(); };
+      document.getElementById('hrNext').onclick = () => { CERT_PAGE++; renderCertPage(); scrollHrListTop(); };
+    }
+  }
+
+  function openCertDetail(requestId){
+    const r = CERT_ROWS.find(x => x.requestId === requestId);
+    if (!r) return;
+    const cls = statusClass(r.status), pending = r.status === 'รอ HR ออกใบ';
+    const kv = (k, v, full) => v ? '<div class="kv' + (full ? ' full' : '') + '"><dt>' + k + '</dt><dd>' + v + '</dd></div>' : '';
+    const purposes = (r.purposeLines || []).length ? '<ul class="purpose-lines">' + r.purposeLines.map(x => '<li>' + escapeHtml(x) + '</li>').join('') + '</ul>' : '';
+    document.getElementById('reqTitle').textContent = r.name;
+    document.getElementById('reqSub').innerHTML = r.requestId + ' • ' + r.timestamp + ' • <span class="badge ' + cls + '">' + certStatusText(r.status) + '</span>';
+    document.getElementById('reqBody').innerHTML = '<dl class="kv-grid" style="border-top:0;padding-top:4px;">' +
+      kv('รหัสประจำตัว', escapeHtml(r.employeeId)) +
+      kv('ตำแหน่ง', escapeHtml(r.position)) +
+      kv('แผนก / ฝ่าย', escapeHtml(r.department) + (r.division ? ' / ' + escapeHtml(r.division) : '')) +
+      kv('เริ่มงานวันที่', escapeHtml(r.startDateText)) +
+      kv('เบอร์ภายในแผนก', escapeHtml(r.deptPhone)) +
+      kv('วันที่ในแบบฟอร์ม', escapeHtml(r.formDateText)) +
+      kv('ขอหนังสือรับรอง', escapeHtml(r.certTypes), true) +
+      kv('เพื่อนำไปทำ', purposes, true) +
+      kv('ชื่อธนาคาร', escapeHtml(r.bankName)) +
+      kv('ติดต่อเจ้าหน้าที่', escapeHtml(r.contactPerson) + (r.contactPhone ? ' โทร <a href="tel:' + escapeHtml(r.contactPhone) + '">' + escapeHtml(r.contactPhone) + '</a>' : '')) +
+      kv('หมายเหตุ HR', escapeHtml(r.hrNote), true) +
+      '</dl>';
+    const pendHtml = pending
+      ? '<button class="btn-mini save" style="flex:1;justify-content:center;" onclick="closeReqModal();openNoteModal(\'' + r.requestId + '\',\'issue\')">' + IC(PATHS.ok) + 'ออกหนังสือแล้ว</button>' +
+        '<button class="btn-mini danger" style="flex:1;justify-content:center;" onclick="closeReqModal();openNoteModal(\'' + r.requestId + '\',\'void\')">' + IC(PATHS.no) + 'ยกเลิกคำขอ</button>'
+      : '';
+    document.getElementById('reqFoot').innerHTML =
+      (pendHtml ? '<div style="display:flex;gap:8px;">' + pendHtml + '</div>' : '') +
+      '<div style="display:flex;gap:8px;"><button class="btn-mini danger" style="flex:1;justify-content:center;" onclick="closeReqModal();deleteCertUi(\'' + r.requestId + '\')">' + IC(PATHS.trash) + 'ลบรายการ</button></div>';
+    document.getElementById('reqModal').hidden = false;
+    document.body.style.overflow = 'hidden';
+  }
+
+  function deleteCertUi(requestId){
+    const r = CERT_ROWS.find(x => x.requestId === requestId);
+    if (!r) return;
+    fireAlert({
+      icon: 'warning', title: 'ลบคำขอนี้ออกจากระบบ?',
+      html: '<b>' + escapeHtml(r.name) + '</b> <span style="color:var(--ink-soft)">' + escapeHtml(r.requestId) + '</span><br>' +
+            '<span style="font-size:.86em;line-height:1.7;">ลบแล้วรายการจะหายจากหน้านี้และตัวเลขสถิติทันที (ระบบเก็บสำเนาไว้ในชีท AuditLog)<br>' +
+            'ถ้าแค่ต้องการยกเลิกคำขอ ให้ใช้ปุ่ม "ยกเลิกคำขอ" แทน (เก็บประวัติไว้)</span>',
+      showCancelButton: true, confirmButtonText: 'ลบถาวร', cancelButtonText: 'ปิด', confirmButtonColor: true
+    }).then(res => {
+      if (!res.isConfirmed) return;
+      callApi('deleteCertRequest', { accessCode: HR_CODE, requestId: requestId }).then(out => {
+        if (out.error === 'WRONG_CODE') { showToast('รหัสผ่านไม่ถูกต้องหรือหมดอายุ', 'err'); lockHr(); return; }
+        if (!out.success) return showToast(out.error || 'ลบไม่สำเร็จ', 'err');
+        showToast('ลบรายการแล้ว', 'ok');
+        CERT_KEEP_PAGE = true;
+        loadCertList();
+      }).catch(() => showToast('เชื่อมต่อระบบไม่สำเร็จ', 'err'));
+    });
+  }
 
   // ================= แก้ไข / ลบ คำขอรายรายการ (ฝ่ายบุคคล) =================
   const EDIT_PATIENTS = [
@@ -1621,9 +2042,10 @@
   // ---- Confirm dialog (ใช้ร่วมกันทั้งออกใบแล้ว/ยกเลิก) ----
   function openNoteModal(requestId, mode){
     const isVoid = mode === 'void';
+    const isCert = /^CT/.test(String(requestId));
     fireAlert({
       icon: isVoid ? 'warning' : 'question',
-      title: isVoid ? 'ยืนยันยกเลิกคำขอ' : 'ยืนยันออกใบส่งตัวแล้ว',
+      title: isVoid ? 'ยืนยันยกเลิกคำขอ' : (isCert ? 'ยืนยันออกหนังสือรับรองแล้ว' : 'ยืนยันออกใบส่งตัวแล้ว'),
       html: 'เลขที่คำขอ <b>' + requestId + '</b>' + (isVoid ? ' — กรุณาระบุเหตุผลการยกเลิก' : ''),
       input: 'textarea',
       inputPlaceholder: isVoid ? 'เช่น พนักงานยกเลิกเอง' : 'หมายเหตุ (ไม่บังคับ) เช่น มารับเอกสารแล้ว 24/9',
@@ -1641,7 +2063,7 @@
     }).then(result => {
       if (!result.isConfirmed) return;
       const note = result.value || '';
-      const action = isVoid ? 'voidRequest' : 'markRequestIssued';
+      const action = isCert ? (isVoid ? 'voidCertRequest' : 'markCertIssued') : (isVoid ? 'voidRequest' : 'markRequestIssued');
       const payload = isVoid
         ? { accessCode: HR_CODE, requestId: requestId, reason: note }
         : { accessCode: HR_CODE, requestId: requestId, note: note };
@@ -1659,7 +2081,7 @@
       keyword: document.getElementById('hrKeyword').value.trim(),
       status: document.getElementById('hrStatus').value
     };
-    callApi('exportRequestsCsv', { accessCode: HR_CODE, filters }).then(res => {
+    callApi(HR_MODE === 'cert' ? 'exportCertCsv' : 'exportRequestsCsv', { accessCode: HR_CODE, filters }).then(res => {
       if (!res.success) return showToast(res.error || 'Export ไม่สำเร็จ', 'err');
       const blob = new Blob([res.csv], { type: 'text/csv;charset=utf-8' });
       const url = URL.createObjectURL(blob);
