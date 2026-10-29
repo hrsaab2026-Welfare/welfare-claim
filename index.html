@@ -379,7 +379,7 @@
   #editModal .modal-foot{display:flex;gap:8px;}
   #editModal .modal-foot .btn{flex:1;width:auto;} #editModal .modal-foot .btn-mini{padding-left:20px;padding-right:20px;justify-content:center;}
   @media (max-width:560px){ #editModal .row2{grid-template-columns:1fr;gap:0;} }
-  .gd-tabs{display:flex;gap:4px;padding:14px 22px 0;}
+  .gd-tabs{display:flex;flex-wrap:wrap;gap:4px;padding:14px 22px 0;}
   .gd-tabbtn{padding:8px 4px 10px;margin-right:18px;border:0;background:none;font-family:inherit;font-size:.86rem;font-weight:700;color:var(--ink-soft);cursor:pointer;border-bottom:2px solid transparent;}
   .gd-tabbtn.active{color:var(--navy);border-color:var(--gold);}
   .gd-tabbtn:focus-visible{outline:2px solid var(--gold);outline-offset:2px;}
@@ -1048,7 +1048,7 @@
 
   <div class="view" id="view-guide"><div class="gd-top no-print"><button class="btn-mini" onclick="window.print()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 9V4h10v5M7 17H5a1 1 0 0 1-1-1v-6a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v6a1 1 0 0 1-1 1h-2"/><path d="M7 14h10v6H7z"/></svg>พิมพ์ / บันทึกเป็น PDF</button></div><div class="gd-hero"><h2>ขอใบส่งตัวโรงพยาบาลราชธานี ทำเองได้ใน 3 ขั้นตอน</h2><p>ไม่ต้องล็อกอิน ใช้ได้ทั้งมือถือและคอมพิวเตอร์</p><ol class="gd-flow"><li>กรอกฟอร์มในเว็บนี้</li><li>ฝ่ายบุคคลได้รับอีเมลทันที</li><li>ฝ่ายบุคคลเตรียมใบส่งตัว</li><li>รับใบที่ HR แล้วไปโรงพยาบาล</li></ol></div><div id="guideBody" class="gd-body"><div class="empty">กำลังโหลด...</div></div></div>
 
-  <!-- ================= คู่มือขอหนังสือรับรอง (เนื้อหาคงที่ ไม่ผ่านชีท) ================= -->
+  <!-- ================= คู่มือขอหนังสือรับรอง (โหลดจากชีท GuideSections audience=cert แก้ไขได้ที่ "จัดการคู่มือ") ================= -->
   <div class="view" id="view-guideCert">
     <div class="gd-top no-print"><button class="btn-mini" onclick="window.print()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 9V4h10v5M7 17H5a1 1 0 0 1-1-1v-6a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v6a1 1 0 0 1-1 1h-2"/><path d="M7 14h10v6H7z"/></svg>พิมพ์ / บันทึกเป็น PDF</button></div>
     <div class="gd-hero">
@@ -1061,7 +1061,7 @@
         <li>รับหนังสือที่ฝ่ายบุคคล</li>
       </ol>
     </div>
-    <div class="gd-body">
+    <div class="gd-body" id="guideCertBody"><!-- เนื้อหาด้านล่างเป็นค่าสำรอง: เมื่อโหลดข้อมูลจากระบบสำเร็จ จะถูกแทนที่ด้วยคู่มือที่ HR แก้ไขได้ (จัดการคู่มือ > คู่มือขอหนังสือรับรอง) -->
       <section class="gd-card"><h3>เตรียมข้อมูลนี้ไว้ก่อนเริ่ม</h3>
         <ul>
           <li>รหัสประจำตัว ตำแหน่ง แผนก และฝ่ายที่สังกัด</li>
@@ -1227,6 +1227,7 @@
     </div>
     <div class="gd-tabs">
       <button type="button" class="gd-tabbtn active" id="guideTabEmp" onclick="switchGuideTab('employee')">คู่มือพนักงาน</button>
+      <button type="button" class="gd-tabbtn" id="guideTabCert" onclick="switchGuideTab('cert')">คู่มือขอหนังสือรับรอง</button>
       <button type="button" class="gd-tabbtn" id="guideTabAdm" onclick="switchGuideTab('admin')">คู่มือ Admin</button>
     </div>
     <div class="modal-body" id="guideList"><div class="empty">กำลังโหลด...</div></div>
@@ -1724,6 +1725,8 @@
     renderOptionList('serviceList', res.serviceTypes, 'service');
     renderOptionList('payerList', res.payerTypes, 'payer');
     renderGuideSections(res.guideEmployee, document.getElementById('guideBody'));
+    // คู่มือขอหนังสือรับรอง: ถ้าระบบส่งมา (Apps Script เวอร์ชันใหม่) ใช้ข้อมูลที่ HR แก้ไขได้ ถ้าไม่ส่งมายังคงแสดงเนื้อหาสำรองในหน้าเดิม
+    if (Array.isArray(res.guideCert)) renderGuideSections(res.guideCert, document.getElementById('guideCertBody'));
   }).catch(() => showToast('เชื่อมต่อระบบไม่สำเร็จ ลองรีเฟรชหน้าเว็บ', 'err'));
 
   function renderOptionList(containerId, options, groupName){
@@ -3090,7 +3093,7 @@
   }
 
   // ---- จัดการคู่มือ (modal ฝั่ง HR): เพิ่ม / แก้ไข / ลบ / เลื่อนลำดับ ----
-  let GUIDE_ITEMS = { employee: [], admin: [] };
+  let GUIDE_ITEMS = { employee: [], cert: [], admin: [] };
   let GUIDE_TAB = 'employee';
   let GUIDE_WIDE = false; // จำสถานะย่อ/ขยายของหน้าต่างแก้ไขคู่มือ
 
@@ -3102,11 +3105,12 @@
     document.getElementById('guideClose').focus();
     Promise.all([
       callApi('listGuideSections', { accessCode: HR_CODE, audience: 'employee' }),
+      callApi('listGuideSections', { accessCode: HR_CODE, audience: 'cert' }),
       callApi('listGuideSections', { accessCode: HR_CODE, audience: 'admin' })
-    ]).then(([e, a]) => {
-      if (e.error === 'WRONG_CODE' || a.error === 'WRONG_CODE') { closeGuideModal(); lockHr(); return; }
-      if (!e.success || !a.success) return showToast(e.error || a.error || 'โหลดคู่มือไม่สำเร็จ', 'err');
-      GUIDE_ITEMS.employee = e.items; GUIDE_ITEMS.admin = a.items;
+    ]).then(([e, c, a]) => {
+      if (e.error === 'WRONG_CODE' || c.error === 'WRONG_CODE' || a.error === 'WRONG_CODE') { closeGuideModal(); lockHr(); return; }
+      if (!e.success || !c.success || !a.success) return showToast(e.error || c.error || a.error || 'โหลดคู่มือไม่สำเร็จ', 'err');
+      GUIDE_ITEMS.employee = e.items; GUIDE_ITEMS.cert = c.items; GUIDE_ITEMS.admin = a.items;
       renderGuideManageList();
     }).catch(() => showToast('เชื่อมต่อระบบไม่สำเร็จ', 'err'));
   }
@@ -3120,6 +3124,7 @@
   }
   function renderGuideManageList(){
     document.getElementById('guideTabEmp').classList.toggle('active', GUIDE_TAB === 'employee');
+    document.getElementById('guideTabCert').classList.toggle('active', GUIDE_TAB === 'cert');
     document.getElementById('guideTabAdm').classList.toggle('active', GUIDE_TAB === 'admin');
     const list = GUIDE_ITEMS[GUIDE_TAB] || [];
     if (!list.length) {
@@ -3188,8 +3193,14 @@
       if (!res.success) return showToast(res.error || 'บันทึกไม่สำเร็จ', 'err');
       showToast(okMsg, 'ok');
       GUIDE_ITEMS[GUIDE_TAB] = res.items;
+      syncGuidePage_(GUIDE_TAB);
       renderGuideManageList();
     }).catch(() => showToast('เชื่อมต่อระบบไม่สำเร็จ', 'err'));
+  }
+  /** อัปเดตหน้าคู่มือที่พนักงานเห็นให้ตรงกับที่เพิ่งแก้ไข (ไม่ต้องรีเฟรชหน้า) */
+  function syncGuidePage_(aud){
+    if (aud === 'cert') renderGuideSections(GUIDE_ITEMS.cert, document.getElementById('guideCertBody'));
+    else if (aud === 'employee') renderGuideSections(GUIDE_ITEMS.employee, document.getElementById('guideBody'));
   }
   function guideAddFn(){
     guideForm('เพิ่มหัวข้อคู่มือ', null).then(r => {
@@ -3218,6 +3229,7 @@
       if (res.error === 'WRONG_CODE') { closeGuideModal(); lockHr(); return; }
       if (!res.success) return showToast(res.error || 'จัดลำดับไม่สำเร็จ', 'err');
       GUIDE_ITEMS[GUIDE_TAB] = res.items;
+      syncGuidePage_(GUIDE_TAB);
       renderGuideManageList();
     }).catch(() => showToast('เชื่อมต่อระบบไม่สำเร็จ', 'err'));
   }
