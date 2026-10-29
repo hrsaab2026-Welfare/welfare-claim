@@ -992,7 +992,7 @@
     <div class="card gate" id="hrGate">
       <div class="lock">🔒</div>
       <div class="title">สำหรับฝ่ายบุคคลเท่านั้น</div>
-      <div class="hint">กรอกรหัสผ่านเพื่อดูรายการคำขอใบส่งตัว</div>
+      <div class="hint">กรอกรหัสผ่านเพื่อดูรายการคำขอใบส่งตัวและหนังสือรับรอง</div>
       <div class="gate-pw"><input type="password" id="hrCodeInput" placeholder="รหัสผ่าน" inputmode="text" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" onkeydown="if(event.key==='Enter')unlockHr()"><button type="button" class="pw-eye" id="hrCodeEye" onclick="toggleHrCodeVisible()" aria-label="แสดงรหัสผ่าน" aria-pressed="false"><svg id="hrEyeOn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg><svg id="hrEyeOff" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:none"><path d="M17.9 17.9A10.4 10.4 0 0112 19C5.6 19 2 12 2 12a18 18 0 015-5.9M9.9 5.2A9.7 9.7 0 0112 5c6.4 0 10 7 10 7a18 18 0 01-2.2 3.2M1 1l22 22"/><path d="M14.1 14.1a3 3 0 11-4.2-4.2"/></svg></button></div>
       <div><button class="btn" style="padding:11px 30px;" onclick="unlockHr()">เข้าสู่หน้ารายการ</button></div>
     </div>
@@ -1332,8 +1332,20 @@
     employee: { title: 'ขอใบส่งตัว', desc: 'กรอกข้อมูล 3 ขั้นตอน ฝ่ายบุคคลจะเตรียมใบส่งตัวให้' },
     cert: { title: 'ขอหนังสือรับรอง', desc: 'กรอกแบบฟอร์ม HR 4-1-010 ฝ่ายบุคคลจะเตรียมหนังสือรับรองให้' },
     guide: { title: 'คู่มือการใช้งาน', desc: 'วิธีขอใบส่งตัวสำหรับพนักงาน ทีละขั้นตอน' },
-    hr: { title: 'รายการคำขอใบส่งตัว', desc: 'ตรวจสอบคำขอ ออกใบส่งตัว และส่งออกข้อมูล' }
+    hr: { title: 'รายการคำขอ', desc: 'ตรวจสอบคำขอ ออกเอกสาร และส่งออกข้อมูล' }
   };
+  // หัวข้อหน้า HR เปลี่ยนตามแท็บ (เฉพาะตอนปลดล็อกแล้ว) — ตอนล็อกอยู่ใช้ชื่อกลาง
+  const HR_HEADS = {
+    ref:  { title: 'คำขอใบส่งตัว',      desc: 'ตรวจสอบคำขอ ออกใบส่งตัว และส่งออกข้อมูล' },
+    cert: { title: 'คำขอหนังสือรับรอง', desc: 'ตรวจสอบคำขอ ออกหนังสือรับรอง และส่งออกข้อมูล' }
+  };
+  function applyHrHeader(){
+    if (currentView !== 'hr') return;
+    const h = (HR_CODE && HR_HEADS[HR_MODE]) || VIEWS.hr;
+    document.getElementById('pageTitle').textContent = h.title;
+    document.getElementById('pageDesc').textContent = h.desc;
+    document.title = h.title + ' — SAAB HR Connect';
+  }
   const HEAD_ICONS = {
     cert: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h9l3 3v15H6z"/><path d="M14.5 3v3.5H18"/><path d="M9 10.5h6M9 13.5h4"/><path class="acc" d="M9.5 17.5l1.8 1.8 3.2-3.6"/></svg>',
     employee: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21h16"/><path d="M6 21V9l6-5 6 5v12"/><path d="M10.5 21v-3.5h3V21"/><path class="acc" d="M12 10.5v4M10 12.5h4"/></svg>',
@@ -1361,6 +1373,7 @@
     document.getElementById('headIcon').innerHTML = HEAD_ICONS[name];
     document.getElementById('appHeader').dataset.view = name;
     syncHeaderChip();
+    applyHrHeader();
     if (name === 'cert') updateCertProgress(); else if (name === 'employee') setHeadProgress(Math.round(currentStep / TOTAL_STEPS * 100));
     window.scrollTo(0, 0);
     if (name === 'hr' && HR_CODE) tryAutoUnlock();
@@ -1848,6 +1861,7 @@
         HR_PEND.ref = res.stats ? res.stats.pending : 0; HR_PEND.cert = res.certPendingCount || 0;
         syncHrSeg(); syncHrNav(res.pendingCount || 0); loadCertList();
       } else renderHrList(res);
+      applyHrHeader();
       registerAppUrl_();
     }).catch(() => showToast('เชื่อมต่อระบบไม่สำเร็จ', 'err'));
   }
@@ -2037,6 +2051,7 @@
 
   function syncHrSeg(){
     document.querySelectorAll('#hrSeg button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.mode === HR_MODE)));
+    applyHrHeader();
     [['segRef', HR_PEND.ref], ['segCert', HR_PEND.cert]].forEach(([id, n]) => {
       const el = document.getElementById(id); if (!el) return;
       el.textContent = n > 99 ? '99+' : n; el.classList.toggle('show', n > 0);
