@@ -664,10 +664,24 @@
   @media (max-width:899px){
     :root{--float-gap:8px;--radius-xl:18px;}
     .app-header{margin:0 var(--float-gap);}
-    .sidebar{border-radius:0 var(--radius-xl) var(--radius-xl) 0;}
+    .sidebar{height:100vh;height:100dvh;border-radius:0 var(--radius-xl) var(--radius-xl) 0;}
     #formCard{scroll-margin-top:88px;}
   }
   @media print{.main::before{display:none;}}
+
+  /* =====================================================================
+     ปุ่มทั้งระบบ: มุมโค้งชุดเดียวกับ sidebar/header
+     ปุ่มหลัก 12px · ปุ่มเล็ก/ไอคอน 10px · แท็บสลับโหมด 14px (ใหญ่กว่าปุ่มในมันเพื่อให้ซ้อนกันสวย)
+     ไม่แตะ ช่องกรอก/การ์ด/ป้ายสถานะ (badge/pill คงเดิม)
+     ===================================================================== */
+  :root{--radius-btn:12px;--radius-btn-sm:10px;}
+  .btn,.btn-primary,.menu-btn,.icon-btn,.nav-item,.sb-toggle,.theme-opt{border-radius:var(--radius-btn);}
+  .btn-mini,.ib,.modal-x,.gd-expand,.pw-eye,.pagination button,.hr-seg button{border-radius:var(--radius-btn-sm);}
+  .hr-seg{border-radius:14px;}
+  .pagination button{border-radius:var(--radius-btn);}
+  .swal2-styled,.swal2-styled.swal2-confirm,.swal2-styled.swal2-cancel,.app-swal-confirm,.app-swal-cancel{border-radius:var(--radius-btn) !important;}
+  .swal2-popup,.app-swal-popup{border-radius:var(--radius-xl) !important;}
+  .modal-card{border-radius:var(--radius-xl);}
 </style>
 </head>
 <body>
