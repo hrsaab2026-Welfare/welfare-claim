@@ -643,6 +643,31 @@
     #view-cert .opt,#view-cert .cf :is(input,select),#certSubmitBtn{transition:none;}
     #view-cert .opt.checked .opt-detail.show,#certSuccessCard .stamp-ring{animation:none;}
   }
+
+  /* =====================================================================
+     Sidebar + Header แบบลอย มุมโค้งมน (ตามที่พี่บีต้องการ)
+     - ไม่แตะโครงสร้าง HTML/JS ใช้ตัวแปรสีเดิม ธีมสียังเปลี่ยนได้
+     - แถบ ::before บน .main = แผ่นรองสี canvas กันเนื้อหาโผล่ในช่องว่างเหนือ header ตอนเลื่อน
+     ===================================================================== */
+  :root{--float-gap:12px;--radius-xl:22px;}
+  .main::before{content:'';position:sticky;top:0;z-index:39;flex:0 0 var(--float-gap);background:var(--canvas);}
+  .app-header{margin:0 var(--float-gap) 0 8px;top:var(--float-gap);overflow:hidden;
+    border:1px solid var(--border);border-radius:var(--radius-xl);box-shadow:0 6px 20px rgba(20,30,45,.07);}
+  .ah-progress{bottom:0;}
+  @media (min-width:900px){
+    :root{--sb-w:280px;--sb-w-min:92px;}
+    .sidebar{top:var(--float-gap);height:calc(100vh - 2 * var(--float-gap));height:calc(100dvh - 2 * var(--float-gap));
+      margin:var(--float-gap) 4px var(--float-gap) var(--float-gap);border-radius:var(--radius-xl);
+      box-shadow:0 12px 32px rgba(10,18,30,.22);}
+    #formCard,#certFormCard{scroll-margin-top:112px;}
+  }
+  @media (max-width:899px){
+    :root{--float-gap:8px;--radius-xl:18px;}
+    .app-header{margin:0 var(--float-gap);}
+    .sidebar{border-radius:0 var(--radius-xl) var(--radius-xl) 0;}
+    #formCard{scroll-margin-top:88px;}
+  }
+  @media print{.main::before{display:none;}}
 </style>
 </head>
 <body>
