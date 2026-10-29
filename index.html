@@ -389,6 +389,7 @@
   #payModal .modal-card{max-width:600px;}
   #guideModal .pw-key b{font-size:1rem;color:var(--navy);}
   .pagination{display:flex;align-items:center;justify-content:center;gap:14px;margin-top:14px;}
+  .pagination[hidden]{display:none;}
   .pagination button{width:36px;height:36px;border-radius:9px;border:1.5px solid var(--border);background:var(--surface);color:var(--navy);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:border-color .15s,background .15s;}
   .pagination button svg{width:17px;height:17px;}
   .pagination button:hover:not(:disabled){border-color:var(--border-strong);background:var(--surface-2);}
@@ -1565,7 +1566,9 @@
   function unlockHr(silent){
     const code = document.getElementById('hrCodeInput').value.trim();
     if (!code) return showToast('กรุณากรอกรหัสผ่าน', 'err');
+    const seq = ++HR_LOAD_SEQ;
     callApi('listReferralRequests', { accessCode: code, filters: {} }).then(res => {
+      if (seq !== HR_LOAD_SEQ && HR_CODE) return; // มีการโหลดรายการใหม่แทรกแล้ว
       if (res.error === 'WRONG_CODE') { if (!silent) showToast('รหัสผ่านไม่ถูกต้อง', 'err'); return; }
       HR_CODE = code;
       localStorage.setItem('referral_hr_code', code);
@@ -1590,14 +1593,18 @@
     toggleHrCodeVisible(false);
   }
 
+  // ตัวนับคำขอโหลดรายการ — กันผลตอบกลับเก่าของอีกแท็บ (ใบส่งตัว/หนังสือรับรอง) มาเขียนทับรายการที่กำลังแสดง
+  let HR_LOAD_SEQ = 0;
   function loadHrList(){
     if (!HR_CODE) return;
     if (HR_MODE === 'cert') return loadCertList();
+    const seq = ++HR_LOAD_SEQ;
     const filters = {
       keyword: document.getElementById('hrKeyword').value.trim(),
       status: document.getElementById('hrStatus').value
     };
     callApi('listReferralRequests', { accessCode: HR_CODE, filters }).then(res => {
+      if (seq !== HR_LOAD_SEQ || HR_MODE !== 'ref') return; // ผู้ใช้สลับแท็บ/โหลดใหม่ไปแล้ว ทิ้งผลเก่า
       if (res.error === 'WRONG_CODE') { showToast('รหัสผ่านไม่ถูกต้องหรือหมดอายุ', 'err'); lockHr(); return; }
       renderHrList(res);
     }).catch(() => showToast('โหลดรายการไม่สำเร็จ', 'err'));
@@ -1639,6 +1646,7 @@
   let HR_KEEP_PAGE = false; // true = โหลดใหม่แล้วอยู่หน้าเดิม (ใช้หลังแก้ไข/ลบ)
 
   function renderHrList(res){
+    if (HR_MODE !== 'ref') return; // อยู่แท็บหนังสือรับรอง ห้ามวาดรายการใบส่งตัวลงหน้านี้
     renderStats(res.stats);
     syncStatActive();
     HR_REQUESTS = res.requests || [];
@@ -1771,6 +1779,8 @@
     syncHrSeg();
     document.getElementById('hrList').innerHTML = '<div class="card empty">กำลังโหลด...</div>';
     document.getElementById('hrPagination').hidden = true;
+    document.getElementById('hrPagination').innerHTML = '';
+    HR_REQUESTS = []; CERT_ROWS = [];
     loadHrList();
   }
   document.getElementById('hrSeg').addEventListener('click', e => {
@@ -1779,8 +1789,10 @@
 
   function loadCertList(){
     if (!HR_CODE) return;
+    const seq = ++HR_LOAD_SEQ;
     const filters = { keyword: document.getElementById('hrKeyword').value.trim(), status: document.getElementById('hrStatus').value };
     callApi('listCertRequests', { accessCode: HR_CODE, filters }).then(res => {
+      if (seq !== HR_LOAD_SEQ || HR_MODE !== 'cert') return; // ผู้ใช้สลับแท็บ/โหลดใหม่ไปแล้ว ทิ้งผลเก่า
       if (res.error === 'WRONG_CODE') { showToast('รหัสผ่านไม่ถูกต้องหรือหมดอายุ', 'err'); lockHr(); return; }
       if (!res.success) { document.getElementById('hrList').innerHTML = ''; return showToast(res.error || 'โหลดรายการไม่สำเร็จ (ถ้าเพิ่งอัปเดตโค้ด อย่าลืม Deploy เวอร์ชันใหม่)', 'err'); }
       renderCertList(res);
@@ -1788,6 +1800,7 @@
   }
 
   function renderCertList(res){
+    if (HR_MODE !== 'cert') return; // อยู่แท็บใบส่งตัว ห้ามวาดรายการหนังสือรับรองลงหน้านี้
     renderStats(res.stats);
     syncStatActive();
     CERT_ROWS = res.requests || [];
@@ -1802,7 +1815,7 @@
   function renderCertPage(){
     const list = document.getElementById('hrList'), pager = document.getElementById('hrPagination');
     const n = CERT_ROWS.length;
-    if (!n) { list.innerHTML = '<div class="card empty">' + IC(PATHS.doc) + 'ไม่พบคำขอที่ตรงกับเงื่อนไข</div>'; pager.hidden = true; return; }
+    if (!n) { list.innerHTML = '<div class="card empty">' + IC(PATHS.doc) + 'ไม่พบคำขอที่ตรงกับเงื่อนไข</div>'; pager.hidden = true; pager.innerHTML = ''; return; }
     const totalPages = Math.max(1, Math.ceil(n / HR_PAGE_SIZE));
     if (CERT_PAGE > totalPages) CERT_PAGE = totalPages;
     const items = CERT_ROWS.slice((CERT_PAGE - 1) * HR_PAGE_SIZE, CERT_PAGE * HR_PAGE_SIZE);
@@ -1820,6 +1833,7 @@
           '<span class="rr-chev">' + IC('<path d="M9 6l6 6-6 6"/>') + '</span></div></div>';
     }).join('') + '</div>';
     pager.hidden = totalPages <= 1;
+    if (pager.hidden) pager.innerHTML = '';
     if (!pager.hidden) {
       pager.innerHTML =
         '<button id="hrPrev" ' + (CERT_PAGE <= 1 ? 'disabled' : '') + ' aria-label="ก่อนหน้า">' + IC('<path d="M15 6l-6 6 6 6"/>') + '</button>' +
