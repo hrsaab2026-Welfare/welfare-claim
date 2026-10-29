@@ -498,6 +498,145 @@
   .hr-seg .seg-n{display:none;min-width:20px;height:20px;padding:0 6px;border-radius:10px;background:var(--gold);color:#1B2A41;font-size:.74rem;align-items:center;justify-content:center;}
   .hr-seg .seg-n.show{display:inline-flex;}
   .purpose-lines{margin:0;padding-left:18px;}
+
+  /* =====================================================================
+     ขอหนังสือรับรอง — ดีไซน์ใหม่ (scope เฉพาะ #view-cert / #certSuccessCard)
+     ไม่แตะ class กลาง จึงไม่กระทบฟอร์มใบส่งตัว / HR / คู่มือ
+     ใช้ตัวแปรสีเดิม (--navy / --gold ...) ธีมสีจึงยังเปลี่ยนได้ตามปกติ
+     ===================================================================== */
+  #view-cert .cert-form{display:flex;flex-direction:column;gap:16px;}
+
+  /* --- แถบ "ก่อนกรอกแบบฟอร์ม" --- */
+  .cert-hero{position:relative;overflow:hidden;color:#fff;border-radius:16px;padding:22px 26px 24px;
+    background:radial-gradient(120% 150% at 100% 0%,rgba(255,255,255,.11),transparent 58%),linear-gradient(135deg,var(--navy-2),var(--navy));
+    border-bottom:3px solid var(--gold);box-shadow:var(--shadow-md);}
+  .cert-hero > *{position:relative;z-index:1;}
+  .cert-hero-head{display:flex;align-items:center;gap:12px;}
+  .cert-hero-ic{width:38px;height:38px;border-radius:11px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.10);color:var(--gold);flex-shrink:0;}
+  .cert-hero-ic svg{width:21px;height:21px;}
+  .cert-hero h2{margin:0;font-size:1.12rem;font-weight:700;line-height:1.3;}
+  .cert-checks{list-style:none;margin:20px 0 0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));}
+  .cert-checks li{display:flex;flex-direction:column;gap:11px;padding:0 20px;font-size:.88rem;line-height:1.65;color:rgba(255,255,255,.9);}
+  .cert-checks li:first-child{padding-left:0;}
+  .cert-checks li:last-child{padding-right:0;}
+  .cert-checks li + li{border-left:1px solid rgba(255,255,255,.15);}
+  .cert-checks b{color:var(--gold);font-weight:700;}
+  .cert-checks .ci{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.10);color:var(--gold);flex-shrink:0;}
+  .cert-checks .ci svg{width:17px;height:17px;}
+  .cert-checks .warn .ci{background:var(--gold);color:var(--navy);}
+
+  /* --- การ์ดแต่ละหัวข้อ --- */
+  .cert-sec{background:var(--surface);border:1px solid var(--border);border-radius:16px;box-shadow:var(--shadow-sm);}
+  .cert-sec-head{display:flex;align-items:center;gap:14px;padding:16px 26px;border-bottom:1px solid var(--border);
+    background:linear-gradient(180deg,var(--surface-2),var(--surface));border-radius:15px 15px 0 0;}
+  .cert-sec-head .step-num{width:32px;height:32px;font-size:.92rem;font-weight:700;box-shadow:0 0 0 4px var(--navy-bg);}
+  .cert-sec-head h3{margin:0;font-size:1.06rem;font-weight:700;line-height:1.35;color:var(--navy);}
+  .cert-sec-head p{margin:1px 0 0;font-size:.8rem;line-height:1.4;color:var(--ink-soft);}
+  .cert-sec-body{padding:24px 26px 28px;}
+
+  /* --- ช่องกรอก --- */
+  #view-cert .cf-grid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:20px 16px;}
+  #view-cert .cf{grid-column:span 12;min-width:0;}
+  #view-cert .cf-3{grid-column:span 3;} #view-cert .cf-4{grid-column:span 4;} #view-cert .cf-5{grid-column:span 5;}
+  #view-cert .cf-6{grid-column:span 6;} #view-cert .cf-12{grid-column:span 12;}
+  #view-cert .cf > label{margin:0 0 8px;font-size:.86rem;font-weight:600;line-height:1.4;color:var(--ink);}
+  #view-cert .cf > label .rq{margin-left:4px;font-style:normal;font-weight:700;color:var(--danger);}
+  #view-cert .cf :is(input,select){display:block;width:100%;height:48px;padding:0 14px;border:1.5px solid var(--border-strong);border-radius:10px;
+    background-color:#fff;color:var(--ink);font-family:inherit;font-size:.96rem;
+    transition:border-color .15s,box-shadow .15s,background-color .15s;}
+  #view-cert .cf :is(input,select):hover{border-color:var(--ink-soft);}
+  #view-cert .cf :is(input,select):focus{outline:none;border-color:var(--navy);box-shadow:0 0 0 4px var(--gold-ring);}
+  #view-cert .cf input::placeholder{color:#9AA7B6;opacity:1;}
+  #view-cert .cf input[type=date]{-webkit-appearance:none;appearance:none;min-width:0;text-align:left;}
+  #view-cert .cf input[type=date]::-webkit-calendar-picker-indicator{cursor:pointer;opacity:.55;}
+  #view-cert .cf input[type=date]::-webkit-calendar-picker-indicator:hover{opacity:1;}
+  #view-cert .cf select{-webkit-appearance:none;appearance:none;padding-right:42px;cursor:pointer;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23647486' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat:no-repeat;background-position:right 13px center;background-size:17px;}
+  #view-cert .cf select:has(option[value=""]:checked){color:#9AA7B6;}
+  #view-cert .cf select option{color:var(--ink);}
+  #view-cert .combo-input{padding-right:42px !important;}
+  #view-cert .combo:focus-within .combo-chevron{color:var(--navy);}
+  #view-cert .combo-chevron{right:14px;}
+  #view-cert .combo-panel{top:calc(100% + 8px);padding:6px;border-radius:12px;box-shadow:0 14px 34px rgba(20,30,45,.16);}
+  #view-cert .combo-opt{padding:10px 12px;border-radius:8px;font-size:.93rem;}
+  #view-cert .combo-opt:hover,#view-cert .combo-opt.active{background:var(--navy-bg);color:var(--navy);}
+
+  /* --- ตัวเลือก (checkbox) แบบ tile --- */
+  #view-cert .opt-list{display:grid;gap:12px;align-items:start;}
+  #view-cert .cert-types{grid-template-columns:repeat(3,minmax(0,1fr));}
+  #view-cert .cert-purposes{grid-template-columns:repeat(2,minmax(0,1fr));}
+  #view-cert .opt{position:relative;margin:0;padding:15px 16px;gap:13px;align-items:flex-start;border:1.5px solid var(--border-strong);border-radius:12px;background:#fff;
+    transition:border-color .15s,background-color .15s,box-shadow .15s;}
+  #view-cert .opt:hover{border-color:var(--ink-soft);}
+  #view-cert .opt.checked{border-color:var(--navy);background:linear-gradient(var(--gold-bg),var(--gold-bg)),#fff;box-shadow:0 0 0 3px var(--gold-bg);}
+  #view-cert .opt:has(> input[type=checkbox]:focus-visible){outline:3px solid var(--gold-ring);outline-offset:2px;}
+  /* ซ่อน checkbox แบบยังโฟกัสด้วยคีย์บอร์ดได้ (เดิม display:none ทำให้กด Tab ไม่ถึง) */
+  #view-cert .opt > input[type=checkbox]{display:block;position:absolute;opacity:0;width:1px;height:1px;margin:0;pointer-events:none;}
+  #view-cert .opt .box{width:22px;height:22px;margin-top:0;border:1.5px solid var(--ink-soft);border-radius:7px;background:#fff;}
+  #view-cert .opt.checked .box{background:var(--navy);border-color:var(--navy);box-shadow:0 0 0 3px var(--gold-ring);}
+  #view-cert .opt-label{padding-top:0;font-size:.97rem;font-weight:600;line-height:1.5;color:var(--ink);}
+  #view-cert .opt.checked .opt-label{color:var(--navy);}
+  #view-cert .opt .opt-detail{height:44px;margin-top:11px;padding:0 13px;border:1.5px solid var(--border-strong);border-radius:9px;background:#fff;font-size:.93rem;}
+  #view-cert .opt .opt-detail:focus{border-color:var(--navy);box-shadow:0 0 0 4px var(--gold-ring);}
+  #view-cert .opt .opt-detail + .opt-detail{margin-top:8px;}
+  #view-cert .opt.checked .opt-detail.show{animation:certReveal .18s ease-out;}
+  @keyframes certReveal{from{opacity:0;transform:translateY(-4px);}to{opacity:1;transform:none;}}
+
+  /* --- ข้อมูลเพิ่มเติม (ไม่บังคับ) --- */
+  .cert-extra{margin-top:24px;padding:20px 20px 16px;border:1.5px dashed var(--border-strong);border-radius:12px;background:var(--surface-2);}
+  .cert-extra .hint{margin:16px 0 0;font-size:.8rem;line-height:1.6;}
+
+  /* --- ปุ่มส่ง --- */
+  .cert-submit{padding:22px 26px 20px;background:var(--surface);border:1px solid var(--border);border-radius:16px;box-shadow:var(--shadow-sm);text-align:center;}
+  #certSubmitBtn{width:100%;min-height:54px;padding:0 28px;border-radius:12px;font-size:1.02rem;font-weight:700;gap:10px;background:var(--success);
+    box-shadow:0 8px 20px rgba(27,122,74,.28);transition:transform .15s,box-shadow .15s,opacity .15s;}
+  #certSubmitBtn::before{content:'';width:20px;height:20px;flex-shrink:0;background:currentColor;
+    -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M22 2 11 13'/%3E%3Cpath d='M22 2 15 22l-4-9-9-4z'/%3E%3C/svg%3E") center/contain no-repeat;
+    mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M22 2 11 13'/%3E%3Cpath d='M22 2 15 22l-4-9-9-4z'/%3E%3C/svg%3E") center/contain no-repeat;}
+  #certSubmitBtn:hover{opacity:1;transform:translateY(-1px);box-shadow:0 12px 26px rgba(27,122,74,.34);}
+  #certSubmitBtn:active{transform:none;box-shadow:0 4px 12px rgba(27,122,74,.28);}
+  #certSubmitBtn:focus-visible{outline:3px solid var(--gold-ring);outline-offset:3px;}
+  #certSubmitBtn:disabled{transform:none;box-shadow:none;}
+  .cert-submit .hint{margin:14px auto 0;max-width:520px;font-size:.8rem;line-height:1.65;}
+
+  /* --- หน้าส่งสำเร็จ --- */
+  #certSuccessCard{padding:34px 26px 30px;border-radius:16px;border-top:4px solid var(--success);}
+  #certSuccessCard .stamp-ring{width:84px;height:84px;background:var(--success-bg);animation:certPop .55s cubic-bezier(.2,.9,.3,1.25) both;}
+  #certSuccessCard .stamp-ring span{font-size:34px;}
+  #certSuccessCard .success-title{font-size:1.3rem;font-weight:700;}
+  #certSuccessCard .ticket{flex-direction:column;gap:4px;max-width:320px;padding:14px 22px 16px;border:1.5px dashed var(--gold);border-radius:12px;background:var(--gold-bg);}
+  #certSuccessCard .ticket-id{font-family:'IBM Plex Mono','IBM Plex Sans Thai',monospace;font-size:1.45rem;font-weight:600;letter-spacing:1.5px;}
+  #certSuccessCard .next-steps{gap:0;max-width:380px;margin:26px auto;}
+  #certSuccessCard .next-step{position:relative;padding-bottom:18px;font-size:.9rem;}
+  #certSuccessCard .next-step:last-child{padding-bottom:0;}
+  #certSuccessCard .next-step:not(:last-child)::after{content:'';position:absolute;left:11px;top:27px;bottom:3px;width:2px;background:var(--border);}
+  #certSuccessCard .ns-dot{width:24px;height:24px;margin-top:0;background:var(--navy);border-color:var(--navy);color:#fff;font-size:.76rem;}
+  @keyframes certPop{0%{transform:scale(.5);opacity:0;}100%{transform:scale(1);opacity:1;}}
+
+  /* --- Responsive --- */
+  @media (max-width:640px){
+    .cert-hero{padding:18px 18px 20px;}
+    .cert-checks{grid-template-columns:1fr;margin-top:16px;}
+    .cert-checks li,.cert-checks li:first-child,.cert-checks li:last-child{flex-direction:row;align-items:flex-start;gap:12px;padding:14px 0 0;}
+    .cert-checks li:first-child{padding-top:0;}
+    .cert-checks li + li{border-left:0;border-top:1px solid rgba(255,255,255,.14);margin-top:14px;}
+    .cert-checks .ci{width:30px;height:30px;}
+    .cert-sec-head{padding:14px 18px;}
+    .cert-sec-body{padding:20px 18px 22px;}
+    .cert-types,.cert-purposes{grid-template-columns:1fr !important;}
+    .cert-extra{padding:16px 14px 14px;}
+    .cert-submit{padding:18px 18px 16px;}
+  }
+  @media (max-width:560px){
+    #view-cert .cf-3,#view-cert .cf-4,#view-cert .cf-5,#view-cert .cf-6{grid-column:span 12;}
+    #view-cert .cf-m6{grid-column:span 6;}
+    #certSuccessCard{padding:28px 18px 24px;}
+  }
+  @media (prefers-reduced-motion:reduce){
+    #view-cert .opt,#view-cert .cf :is(input,select),#certSubmitBtn{transition:none;}
+    #view-cert .opt.checked .opt-detail.show,#certSuccessCard .stamp-ring{animation:none;}
+  }
 </style>
 </head>
 <body>
@@ -689,80 +828,100 @@
 
   <!-- ================= CERT VIEW (ขอหนังสือรับรอง — แบบฟอร์ม HR 4-1-010) ================= -->
   <div class="view" id="view-cert">
-    <div class="card" id="certFormCard">
-      <div class="cert-note">
-        <b>ก่อนกรอกแบบฟอร์ม</b>
-        <ul>
-          <li>กรุณากรอกรายละเอียดให้ครบถ้วน</li>
-          <li>ให้ส่งแบบฟอร์มขอหนังสือรับรองล่วงหน้า 5 วัน</li>
-          <li>ในกรณีที่ใช้ Slip เงินเดือนแทนได้ บริษัทฯ จะไม่ออกหนังสือรับรองให้</li>
+    <div class="cert-form" id="certFormCard">
+
+      <div class="cert-hero" role="note">
+        <div class="cert-hero-head">
+          <span class="cert-hero-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h9l3 3v15H6z"/><path d="M14 3v4h4"/><path d="M9 14l2 2 4-4"/></svg></span>
+          <h2>ก่อนกรอกแบบฟอร์ม</h2>
+        </div>
+        <ul class="cert-checks">
+          <li><span class="ci" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.7 2.7L16 9.5"/></svg></span><span>กรุณากรอกรายละเอียดให้ครบถ้วน</span></li>
+          <li><span class="ci" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M8 3v4M16 3v4"/></svg></span><span>ให้ส่งแบบฟอร์มขอหนังสือรับรองล่วงหน้า <b>5 วัน</b></span></li>
+          <li class="warn"><span class="ci" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5l9 16h-18z"/><path d="M12 10v4.2M12 17.2v.1"/></svg></span><span>ในกรณีที่ใช้ Slip เงินเดือนแทนได้ บริษัทฯ จะไม่ออกหนังสือรับรองให้</span></li>
         </ul>
       </div>
 
-      <div class="section-title"><span class="step-num">1</span><span class="txt">ข้อมูลผู้ขอ</span></div>
-      <label for="c_date">วันที่ยื่นขอ *</label>
-      <input type="date" id="c_date">
-      <div class="row2">
-        <div>
-          <label for="c_prefix">คำนำหน้า *</label>
-          <select id="c_prefix"><option value="">เลือก</option><option value="นาย">นาย</option><option value="นาง">นาง</option><option value="นางสาว">นางสาว</option></select>
-        </div>
-        <div>
-          <label for="c_empid">รหัสประจำตัว *</label>
-          <input type="text" id="c_empid" placeholder="เช่น SA12345" autocomplete="off">
-        </div>
-      </div>
-      <div class="row2">
-        <div><label for="c_first">ชื่อ *</label><input type="text" id="c_first" maxlength="60" placeholder="เช่น สมชาย" autocomplete="off"></div>
-        <div><label for="c_last">นามสกุล *</label><input type="text" id="c_last" maxlength="60" placeholder="เช่น ใจดี" autocomplete="off"></div>
-      </div>
-      <label for="c_pos">ตำแหน่ง *</label>
-      <input type="text" id="c_pos" maxlength="100" placeholder="เช่น พนักงานฝ่ายผลิต" autocomplete="off">
-      <div class="row2">
-        <div>
-          <label for="c_dept">แผนก *</label>
-          <div class="combo" id="cDeptCombo">
-            <input type="text" id="c_dept" class="combo-input" placeholder="ค้นหา / เลือกแผนก" autocomplete="off">
-            <span class="combo-chevron"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></span>
-            <div class="combo-panel" id="cDeptPanel" hidden></div>
+      <section class="cert-sec" aria-labelledby="csT1">
+        <header class="cert-sec-head">
+          <span class="step-num" aria-hidden="true">1</span>
+          <div><h3 id="csT1">ข้อมูลผู้ขอ</h3></div>
+        </header>
+        <div class="cert-sec-body">
+          <div class="cf-grid">
+            <div class="cf cf-6 cf-m6"><label for="c_date">วันที่ยื่นขอ<i class="rq" aria-hidden="true">*</i></label><input type="date" id="c_date" aria-required="true"></div>
+            <div class="cf cf-6 cf-m6"><label for="c_empid">รหัสประจำตัว<i class="rq" aria-hidden="true">*</i></label><input type="text" id="c_empid" placeholder="เช่น SA12345" autocomplete="off" aria-required="true"></div>
+
+            <div class="cf cf-3">
+              <label for="c_prefix">คำนำหน้า<i class="rq" aria-hidden="true">*</i></label>
+              <select id="c_prefix" aria-required="true"><option value="">เลือก</option><option value="นาย">นาย</option><option value="นาง">นาง</option><option value="นางสาว">นางสาว</option></select>
+            </div>
+            <div class="cf cf-4"><label for="c_first">ชื่อ<i class="rq" aria-hidden="true">*</i></label><input type="text" id="c_first" maxlength="60" placeholder="เช่น สมชาย" autocomplete="off" aria-required="true"></div>
+            <div class="cf cf-5"><label for="c_last">นามสกุล<i class="rq" aria-hidden="true">*</i></label><input type="text" id="c_last" maxlength="60" placeholder="เช่น ใจดี" autocomplete="off" aria-required="true"></div>
+
+            <div class="cf cf-12"><label for="c_pos">ตำแหน่ง<i class="rq" aria-hidden="true">*</i></label><input type="text" id="c_pos" maxlength="100" placeholder="เช่น พนักงานฝ่ายผลิต" autocomplete="off" aria-required="true"></div>
+
+            <div class="cf cf-6">
+              <label for="c_dept">แผนก<i class="rq" aria-hidden="true">*</i></label>
+              <div class="combo" id="cDeptCombo">
+                <input type="text" id="c_dept" class="combo-input" placeholder="ค้นหา / เลือกแผนก" autocomplete="off" aria-required="true">
+                <span class="combo-chevron"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></span>
+                <div class="combo-panel" id="cDeptPanel" hidden></div>
+              </div>
+            </div>
+            <div class="cf cf-6">
+              <label for="c_division">ฝ่าย<i class="rq" aria-hidden="true">*</i></label>
+              <div class="combo" id="cDivCombo">
+                <input type="text" id="c_division" class="combo-input" placeholder="ค้นหา / เลือกฝ่าย" autocomplete="off" aria-required="true">
+                <span class="combo-chevron"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></span>
+                <div class="combo-panel" id="cDivPanel" hidden></div>
+              </div>
+            </div>
+
+            <div class="cf cf-6"><label for="c_start">เริ่มงานวันที่<i class="rq" aria-hidden="true">*</i></label><input type="date" id="c_start" aria-required="true"></div>
+            <div class="cf cf-6"><label for="c_phone">เบอร์โทรศัพท์ภายในแผนก<i class="rq" aria-hidden="true">*</i></label><input type="tel" id="c_phone" maxlength="30" placeholder="เช่น 1234" autocomplete="off" aria-required="true"></div>
           </div>
         </div>
-        <div>
-          <label for="c_division">ฝ่าย *</label>
-          <div class="combo" id="cDivCombo">
-            <input type="text" id="c_division" class="combo-input" placeholder="ค้นหา / เลือกฝ่าย" autocomplete="off">
-            <span class="combo-chevron"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></span>
-            <div class="combo-panel" id="cDivPanel" hidden></div>
+      </section>
+
+      <section class="cert-sec" aria-labelledby="csT2">
+        <header class="cert-sec-head">
+          <span class="step-num" aria-hidden="true">2</span>
+          <div><h3 id="csT2">ขอหนังสือรับรอง</h3><p>เลือกได้มากกว่า 1 รายการ</p></div>
+        </header>
+        <div class="cert-sec-body">
+          <div class="opt-list cert-types" id="certTypeList"></div>
+        </div>
+      </section>
+
+      <section class="cert-sec" aria-labelledby="csT3">
+        <header class="cert-sec-head">
+          <span class="step-num" aria-hidden="true">3</span>
+          <div><h3 id="csT3">เพื่อนำไปทำ</h3><p>เลือกได้มากกว่า 1 รายการ</p></div>
+        </header>
+        <div class="cert-sec-body">
+          <div class="opt-list cert-purposes" id="certPurposeList"></div>
+
+          <div class="cert-extra">
+            <div class="cf-grid">
+              <div class="cf cf-12"><label for="c_bank">ชื่อธนาคาร</label><input type="text" id="c_bank" maxlength="100" placeholder="เช่น ธนาคารกรุงไทย" autocomplete="off"></div>
+              <div class="cf cf-6"><label for="c_contact">ติดต่อเจ้าหน้าที่ชื่อ</label><input type="text" id="c_contact" maxlength="100" placeholder="ชื่อเจ้าหน้าที่ที่ติดต่อ" autocomplete="off"></div>
+              <div class="cf cf-6"><label for="c_contact_phone">หมายเลขโทรศัพท์</label><input type="tel" id="c_contact_phone" maxlength="30" placeholder="เบอร์ติดต่อเจ้าหน้าที่" autocomplete="off"></div>
+            </div>
+            <div class="hint">ชื่อธนาคาร และเจ้าหน้าที่ที่ติดต่อ — ถ้ามีกรุณากรอกเพื่อให้ฝ่ายบุคคลระบุในหนังสือได้ถูกต้อง</div>
           </div>
         </div>
-      </div>
-      <div class="row2">
-        <div><label for="c_start">เริ่มงานวันที่ *</label><input type="date" id="c_start"></div>
-        <div><label for="c_phone">เบอร์โทรศัพท์ภายในแผนก *</label><input type="tel" id="c_phone" maxlength="30" placeholder="เช่น 1234" autocomplete="off"></div>
-      </div>
+      </section>
 
-      <div class="section-title"><span class="step-num">2</span><span class="txt">ขอหนังสือรับรอง (เลือกได้มากกว่า 1 รายการ)</span></div>
-      <div class="opt-list" id="certTypeList"></div>
-
-      <div class="section-title"><span class="step-num">3</span><span class="txt">เพื่อนำไปทำ (เลือกได้มากกว่า 1 รายการ)</span></div>
-      <div class="opt-list" id="certPurposeList"></div>
-      <label for="c_bank">ชื่อธนาคาร</label>
-      <input type="text" id="c_bank" maxlength="100" placeholder="เช่น ธนาคารกรุงไทย" autocomplete="off">
-      <div class="row2">
-        <div><label for="c_contact">ติดต่อเจ้าหน้าที่ชื่อ</label><input type="text" id="c_contact" maxlength="100" placeholder="ชื่อเจ้าหน้าที่ที่ติดต่อ" autocomplete="off"></div>
-        <div><label for="c_contact_phone">หมายเลขโทรศัพท์</label><input type="tel" id="c_contact_phone" maxlength="30" placeholder="เบอร์ติดต่อเจ้าหน้าที่" autocomplete="off"></div>
-      </div>
-      <div class="hint">ชื่อธนาคาร และเจ้าหน้าที่ที่ติดต่อ — ถ้ามีกรุณากรอกเพื่อให้ฝ่ายบุคคลระบุในหนังสือได้ถูกต้อง</div>
-
-      <div class="step-nav" style="margin-top:22px;">
+      <div class="cert-submit">
         <button class="btn-primary" id="certSubmitBtn" onclick="submitCert()">ส่งคำขอหนังสือรับรอง</button>
-      </div>
-      <div class="hint" style="text-align:center;margin-top:10px;">
-        ส่งคำขอแล้วระบบจะแจ้งฝ่ายบุคคลทันที กรุณารอการติดต่อกลับ หรือแวะมารับหนังสือรับรองที่ฝ่ายบุคคล
+        <div class="hint">
+          ส่งคำขอแล้วระบบจะแจ้งฝ่ายบุคคลทันที กรุณารอการติดต่อกลับ หรือแวะมารับหนังสือรับรองที่ฝ่ายบุคคล
+        </div>
       </div>
     </div>
 
-    <div class="card" id="certSuccessCard" style="display:none;">
+    <div class="card cert-done" id="certSuccessCard" style="display:none;">
       <div class="success-box">
         <div class="stamp"><div class="stamp-ring"><span>✓</span></div></div>
         <div class="success-title">ส่งคำขอเรียบร้อยแล้ว</div>
