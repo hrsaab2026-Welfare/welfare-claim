@@ -816,7 +816,7 @@
           <button class="btn-mini" onclick="openDivModal()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 21V7l8-4 8 4v14"/><path d="M9 21v-6h6v6"/><path d="M9 11h.01M15 11h.01M9 15h.01M15 15h.01"/></svg>จัดการฝ่าย</button>
           <button class="btn-mini" onclick="openSvcModal()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 6h12M8 12h12M8 18h12"/><path d="M3.5 6h.01M3.5 12h.01M3.5 18h.01"/></svg>จัดการกรณี</button>
           <button class="btn-mini" onclick="openPayModal()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l7 3v5c0 4.5-3 8-7 10-4-2-7-5.5-7-10V6z"/><path d="M9 12l2 2 4-4"/></svg>จัดการสิทธิ์รักษา</button>
-          <button class="btn-mini" onclick="openHrEmailModal()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>อีเมล HR</button><button class="btn-mini" onclick="openGuideModal()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h9a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3z"/><path d="M5 17a3 3 0 0 1 3-3h9"/><path d="M9 8h4"/><path d="M15.5 13.5l1.7-1.7 2 2-1.7 1.7z"/><path d="M17.2 11.8L20 9l1.3 1.3-2.8 2.8"/></svg>จัดการคู่มือ</button>
+          <button class="btn-mini" onclick="openHrEmailModal()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>อีเมล HR</button><button class="btn-mini" onclick="openIdleModal()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2M9.5 3h5"/></svg>เวลาล็อกอัตโนมัติ</button><button class="btn-mini" onclick="openGuideModal()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h9a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3z"/><path d="M5 17a3 3 0 0 1 3-3h9"/><path d="M9 8h4"/><path d="M15.5 13.5l1.7-1.7 2 2-1.7 1.7z"/><path d="M17.2 11.8L20 9l1.3 1.3-2.8 2.8"/></svg>จัดการคู่มือ</button>
           <button class="btn-mini" onclick="openAdmGuide()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h9a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3z"/><path d="M5 17a3 3 0 0 1 3-3h9"/><path class="acc" d="M9 8h4"/></svg>คู่มือ Admin</button>
           <button class="btn-mini danger" onclick="clearAllRequestsUi()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/></svg>ล้างประวัติ</button>
           <button class="btn-mini" onclick="confirmLogout()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 4H6a1 1 0 0 0-1 1v14a1 1 0 0 0 1 1h3"/><path d="M15 8l4 4-4 4M19 12H9"/></svg>ออกจากระบบ</button>
@@ -930,6 +930,18 @@
   </div>
 </div>
 
+<div class="modal" id="idleModal" hidden>
+  <div class="modal-back" id="idleBack"></div>
+  <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="idleTitle">
+    <div class="modal-head">
+      <div><h3 id="idleTitle">เวลาล็อกอัตโนมัติ</h3><p>หน้าฝ่ายบุคคลจะล็อกเองเมื่อไม่มีการใช้งานครบเวลาที่เลือก — เพิ่ม/แก้ไข/ลบตัวเลือกได้ และเลือกค่าที่ใช้งานอยู่ (มีผลกับทุกคนใน HR ตอนเข้าสู่ระบบครั้งถัดไป)</p></div>
+      <button class="modal-x" id="idleClose" aria-label="ปิด"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    </div>
+    <div class="modal-body" id="idleList"></div>
+    <div class="modal-foot"><button class="btn" id="idleAdd"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>เพิ่มตัวเลือกเวลา</button></div>
+  </div>
+</div>
+
 <div class="modal" id="hrEmailModal" hidden>
   <div class="modal-back" id="hrEmailBack"></div>
   <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="hrEmailTitle">
@@ -964,14 +976,22 @@
   let FORM_OPTIONS = null;
   // รหัสผ่าน HR เก็บใน sessionStorage = หายเองเมื่อปิดแท็บ/หน้าต่าง (เปิดใหม่ต้องเข้าสู่ระบบใหม่) — รีเฟรชในแท็บเดิมยังไม่หลุด
   const HR_CODE_KEY = 'referral_hr_code', HR_LAST_KEY = 'referral_hr_last';
-  const HR_IDLE_MS = 15 * 60 * 1000;   // ไม่มีการใช้งานครบ 15 นาที = ล็อกอัตโนมัติ
+  const HR_IDLE_CACHE_KEY = 'referral_hr_idle_min';
+  // เวลาล็อกอัตโนมัติ (นาที) ตั้งได้จากเมนู "เวลาล็อกอัตโนมัติ" — ค่าจริงโหลดจากระบบหลังเข้าสู่ระบบ, ค่าที่จำไว้ในแท็บนี้ใช้ระหว่างรอ/กรณีรีเฟรช
+  let HR_IDLE_MIN = (function(){ try { const n = Number(sessionStorage.getItem(HR_IDLE_CACHE_KEY)); return n >= 1 && n <= 480 ? n : 15; } catch (e) { return 15; } })();
+  const hrIdleMs = () => HR_IDLE_MIN * 60 * 1000;
+  function hrSetIdleMin(n){
+    n = Number(n); if (!(n >= 1 && n <= 480)) return;
+    HR_IDLE_MIN = n;
+    try { sessionStorage.setItem(HR_IDLE_CACHE_KEY, String(n)); } catch (e) {}
+  }
   const hrCodeStore = {
     get(){
       try {
         const code = sessionStorage.getItem(HR_CODE_KEY) || '';
         const last = Number(sessionStorage.getItem(HR_LAST_KEY)) || 0;
         // เซสชันที่ถูกกู้คืนกลับมา (เช่น เปิดแท็บที่เพิ่งปิด) แต่ไม่ได้ใช้งานเกินกำหนด → ไม่เชื่อ ต้องล็อกอินใหม่
-        if (code && (!last || Date.now() - last > HR_IDLE_MS)) { this.clear(); return ''; }
+        if (code && (!last || Date.now() - last > hrIdleMs())) { this.clear(); return ''; }
         return code;
       } catch (e) { return ''; }
     },
@@ -995,13 +1015,13 @@
     // เทียบกับเวลาที่บันทึกไว้ด้วย (ตัวจับเวลาของแท็บที่ถูกพักอาจเดินช้า) — ถ้าเกินกำหนด ล็อกทันที
     let last = HR_LAST_ACTIVE;
     try { last = Math.max(last, Number(sessionStorage.getItem(HR_LAST_KEY)) || 0); } catch (e) {}
-    if (Date.now() - last >= HR_IDLE_MS) hrAutoLock();
+    if (Date.now() - last >= hrIdleMs()) hrAutoLock();
   }
   function hrAutoLock(){
     try { if (typeof Swal !== 'undefined' && Swal.isVisible()) Swal.close(); } catch (e) {}
-    try { document.getElementById('reqModal').hidden = true; document.body.style.overflow = ''; } catch (e) {}
+    try { ['reqModal', 'idleModal', 'hrEmailModal'].forEach(id => { const m = document.getElementById(id); if (m) m.hidden = true; }); document.body.style.overflow = ''; } catch (e) {}
     lockHr();
-    showToast('ล็อกหน้าฝ่ายบุคคลอัตโนมัติ เนื่องจากไม่มีการใช้งานนาน 15 นาที กรุณาเข้าสู่ระบบอีกครั้ง', 'err');
+    showToast('ล็อกหน้าฝ่ายบุคคลอัตโนมัติ เนื่องจากไม่มีการใช้งานนาน ' + idleLabel(HR_IDLE_MIN) + ' กรุณาเข้าสู่ระบบอีกครั้ง', 'err');
   }
   ['pointerdown', 'keydown', 'touchstart', 'scroll', 'mousemove'].forEach(ev =>
     window.addEventListener(ev, hrMarkActive, { passive: true, capture: true }));
@@ -1617,7 +1637,7 @@
       if (seq !== HR_LOAD_SEQ && HR_CODE) return; // มีการโหลดรายการใหม่แทรกแล้ว
       if (res.error === 'WRONG_CODE') { if (!silent) showToast('รหัสผ่านไม่ถูกต้อง', 'err'); return; }
       HR_CODE = code;
-      hrCodeStore.set(code); HR_LAST_ACTIVE = Date.now();
+      hrCodeStore.set(code); HR_LAST_ACTIVE = Date.now(); loadIdleSetting();
       document.getElementById('hrGate').style.display = 'none';
       document.getElementById('hrPanel').style.display = 'block';
       if (HR_MODE === 'cert') {
@@ -2505,6 +2525,94 @@
   document.getElementById('hrEmailClose').addEventListener('click', closeHrEmailModal);
   document.getElementById('hrEmailBack').addEventListener('click', closeHrEmailModal);
   document.addEventListener('keydown', e => { if (e.key === 'Escape' && !document.getElementById('hrEmailModal').hidden && !Swal.isVisible()) closeHrEmailModal(); });
+
+  // ================= เวลาล็อกอัตโนมัติ (เพิ่ม/แก้ไข/ลบ + เลือกค่าที่ใช้) =================
+  function idleLabel(m){
+    m = Number(m) || 0;
+    if (m >= 60) { const h = Math.floor(m / 60), r = m % 60; return h + ' ชั่วโมง' + (r ? ' ' + r + ' นาที' : ''); }
+    return m + ' นาที';
+  }
+  function loadIdleSetting(){
+    if (!HR_CODE) return;
+    callApi('getIdleSetting', { accessCode: HR_CODE }).then(res => {
+      if (res && res.success) { hrSetIdleMin(res.minutes); HR_LAST_ACTIVE = Date.now(); }
+    }).catch(() => {}); // โหลดไม่ได้ก็ใช้ค่าที่จำไว้/ค่าเริ่มต้น 15 นาที
+  }
+  let IDLE_ITEMS = [];
+  function openIdleModal(){
+    if (!HR_CODE) return;
+    document.getElementById('idleModal').hidden = false;
+    document.body.style.overflow = 'hidden';
+    document.getElementById('idleList').innerHTML = '<div class="empty">กำลังโหลด...</div>';
+    callApi('listIdleOptions', { accessCode: HR_CODE }).then(res => {
+      if (res.error === 'WRONG_CODE') { closeIdleModal(); lockHr(); return; }
+      if (!res.success) return showToast(res.error || 'โหลดตัวเลือกไม่สำเร็จ (ถ้าเพิ่งอัปเดตโค้ด อย่าลืม Deploy เวอร์ชันใหม่)', 'err');
+      renderIdleList(res);
+    }).catch(() => showToast('เชื่อมต่อระบบไม่สำเร็จ', 'err'));
+    document.getElementById('idleClose').focus();
+  }
+  function closeIdleModal(){
+    document.getElementById('idleModal').hidden = true;
+    document.body.style.overflow = '';
+  }
+  function renderIdleList(res){
+    IDLE_ITEMS = res.items || [];
+    hrSetIdleMin(res.activeMinutes); // ค่าที่ใช้อยู่มีผลกับเครื่องนี้ทันที
+    const box = document.getElementById('idleList');
+    if (!IDLE_ITEMS.length) { box.innerHTML = '<div class="empty">ยังไม่มีตัวเลือก กด "เพิ่มตัวเลือกเวลา"</div>'; return; }
+    const clock = '<circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2M9.5 3h5"/>';
+    box.innerHTML = IDLE_ITEMS.map(d =>
+      '<div class="pw-item"><div class="pw-key">' + IC(clock) + '</div>' +
+      '<div class="pw-info"><div class="pw-label">' + escapeHtml(idleLabel(d.minutes)) + (d.active ? ' <span class="badge issued">ใช้งานอยู่</span>' : '') + '</div></div>' +
+      (d.active ? '' : '<button class="btn-mini" onclick="idleUse(\'' + d.id + '\')">' + IC(PATHS.ok) + 'ใช้ค่านี้</button>') +
+      '<button class="btn-mini" onclick="idleEdit(\'' + d.id + '\')">' + IC(PATHS.edit) + 'แก้ไข</button>' +
+      '<button class="btn-mini danger" onclick="idleDelete(\'' + d.id + '\')">' + IC(PATHS.trash) + 'ลบ</button></div>'
+    ).join('');
+  }
+  function idleForm(title, minutes, isEdit){
+    return fireAlert({
+      title: title, showCancelButton: true, focusConfirm: false,
+      confirmButtonText: isEdit ? 'บันทึก' : 'เพิ่ม', cancelButtonText: 'ปิด',
+      html: '<input id="idleInput" class="swal2-input" type="number" min="1" max="480" step="1" inputmode="numeric" placeholder="จำนวนนาที (1 – 480)" value="' + (minutes || '') + '">' +
+            '<div style="font-size:.84em;color:var(--ink-soft);margin-top:8px;">ตั้งได้ 1 – 480 นาที (สูงสุด 8 ชั่วโมง)</div>',
+      preConfirm: () => {
+        const raw = document.getElementById('idleInput').value.trim(), n = Number(raw);
+        if (!raw) { Swal.showValidationMessage('กรุณาระบุจำนวนนาที'); return false; }
+        if (!isFinite(n) || Math.floor(n) !== n) { Swal.showValidationMessage('ระบุเป็นจำนวนนาทีแบบเต็มหน่วย'); return false; }
+        if (n < 1 || n > 480) { Swal.showValidationMessage('ตั้งได้ตั้งแต่ 1 ถึง 480 นาที'); return false; }
+        return { minutes: n };
+      }
+    });
+  }
+  function idleSave(action, payload, okMsg){
+    callApi(action, Object.assign({ accessCode: HR_CODE }, payload)).then(res => {
+      if (res.error === 'WRONG_CODE') { closeIdleModal(); lockHr(); return; }
+      if (!res.success) return showToast(res.error || 'บันทึกไม่สำเร็จ', 'err');
+      showToast(okMsg, 'ok');
+      renderIdleList(res);
+    }).catch(() => showToast('เชื่อมต่อระบบไม่สำเร็จ', 'err'));
+  }
+  function idleAddFn(){
+    idleForm('เพิ่มตัวเลือกเวลา', '', false).then(r => { if (r.isConfirmed) idleSave('addIdleOption', { minutes: r.value.minutes }, 'เพิ่มตัวเลือกแล้ว'); });
+  }
+  function idleEdit(id){
+    const d = IDLE_ITEMS.find(x => x.id === id); if (!d) return;
+    idleForm('แก้ไขเวลา', d.minutes, true).then(r => { if (r.isConfirmed) idleSave('updateIdleOption', { id: id, minutes: r.value.minutes }, 'บันทึกการแก้ไขแล้ว'); });
+  }
+  function idleUse(id){
+    const d = IDLE_ITEMS.find(x => x.id === id); if (!d) return;
+    idleSave('setActiveIdleOption', { id: id }, 'ใช้ค่า ' + idleLabel(d.minutes) + ' แล้ว');
+  }
+  function idleDelete(id){
+    const d = IDLE_ITEMS.find(x => x.id === id); if (!d) return;
+    if (d.active) return showToast('ลบไม่ได้ เพราะเป็นค่าที่ใช้งานอยู่ — เลือกใช้ตัวเลือกอื่นก่อน', 'err');
+    fireAlert({ icon: 'warning', title: 'ลบตัวเลือกนี้?', html: '<b>' + escapeHtml(idleLabel(d.minutes)) + '</b>', showCancelButton: true, confirmButtonText: 'ลบ', cancelButtonText: 'ปิด', confirmButtonColor: true })
+      .then(r => { if (r.isConfirmed) idleSave('deleteIdleOption', { id: id }, 'ลบตัวเลือกแล้ว'); });
+  }
+  document.getElementById('idleAdd').addEventListener('click', idleAddFn);
+  document.getElementById('idleClose').addEventListener('click', closeIdleModal);
+  document.getElementById('idleBack').addEventListener('click', closeIdleModal);
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && !document.getElementById('idleModal').hidden && !Swal.isVisible()) closeIdleModal(); });
 
   // ================= ล้างประวัติคำขอทั้งหมด (ยืนยัน 2 ชั้น) =================
   function clearAllRequestsUi(){
