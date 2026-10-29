@@ -962,7 +962,15 @@
   const API_URL = 'https://script.google.com/macros/s/AKfycbyYPeS8Lakd2_wYaBe5yZF7uLNPmhUGgX6OANMTF2u9ldfEwkA8ieDuSyiaWCwcf2T-Ow/exec';
 
   let FORM_OPTIONS = null;
-  let HR_CODE = localStorage.getItem('referral_hr_code') || '';
+  // รหัสผ่าน HR เก็บใน sessionStorage = หายเองเมื่อปิดแท็บ/หน้าต่าง (เปิดใหม่ต้องเข้าสู่ระบบใหม่) — รีเฟรชในแท็บเดิมยังไม่หลุด
+  const HR_CODE_KEY = 'referral_hr_code';
+  const hrCodeStore = {
+    get(){ try { return sessionStorage.getItem(HR_CODE_KEY) || ''; } catch (e) { return ''; } },
+    set(v){ try { sessionStorage.setItem(HR_CODE_KEY, v); } catch (e) {} },
+    clear(){ try { sessionStorage.removeItem(HR_CODE_KEY); } catch (e) {} }
+  };
+  try { localStorage.removeItem(HR_CODE_KEY); } catch (e) {} // ล้างรหัสที่เคยจำถาวรไว้ในเครื่องจากเวอร์ชันเก่า
+  let HR_CODE = hrCodeStore.get();
   let HR_MODE = 'ref';                 // 'ref' = ใบส่งตัว, 'cert' = หนังสือรับรอง (แท็บฝั่ง HR)
   const HR_PEND = { ref: 0, cert: 0 }; // จำนวนรอดำเนินการของแต่ละแท็บ ใช้โชว์ตัวเลขบนปุ่มสลับ
 
@@ -1571,7 +1579,7 @@
       if (seq !== HR_LOAD_SEQ && HR_CODE) return; // มีการโหลดรายการใหม่แทรกแล้ว
       if (res.error === 'WRONG_CODE') { if (!silent) showToast('รหัสผ่านไม่ถูกต้อง', 'err'); return; }
       HR_CODE = code;
-      localStorage.setItem('referral_hr_code', code);
+      hrCodeStore.set(code);
       document.getElementById('hrGate').style.display = 'none';
       document.getElementById('hrPanel').style.display = 'block';
       if (HR_MODE === 'cert') {
@@ -1585,7 +1593,7 @@
   function lockHr(){
     HR_CODE = '';
     HR_MODE = 'ref'; HR_PEND.ref = 0; HR_PEND.cert = 0; syncHrSeg();
-    localStorage.removeItem('referral_hr_code');
+    hrCodeStore.clear();
     syncHrNav();
     document.getElementById('hrGate').style.display = 'block';
     document.getElementById('hrPanel').style.display = 'none';
@@ -2195,7 +2203,7 @@
   function pwSave(action, payload, okMsg){
     callApi(action, Object.assign({ accessCode: HR_CODE }, payload)).then(res => {
       if (!res.success) return showToast(res.error || 'บันทึกไม่สำเร็จ', 'err');
-      if (res.selfChanged && payload.newCode) { HR_CODE = payload.newCode; localStorage.setItem('referral_hr_code', HR_CODE); }
+      if (res.selfChanged && payload.newCode) { HR_CODE = payload.newCode; hrCodeStore.set(HR_CODE); }
       showToast(okMsg, 'ok');
       renderPwList(res.codes);
     }).catch(() => showToast('เชื่อมต่อระบบไม่สำเร็จ', 'err'));
