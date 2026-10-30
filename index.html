@@ -1116,6 +1116,85 @@
   .swal2-popup.app-swal-popup:not(.swal2-toast) .swal2-timer-progress-bar{background:linear-gradient(90deg,var(--gold-deep),var(--gold)) !important;}
   @media (max-width:420px){.swal2-popup.app-swal-popup:not(.swal2-toast):not(.gd-swal){padding:32px 20px 22px !important;}.swal2-popup.app-swal-popup:not(.swal2-toast) .swal2-title{font-size:1.25rem !important;}}
   @media (prefers-reduced-motion:reduce){.swal2-popup.app-swal-popup.swal2-show:not(.swal2-toast){animation:none !important;}}
+
+  /* =====================================================================
+     "ก่อนกรอกแบบฟอร์ม" (หน้าขอหนังสือรับรอง) — ดีไซน์ใหม่ ดึงสายตา อ่านง่าย
+     เนื้อหาเดิมคงครบ · ล้วน CSS + ป้ายกำกับเล็กๆ · ตามธีมสี · เคารพ reduced-motion
+     ===================================================================== */
+  #view-cert .cert-hero{padding:24px 26px 26px;border-radius:20px;border-bottom-width:4px;
+    background:
+      radial-gradient(rgba(255,255,255,.075) 1px,transparent 1.3px) 0 0/18px 18px,
+      radial-gradient(90% 140% at 100% 0%,rgba(255,255,255,.13),transparent 60%),
+      linear-gradient(135deg,var(--navy-2),var(--navy));
+    box-shadow:0 18px 40px -22px rgba(10,18,30,.7),0 2px 6px rgba(10,18,30,.12);}
+  #view-cert .cert-hero::before{content:'';position:absolute;z-index:0;right:-70px;top:-90px;width:300px;height:300px;border-radius:50%;pointer-events:none;
+    background:radial-gradient(closest-side,var(--gold-ring),transparent);opacity:.75;animation:ckOrb 9s ease-in-out infinite alternate;}
+  #view-cert .cert-hero::after{content:'';position:absolute;z-index:0;top:0;bottom:0;left:0;width:45%;pointer-events:none;
+    background:linear-gradient(100deg,transparent,rgba(255,255,255,.10),transparent);transform:translateX(-130%) skewX(-18deg);animation:ckSweep 7s ease-in-out 1.2s infinite;}
+  @keyframes ckOrb{from{transform:translate(0,0) scale(1)}to{transform:translate(-26px,18px) scale(1.15)}}
+  @keyframes ckSweep{0%,62%{transform:translateX(-130%) skewX(-18deg)}100%{transform:translateX(330%) skewX(-18deg)}}
+
+  #view-cert .cert-hero-head{gap:14px;}
+  #view-cert .cert-hero h2{font-size:1.32rem;letter-spacing:-.005em;}
+  #view-cert .cert-hero-ic{width:46px;height:46px;border-radius:14px;animation:ckRing 2.8s ease-out infinite;}
+  #view-cert .cert-hero-ic svg{width:25px;height:25px;}
+  .cert-hero-pill{display:inline-flex;align-items:center;gap:8px;margin-left:auto;flex-shrink:0;padding:6px 14px 6px 11px;border-radius:999px;
+    font-size:.78rem;font-weight:700;letter-spacing:.02em;color:#fff;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.26);
+    -webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);}
+  .cert-hero-pill i{width:8px;height:8px;border-radius:50%;background:var(--gold);animation:ckDot 1.6s ease-in-out infinite;}
+  @keyframes ckDot{0%,100%{box-shadow:0 0 0 0 var(--gold-ring)}60%{box-shadow:0 0 0 7px rgba(0,0,0,0)}}
+  @keyframes ckRing{0%{box-shadow:inset 0 1px 0 rgba(255,255,255,.55),0 6px 16px rgba(0,0,0,.28),0 0 0 0 var(--gold-ring)}
+    70%,100%{box-shadow:inset 0 1px 0 rgba(255,255,255,.55),0 6px 16px rgba(0,0,0,.28),0 0 0 11px rgba(0,0,0,0)}}
+
+  #view-cert .cert-checks{counter-reset:ck;gap:14px;margin-top:22px;}
+  #view-cert .cert-checks li,#view-cert .cert-checks li:first-child,#view-cert .cert-checks li:last-child{
+    counter-increment:ck;position:relative;overflow:hidden;gap:14px;padding:18px 18px 20px;border-radius:18px;
+    font-size:.93rem;line-height:1.65;color:rgba(255,255,255,.95);
+    background:linear-gradient(160deg,rgba(255,255,255,.12),rgba(255,255,255,.035));
+    border:1px solid rgba(255,255,255,.16);box-shadow:inset 0 1px 0 rgba(255,255,255,.1);
+    transition:transform .22s cubic-bezier(.34,1.4,.64,1),border-color .2s,box-shadow .25s;
+    animation:ckIn .55s cubic-bezier(.22,1,.36,1) both;}
+  #view-cert .cert-checks li + li{border-left:1px solid rgba(255,255,255,.16);}
+  #view-cert .cert-checks li:nth-child(2){animation-delay:.12s;}
+  #view-cert .cert-checks li:nth-child(3){animation-delay:.24s;}
+  @keyframes ckIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+  #view-cert .cert-checks li::after{content:counter(ck,decimal-leading-zero);position:absolute;top:8px;right:14px;font-size:2rem;font-weight:800;line-height:1;
+    letter-spacing:-.02em;color:rgba(255,255,255,.09);pointer-events:none;font-variant-numeric:tabular-nums;}
+  #view-cert .cert-checks li:hover{transform:translateY(-4px);border-color:var(--gold);box-shadow:inset 0 1px 0 rgba(255,255,255,.14),0 16px 28px -16px rgba(0,0,0,.6),0 0 0 3px var(--gold-bg);}
+  #view-cert .cert-checks .ci{width:46px;height:46px;animation:ckRing 2.8s ease-out infinite;}
+  #view-cert .cert-checks li:nth-child(2) .ci{animation-delay:.5s;}
+  #view-cert .cert-checks .ci svg{width:23px;height:23px;}
+  #view-cert .ck-body{display:block;}
+  #view-cert .ck-tag{display:block;margin:0 0 5px;font-style:normal;font-size:.72rem;font-weight:700;letter-spacing:.1em;color:var(--gold);}
+  /* "5 วัน" = จุดที่ต้องจำ → ป้ายเด่น */
+  #view-cert .cert-checks b{display:inline-block;margin:0 2px;padding:1px 12px 2px;border-radius:999px;font-size:1.02em;font-weight:800;line-height:1.5;
+    color:var(--navy);background:linear-gradient(145deg,color-mix(in srgb,var(--gold) 60%,#fff),var(--gold));box-shadow:0 4px 12px -2px var(--gold-ring);}
+  /* ข้อควรระวัง = โทนส้มแดง เด่นกว่าใบอื่น */
+  #view-cert .cert-checks li.warn{background:linear-gradient(160deg,rgba(255,138,101,.30),rgba(242,84,45,.10));border-color:rgba(255,150,120,.6);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.14),0 14px 30px -18px rgba(242,84,45,.9);}
+  #view-cert .cert-checks li.warn:hover{border-color:#FFB59E;box-shadow:inset 0 1px 0 rgba(255,255,255,.18),0 18px 32px -16px rgba(242,84,45,.95),0 0 0 3px rgba(255,138,101,.22);}
+  #view-cert .cert-checks .warn .ci{animation-name:ckWarn;animation-duration:2s;}
+  #view-cert .cert-checks .warn .ck-tag{color:#FFC2AB;}
+  @keyframes ckWarn{0%{box-shadow:inset 0 1px 0 rgba(255,255,255,.4),0 6px 16px rgba(242,84,45,.5),0 0 0 0 rgba(255,138,101,.65)}
+    70%,100%{box-shadow:inset 0 1px 0 rgba(255,255,255,.4),0 6px 16px rgba(242,84,45,.5),0 0 0 13px rgba(255,138,101,0)}}
+
+  @media (max-width:820px){.cert-hero-pill{display:none;}}
+  @media (max-width:640px){
+    #view-cert .cert-hero{padding:20px 16px 18px;}
+    #view-cert .cert-hero h2{font-size:1.18rem;}
+    #view-cert .cert-checks{gap:10px;margin-top:16px;}
+    #view-cert .cert-checks li,#view-cert .cert-checks li:first-child,#view-cert .cert-checks li:last-child{flex-direction:row;align-items:center;gap:14px;padding:14px 16px;border-top:1px solid rgba(255,255,255,.16);}
+    #view-cert .cert-checks li + li{border-left:1px solid rgba(255,255,255,.16);}
+    #view-cert .cert-checks li.warn{border-color:rgba(255,150,120,.6);}
+    #view-cert .cert-checks li::after{font-size:1.5rem;top:6px;right:10px;}
+    #view-cert .cert-checks .ci{width:40px;height:40px;}
+    #view-cert .cert-checks .ci svg{width:21px;height:21px;}
+  }
+  @media (prefers-reduced-motion:reduce){
+    #view-cert .cert-hero::before,#view-cert .cert-hero::after,#view-cert .cert-hero-ic,.cert-hero-pill i,
+    #view-cert .cert-checks li,#view-cert .cert-checks .ci{animation:none !important;}
+    #view-cert .cert-checks li:hover{transform:none;}
+  }
 </style>
 </head>
 <body>
@@ -1313,11 +1392,12 @@
         <div class="cert-hero-head">
           <span class="cert-hero-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h9l3 3v15H6z"/><path d="M14 3v4h4"/><path d="M9 14l2 2 4-4"/></svg></span>
           <h2>ก่อนกรอกแบบฟอร์ม</h2>
+          <span class="cert-hero-pill"><i aria-hidden="true"></i>โปรดอ่านก่อนกรอก</span>
         </div>
         <ul class="cert-checks">
-          <li><span class="ci" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.7 2.7L16 9.5"/></svg></span><span>กรุณากรอกรายละเอียดให้ครบถ้วน</span></li>
-          <li><span class="ci" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M8 3v4M16 3v4"/></svg></span><span>ให้ส่งแบบฟอร์มขอหนังสือรับรองล่วงหน้า <b>5 วัน</b></span></li>
-          <li class="warn"><span class="ci" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5l9 16h-18z"/><path d="M12 10v4.2M12 17.2v.1"/></svg></span><span>ในกรณีที่ใช้ Slip เงินเดือนแทนได้ บริษัทฯ จะไม่ออกหนังสือรับรองให้</span></li>
+          <li><span class="ci" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.7 2.7L16 9.5"/></svg></span><span class="ck-body"><em class="ck-tag">ความครบถ้วน</em>กรุณากรอกรายละเอียดให้ครบถ้วน</span></li>
+          <li><span class="ci" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M8 3v4M16 3v4"/></svg></span><span class="ck-body"><em class="ck-tag">ระยะเวลา</em>ให้ส่งแบบฟอร์มขอหนังสือรับรองล่วงหน้า <b>5 วัน</b></span></li>
+          <li class="warn"><span class="ci" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5l9 16h-18z"/><path d="M12 10v4.2M12 17.2v.1"/></svg></span><span class="ck-body"><em class="ck-tag">ข้อควรระวัง</em>ในกรณีที่ใช้ Slip เงินเดือนแทนได้ บริษัทฯ จะไม่ออกหนังสือรับรองให้</span></li>
         </ul>
       </div>
 
