@@ -244,6 +244,15 @@
   .emp-hint:empty{display:none;}
   .emp-hint.ok{color:var(--success);}
   .emp-hint.warn{color:var(--warning);}
+  /* หน้าจัดการพนักงาน (ฝั่ง HR) */
+  #empModal .modal-card{max-width:600px;}
+  #empModal .search{margin:14px 0 6px;min-width:0;}
+  #empModal .emp-count{font-size:.78rem;color:var(--ink-soft);margin:0 0 2px;}
+  #empModal .pagination{margin:12px 0 10px;}
+  .emp-form{text-align:left;}
+  .emp-form label{display:block;font-size:.78rem;font-weight:600;color:var(--ink-soft);margin:12px 0 4px;}
+  .emp-form .swal2-input{width:100% !important;max-width:100% !important;margin:0 !important;box-sizing:border-box !important;}
+  .emp-form .emp-note{font-size:.76rem;line-height:1.5;color:var(--ink-soft);margin-top:4px;}
 
   /* ---- ปุ่ม: ตรงตาม design-system.css section 4 ---- */
   .btn{padding:10px 18px;border-radius:var(--radius-sm);border:1px solid var(--navy);background:var(--navy);color:#fff;
@@ -1831,7 +1840,7 @@
           <button type="button" class="tools-toggle" id="toolsToggle" aria-expanded="false" aria-controls="hrTools" onclick="toggleHrTools()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h10M18 6h2M4 12h2M10 12h10M4 18h12M20 18h0"/><circle cx="16" cy="6" r="2"/><circle cx="8" cy="12" r="2"/><circle cx="18" cy="18" r="2"/></svg><span>เครื่องมือและการตั้งค่า</span><i class="tt-chev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></i></button>
         </div>
       </div>
-      <div class="tools" id="hrTools"><div class="tools-in"><div class="tools-body"><section class="tg"><div class="tg-h"><h3>ตัวเลือกในฟอร์ม</h3><p>สิ่งที่พนักงานเห็นและเลือกในหน้าขอเอกสาร</p></div><div class="tg-grid"><button type="button" class="tool t-info" onclick="openDeptModal()"><span class="tool-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7l3-3h5l2 2h8v11a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V7z"/></svg></span><span class="tool-tx"><b>จัดการแผนก</b><small>รายชื่อในช่อง "แผนก"</small></span><span class="tool-go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></span></button><button type="button" class="tool t-info" onclick="openDivModal()"><span class="tool-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 21V7l8-4 8 4v14"/><path d="M9 21v-6h6v6"/><path d="M9 11h.01M15 11h.01M9 15h.01M15 15h.01"/></svg></span><span class="tool-tx"><b>จัดการฝ่าย</b><small>รายชื่อฝ่าย + อีเมลแจ้งฝ่าย</small></span><span class="tool-go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></span></button><button type="button" class="tool t-info" onclick="openSvcModal()"><span class="tool-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 6h12M8 12h12M8 18h12"/><path d="M3.5 6h.01M3.5 12h.01M3.5 18h.01"/></svg></span><span class="tool-tx"><b>จัดการกรณี</b><small>กรณีเข้ารับบริการ</small></span><span class="tool-go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></span></button><button type="button" class="tool t-info" onclick="openPayModal()"><span class="tool-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l7 3v5c0 4.5-3 8-7 10-4-2-7-5.5-7-10V6z"/><path d="M9 12l2 2 4-4"/></svg></span><span class="tool-tx"><b>จัดการสิทธิ์รักษา</b><small>สิทธิ์การรักษาพยาบาล</small></span><span class="tool-go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></span></button></div></section><section class="tg"><div class="tg-h"><h3>ความปลอดภัยและการแจ้งเตือน</h3><p>ใครเข้าระบบได้ และใครได้รับอีเมล</p></div><div class="tg-grid"><button type="button" class="tool t-gold" onclick="openPwModal()"><span class="tool-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="15" r="4"/><path d="M11 12l8-8M16 7l3 3"/></svg></span><span class="tool-tx"><b>จัดการรหัสผ่าน</b><small>รหัสเข้าระบบของทีม HR</small></span><span class="tool-go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></span></button><button type="button" class="tool t-gold" onclick="openHrEmailModal()"><span class="tool-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg></span><span class="tool-tx"><b>อีเมล HR</b><small>ผู้รับอีเมลแจ้งคำขอใหม่</small></span><span class="tool-go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></span></button><button type="button" class="tool t-gold" onclick="openIdleModal()"><span class="tool-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2M9.5 3h5"/></svg></span><span class="tool-tx"><b>เวลาล็อกอัตโนมัติ</b><small>ล็อกเมื่อไม่มีการใช้งาน</small></span><span class="tool-go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></span></button></div></section><section class="tg"><div class="tg-h"><h3>คู่มือและหน้าตา</h3><p>เนื้อหาคู่มือ และโทนสีของเว็บ</p></div><div class="tg-grid"><button type="button" class="tool t-ok" onclick="openGuideModal()"><span class="tool-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h9a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3z"/><path d="M5 17a3 3 0 0 1 3-3h9"/><path d="M9 8h4"/><path d="M15.5 13.5l1.7-1.7 2 2-1.7 1.7z"/></svg></span><span class="tool-tx"><b>จัดการคู่มือ</b><small>แก้ไขเนื้อหาคู่มือทุกเล่ม</small></span><span class="tool-go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></span></button><button type="button" class="tool t-ok" onclick="openAdmGuide()"><span class="tool-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h9a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3z"/><path d="M5 17a3 3 0 0 1 3-3h9"/><path d="M9 8h4"/></svg></span><span class="tool-tx"><b>คู่มือ Admin</b><small>วิธีใช้งานฝั่งฝ่ายบุคคล</small></span><span class="tool-go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></span></button><button type="button" class="tool t-ok" onclick="openThemeModal()"><span class="tool-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a9 9 0 1 0 0 18c1.1 0 1.8-.8 1.8-1.7 0-.5-.2-.8-.5-1.2-.3-.3-.5-.7-.5-1.2 0-1 .8-1.7 1.8-1.7H17a4 4 0 0 0 4-4c0-4.4-4-8.2-9-8.2z"/><circle cx="7.5" cy="11" r="1"/><circle cx="10.5" cy="7" r="1"/><circle cx="15" cy="7.5" r="1"/></svg></span><span class="tool-tx"><b>ธีมสี</b><small>เปลี่ยนโทนสีของเว็บ</small></span><span class="tool-go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></span></button></div></section><section class="tg"><div class="tg-h"><h3>บัญชีและข้อมูล</h3><p>การจัดการที่ควรระวัง</p></div><div class="tg-grid"><button type="button" class="tool t-bad" onclick="clearAllRequestsUi()"><span class="tool-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/></svg></span><span class="tool-tx"><b>ล้างประวัติ</b><small>ลบคำขอทั้งหมด (ใช้ก่อนขึ้นระบบจริง)</small></span><span class="tool-go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></span></button><button type="button" class="tool t-mute" onclick="confirmLogout()"><span class="tool-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 4H6a1 1 0 0 0-1 1v14a1 1 0 0 0 1 1h3"/><path d="M15 8l4 4-4 4M19 12H9"/></svg></span><span class="tool-tx"><b>ออกจากระบบ</b><small>ล้างรหัสผ่านออกจากเครื่องนี้</small></span><span class="tool-go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></span></button></div></section></div></div></div>
+      <div class="tools" id="hrTools"><div class="tools-in"><div class="tools-body"><section class="tg"><div class="tg-h"><h3>ตัวเลือกในฟอร์ม</h3><p>สิ่งที่พนักงานเห็นและเลือกในหน้าขอเอกสาร</p></div><div class="tg-grid"><button type="button" class="tool t-info" onclick="openDeptModal()"><span class="tool-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7l3-3h5l2 2h8v11a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V7z"/></svg></span><span class="tool-tx"><b>จัดการแผนก</b><small>รายชื่อในช่อง "แผนก"</small></span><span class="tool-go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></span></button><button type="button" class="tool t-info" onclick="openDivModal()"><span class="tool-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 21V7l8-4 8 4v14"/><path d="M9 21v-6h6v6"/><path d="M9 11h.01M15 11h.01M9 15h.01M15 15h.01"/></svg></span><span class="tool-tx"><b>จัดการฝ่าย</b><small>รายชื่อฝ่าย + อีเมลแจ้งฝ่าย</small></span><span class="tool-go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></span></button><button type="button" class="tool t-info" onclick="openSvcModal()"><span class="tool-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 6h12M8 12h12M8 18h12"/><path d="M3.5 6h.01M3.5 12h.01M3.5 18h.01"/></svg></span><span class="tool-tx"><b>จัดการกรณี</b><small>กรณีเข้ารับบริการ</small></span><span class="tool-go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></span></button><button type="button" class="tool t-info" onclick="openPayModal()"><span class="tool-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l7 3v5c0 4.5-3 8-7 10-4-2-7-5.5-7-10V6z"/><path d="M9 12l2 2 4-4"/></svg></span><span class="tool-tx"><b>จัดการสิทธิ์รักษา</b><small>สิทธิ์การรักษาพยาบาล</small></span><span class="tool-go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></span></button></div></section><section class="tg"><div class="tg-h"><h3>ข้อมูลพนักงาน</h3><p>ใช้เติมฟอร์มอัตโนมัติเมื่อพนักงานกรอกรหัสพนักงาน</p></div><div class="tg-grid"><button type="button" class="tool t-info" onclick="openEmpModal()"><span class="tool-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.2"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/><circle cx="17" cy="9" r="2.4"/><path d="M17 14.2c2.4.3 4 2.4 4 5"/></svg></span><span class="tool-tx"><b>จัดการพนักงาน</b><small>เพิ่ม / แก้ไข / ลบรายชื่อพนักงาน</small></span><span class="tool-go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></span></button></div></section><section class="tg"><div class="tg-h"><h3>ความปลอดภัยและการแจ้งเตือน</h3><p>ใครเข้าระบบได้ และใครได้รับอีเมล</p></div><div class="tg-grid"><button type="button" class="tool t-gold" onclick="openPwModal()"><span class="tool-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="15" r="4"/><path d="M11 12l8-8M16 7l3 3"/></svg></span><span class="tool-tx"><b>จัดการรหัสผ่าน</b><small>รหัสเข้าระบบของทีม HR</small></span><span class="tool-go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></span></button><button type="button" class="tool t-gold" onclick="openHrEmailModal()"><span class="tool-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg></span><span class="tool-tx"><b>อีเมล HR</b><small>ผู้รับอีเมลแจ้งคำขอใหม่</small></span><span class="tool-go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></span></button><button type="button" class="tool t-gold" onclick="openIdleModal()"><span class="tool-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2M9.5 3h5"/></svg></span><span class="tool-tx"><b>เวลาล็อกอัตโนมัติ</b><small>ล็อกเมื่อไม่มีการใช้งาน</small></span><span class="tool-go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></span></button></div></section><section class="tg"><div class="tg-h"><h3>คู่มือและหน้าตา</h3><p>เนื้อหาคู่มือ และโทนสีของเว็บ</p></div><div class="tg-grid"><button type="button" class="tool t-ok" onclick="openGuideModal()"><span class="tool-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h9a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3z"/><path d="M5 17a3 3 0 0 1 3-3h9"/><path d="M9 8h4"/><path d="M15.5 13.5l1.7-1.7 2 2-1.7 1.7z"/></svg></span><span class="tool-tx"><b>จัดการคู่มือ</b><small>แก้ไขเนื้อหาคู่มือทุกเล่ม</small></span><span class="tool-go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></span></button><button type="button" class="tool t-ok" onclick="openAdmGuide()"><span class="tool-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h9a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3z"/><path d="M5 17a3 3 0 0 1 3-3h9"/><path d="M9 8h4"/></svg></span><span class="tool-tx"><b>คู่มือ Admin</b><small>วิธีใช้งานฝั่งฝ่ายบุคคล</small></span><span class="tool-go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></span></button><button type="button" class="tool t-ok" onclick="openThemeModal()"><span class="tool-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a9 9 0 1 0 0 18c1.1 0 1.8-.8 1.8-1.7 0-.5-.2-.8-.5-1.2-.3-.3-.5-.7-.5-1.2 0-1 .8-1.7 1.8-1.7H17a4 4 0 0 0 4-4c0-4.4-4-8.2-9-8.2z"/><circle cx="7.5" cy="11" r="1"/><circle cx="10.5" cy="7" r="1"/><circle cx="15" cy="7.5" r="1"/></svg></span><span class="tool-tx"><b>ธีมสี</b><small>เปลี่ยนโทนสีของเว็บ</small></span><span class="tool-go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></span></button></div></section><section class="tg"><div class="tg-h"><h3>บัญชีและข้อมูล</h3><p>การจัดการที่ควรระวัง</p></div><div class="tg-grid"><button type="button" class="tool t-bad" onclick="clearAllRequestsUi()"><span class="tool-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/></svg></span><span class="tool-tx"><b>ล้างประวัติ</b><small>ลบคำขอทั้งหมด (ใช้ก่อนขึ้นระบบจริง)</small></span><span class="tool-go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></span></button><button type="button" class="tool t-mute" onclick="confirmLogout()"><span class="tool-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 4H6a1 1 0 0 0-1 1v14a1 1 0 0 0 1 1h3"/><path d="M15 8l4 4-4 4M19 12H9"/></svg></span><span class="tool-tx"><b>ออกจากระบบ</b><small>ล้างรหัสผ่านออกจากเครื่องนี้</small></span><span class="tool-go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></span></button></div></section></div></div></div>
       <div class="lt-bar"><div id="hrPendingSummary" class="hint" style="margin:0;"></div><div class="lt-actions"><div class="view-seg" id="grpSeg" role="group" aria-label="มุมมองรายการ"><button type="button" data-g="dept" aria-pressed="true" onclick="setHrGroupBy('dept')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7l3-3h5l2 2h8v11a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V7z"/></svg>จัดกลุ่มตามแผนก</button><button type="button" data-g="div" aria-pressed="false" onclick="setHrGroupBy('div')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 21V7l8-4 8 4v14"/><path d="M9 21v-6h6v6"/></svg>จัดกลุ่มตามฝ่าย</button><button type="button" data-g="0" aria-pressed="false" onclick="setHrGroup(false)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 6h14M5 12h14M5 18h14"/></svg>เรียงตามเวลา</button></div><button type="button" class="btn-mini" id="grpAllBtn" onclick="toggleAllGroups()">ขยายทั้งหมด</button></div></div>
       <div id="hrList"></div>
       <div class="pagination" id="hrPagination" hidden></div>
@@ -1938,6 +1947,23 @@
     </div>
     <div class="modal-body" id="deptList"></div>
     <div class="modal-foot"><button class="btn" id="deptAdd"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>เพิ่มแผนก</button></div>
+  </div>
+</div>
+
+<div class="modal" id="empModal" hidden>
+  <div class="modal-back" id="empBack"></div>
+  <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="empTitle">
+    <div class="modal-head">
+      <div><h3 id="empTitle">จัดการพนักงาน</h3><p>รายชื่อพนักงานตรงนี้ใช้เติมข้อมูลในฟอร์มขอใบส่งตัวและขอหนังสือรับรองอัตโนมัติเมื่อพนักงานกรอกรหัสพนักงาน — เพิ่ม/แก้ไข/ลบแล้วมีผลทันที</p></div>
+      <button class="modal-x" id="empClose" aria-label="ปิด"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    </div>
+    <div class="modal-body">
+      <div class="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4 4"/></svg><input type="text" id="empKeyword" placeholder="ค้นหารหัส / ชื่อ / ตำแหน่ง" autocomplete="off"></div>
+      <div class="emp-count" id="empCount"></div>
+      <div id="empList"></div>
+      <div class="pagination" id="empPager" hidden></div>
+    </div>
+    <div class="modal-foot"><button class="btn" id="empAdd"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>เพิ่มพนักงาน</button></div>
   </div>
 </div>
 
@@ -2824,6 +2850,7 @@
       document.getElementById('hrList').innerHTML = '';
       const pg = document.getElementById('hrPagination'); pg.hidden = true; pg.innerHTML = '';
     } catch (e) {}
+    try { closeEmpModal(); EMP_ITEMS = []; document.getElementById('empList').innerHTML = ''; } catch (e) {} // ไม่ให้รายชื่อพนักงานค้างบนหน้าจอหลังล็อก
   }
 
   // ตัวนับคำขอโหลดรายการ — กันผลตอบกลับเก่าของอีกแท็บ (ใบส่งตัว/หนังสือรับรอง) มาเขียนทับรายการที่กำลังแสดง
@@ -3555,6 +3582,124 @@
   document.getElementById('deptClose').addEventListener('click', closeDeptModal);
   document.getElementById('deptBack').addEventListener('click', closeDeptModal);
   document.addEventListener('keydown', e => { if (e.key === 'Escape' && !document.getElementById('deptModal').hidden && !Swal.isVisible()) closeDeptModal(); });
+
+  // ================= จัดการพนักงาน (ข้อมูลที่ใช้เติมฟอร์มอัตโนมัติจากรหัสพนักงาน — เพิ่ม/แก้ไข/ลบ) =================
+  let EMP_ITEMS = [], EMP_PAGE = 1;
+  const EMP_PAGE_SIZE = 10;
+  function openEmpModal(){
+    if (!HR_CODE) return;
+    document.getElementById('empModal').hidden = false;
+    document.body.style.overflow = 'hidden';
+    document.getElementById('empKeyword').value = '';
+    EMP_PAGE = 1;
+    document.getElementById('empList').innerHTML = '<div class="empty">กำลังโหลด...</div>';
+    document.getElementById('empCount').textContent = '';
+    document.getElementById('empPager').hidden = true;
+    loadEmpList();
+    document.getElementById('empClose').focus();
+  }
+  function closeEmpModal(){
+    document.getElementById('empModal').hidden = true;
+    document.body.style.overflow = '';
+  }
+  function loadEmpList(){
+    callApi('listEmployees', { accessCode: HR_CODE }).then(res => {
+      if (res.error === 'WRONG_CODE') { closeEmpModal(); lockHr(); return; }
+      if (!res.success) { document.getElementById('empList').innerHTML = '<div class="empty">โหลดรายชื่อพนักงานไม่สำเร็จ</div>'; return showToast(res.error || 'โหลดรายชื่อพนักงานไม่สำเร็จ', 'err'); }
+      renderEmpList(res.items);
+    }).catch(() => { document.getElementById('empList').innerHTML = '<div class="empty">เชื่อมต่อระบบไม่สำเร็จ</div>'; showToast('เชื่อมต่อระบบไม่สำเร็จ', 'err'); });
+  }
+  function empDateTh_(iso){ return iso ? String(iso).split('-').reverse().join('/') : ''; }
+  function renderEmpList(items){
+    if (items) EMP_ITEMS = items;
+    const kw = document.getElementById('empKeyword').value.trim().toLowerCase();
+    const rows = [];
+    EMP_ITEMS.forEach((e, idx) => {
+      if (!kw || (e.id + ' ' + e.name + ' ' + e.position).toLowerCase().indexOf(kw) !== -1) rows.push({ e: e, idx: idx });
+    });
+    const n = rows.length, totalPages = Math.max(1, Math.ceil(n / EMP_PAGE_SIZE));
+    if (EMP_PAGE > totalPages) EMP_PAGE = totalPages;
+    if (EMP_PAGE < 1) EMP_PAGE = 1;
+    document.getElementById('empCount').textContent = kw ? ('พบ ' + n + ' จากทั้งหมด ' + EMP_ITEMS.length + ' คน') : ('พนักงานทั้งหมด ' + EMP_ITEMS.length + ' คน');
+    const list = document.getElementById('empList'), pager = document.getElementById('empPager');
+    if (!n) {
+      list.innerHTML = '<div class="empty">' + (EMP_ITEMS.length ? 'ไม่พบพนักงานที่ค้นหา' : 'ยังไม่มีข้อมูลพนักงาน กด "เพิ่มพนักงาน" เพื่อเริ่มต้น') + '</div>';
+      pager.hidden = true; pager.innerHTML = '';
+      return;
+    }
+    const start = (EMP_PAGE - 1) * EMP_PAGE_SIZE;
+    list.innerHTML = rows.slice(start, start + EMP_PAGE_SIZE).map(r => {
+      const e = r.e;
+      const meta = [e.id, e.position, e.startDate ? 'เริ่มงาน ' + empDateTh_(e.startDate) : ''].filter(Boolean).map(escapeHtml).join(' · ');
+      return '<div class="pw-item"><div class="pw-key">' + IC('<circle cx="12" cy="8" r="3.4"/><path d="M5 20c0-3.9 3.1-7 7-7s7 3.1 7 7"/>') + '</div>' +
+        '<div class="pw-info"><div class="pw-label">' + escapeHtml(e.name) + '</div><div class="pw-meta">' + meta + '</div></div>' +
+        '<button class="btn-mini" onclick="empEdit(' + r.idx + ')">' + IC(PATHS.edit) + 'แก้ไข</button>' +
+        '<button class="btn-mini danger" onclick="empDelete(' + r.idx + ')">' + IC(PATHS.trash) + 'ลบ</button></div>';
+    }).join('');
+    pager.hidden = totalPages <= 1;
+    if (!pager.hidden) {
+      pager.innerHTML =
+        '<button id="empPrev" ' + (EMP_PAGE <= 1 ? 'disabled' : '') + ' aria-label="ก่อนหน้า">' + IC('<path d="M15 6l-6 6 6 6"/>') + '</button>' +
+        '<span class="page-info">หน้า ' + EMP_PAGE + ' จาก ' + totalPages + '</span>' +
+        '<button id="empNext" ' + (EMP_PAGE >= totalPages ? 'disabled' : '') + ' aria-label="ถัดไป">' + IC('<path d="M9 6l6 6-6 6"/>') + '</button>';
+      document.getElementById('empPrev').onclick = () => { EMP_PAGE--; renderEmpList(); };
+      document.getElementById('empNext').onclick = () => { EMP_PAGE++; renderEmpList(); };
+    }
+  }
+  function empForm(title, e, isEdit){
+    e = e || {};
+    return fireAlert({
+      title: title, showCancelButton: true, focusConfirm: false,
+      confirmButtonText: isEdit ? 'บันทึก' : 'เพิ่ม', cancelButtonText: 'ปิด',
+      html: '<div class="emp-form">' +
+        '<label for="empFId">รหัสพนักงาน *</label><input id="empFId" class="swal2-input" maxlength="30" autocomplete="off" placeholder="เช่น SA12345" value="' + escapeHtml(e.id || '') + '">' +
+        '<label for="empFName">ชื่อ-สกุล *</label><input id="empFName" class="swal2-input" maxlength="100" autocomplete="off" placeholder="เช่น นายสมชาย ใจดี" value="' + escapeHtml(e.name || '') + '">' +
+        '<div class="emp-note">ใส่คำนำหน้าติดกับชื่อ แล้วเว้นวรรคก่อนนามสกุล เช่น นายสมชาย ใจดี / น.ส.สมหญิง ใจดี</div>' +
+        '<label for="empFPos">ตำแหน่ง</label><input id="empFPos" class="swal2-input" maxlength="100" autocomplete="off" placeholder="เช่น หัวหน้างาน" value="' + escapeHtml(e.position || '') + '">' +
+        '<label for="empFStart">วันที่เริ่มงาน</label><input id="empFStart" class="swal2-input" type="date" value="' + escapeHtml(e.startDate || '') + '">' +
+        '</div>',
+      preConfirm: () => {
+        const v = id => document.getElementById(id).value;
+        const id = v('empFId').trim(), name = v('empFName').replace(/\s+/g, ' ').trim();
+        if (!id) { Swal.showValidationMessage('กรุณาระบุรหัสพนักงาน'); return false; }
+        if (/\s/.test(id)) { Swal.showValidationMessage('รหัสพนักงานห้ามมีช่องว่าง'); return false; }
+        if (id.length < 3) { Swal.showValidationMessage('รหัสพนักงานต้องยาวอย่างน้อย 3 ตัวอักษร'); return false; }
+        if (!name) { Swal.showValidationMessage('กรุณาระบุชื่อ-สกุล'); return false; }
+        if (name.indexOf(' ') === -1) { Swal.showValidationMessage('กรุณาเว้นวรรคระหว่างชื่อกับนามสกุล'); return false; }
+        return { id: id, name: name, position: v('empFPos').trim(), startDate: v('empFStart').trim() };
+      }
+    });
+  }
+  function empSave(action, payload, okMsg, jumpTo){
+    callApi(action, Object.assign({ accessCode: HR_CODE }, payload)).then(res => {
+      if (res.error === 'WRONG_CODE') { closeEmpModal(); lockHr(); return; }
+      if (!res.success) return showToast(res.error || 'บันทึกไม่สำเร็จ', 'err');
+      showToast(okMsg, 'ok');
+      if (jumpTo) { document.getElementById('empKeyword').value = jumpTo; EMP_PAGE = 1; }
+      renderEmpList(res.items);
+    }).catch(() => showToast('เชื่อมต่อระบบไม่สำเร็จ', 'err'));
+  }
+  function empAddFn(){
+    empForm('เพิ่มพนักงาน', null, false).then(r => {
+      if (r.isConfirmed) empSave('addEmployee', { data: r.value }, 'เพิ่มพนักงานแล้ว', r.value.id);
+    });
+  }
+  function empEdit(idx){
+    const e = EMP_ITEMS[idx]; if (!e) return;
+    empForm('แก้ไขข้อมูลพนักงาน', e, true).then(r => {
+      if (r.isConfirmed) empSave('updateEmployee', { id: e.id, data: r.value }, 'บันทึกการแก้ไขแล้ว');
+    });
+  }
+  function empDelete(idx){
+    const e = EMP_ITEMS[idx]; if (!e) return;
+    fireAlert({ icon: 'warning', title: 'ลบพนักงานรายนี้?', html: '<b>' + escapeHtml(e.name) + '</b> (รหัส ' + escapeHtml(e.id) + ') จะถูกลบออกจากข้อมูลพนักงาน — ฟอร์มจะไม่เติมข้อมูลให้อีกเมื่อกรอกรหัสนี้ (คำขอที่ส่งมาแล้วไม่ได้รับผลกระทบ)', showCancelButton: true, confirmButtonText: 'ลบ', cancelButtonText: 'ปิด', confirmButtonColor: true })
+      .then(r => { if (r.isConfirmed) empSave('deleteEmployee', { id: e.id }, 'ลบพนักงานแล้ว'); });
+  }
+  document.getElementById('empAdd').addEventListener('click', empAddFn);
+  document.getElementById('empClose').addEventListener('click', closeEmpModal);
+  document.getElementById('empBack').addEventListener('click', closeEmpModal);
+  document.getElementById('empKeyword').addEventListener('input', () => { EMP_PAGE = 1; renderEmpList(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && !document.getElementById('empModal').hidden && !Swal.isVisible()) closeEmpModal(); });
 
   // ================= จัดการฝ่าย (รายชื่อฝ่ายสำหรับดรอปดาวน์ในฟอร์ม + อีเมลแจ้งฝ่ายผู้ขอ ไม่บังคับ) =================
   let DIV_ITEMS = [];
