@@ -1070,6 +1070,52 @@
   @keyframes gShake{10%,90%{transform:translateX(-2px)}20%,80%{transform:translateX(4px)}30%,50%,70%{transform:translateX(-7px)}40%,60%{transform:translateX(7px)}}
   @media (max-width:559px){.gate{margin-top:12px;padding:32px 20px 22px;}.gate .title{font-size:1.25rem;}}
   @media (prefers-reduced-motion:reduce){.g-ring,.gate.shake,.gate-btn .gb-spin{animation:none !important;}.g-ring{display:none;}.gate-btn .gb-spin{border-top-color:#fff;}}
+
+  /* =====================================================================
+     SweetAlert2 popup (ยืนยัน/แจ้งผล) — ดีไซน์ใหม่ ใช้ร่วมกันทุก dialog ในระบบ
+     ไม่แตะ toast (.swal2-toast) และ modal แก้ไขคู่มือ (.gd-swal) · ไม่เปลี่ยน logic · ตามธีมสี · เคารพ reduced-motion
+     ===================================================================== */
+  .swal2-container.swal2-backdrop-show:not(.swal2-no-backdrop){background:rgba(14,24,38,.52) !important;-webkit-backdrop-filter:blur(5px);backdrop-filter:blur(5px);}
+  .swal2-popup.app-swal-popup:not(.swal2-toast):not(.gd-swal){position:relative;overflow:hidden;width:min(92vw,420px) !important;
+    padding:38px 28px 26px !important;border:1px solid rgba(255,255,255,.7) !important;border-radius:24px !important;background:#fff !important;
+    box-shadow:0 2px 6px rgba(10,18,30,.08),0 32px 64px -20px rgba(10,18,30,.5) !important;}
+  .swal2-popup.app-swal-popup.swal2-show:not(.swal2-toast){animation:aSwalIn .3s cubic-bezier(.34,1.35,.64,1) !important;}
+  @keyframes aSwalIn{0%{opacity:0;transform:translateY(16px) scale(.94)}100%{opacity:1;transform:none}}
+  .swal2-popup.app-swal-popup:not(.swal2-toast):not(.gd-swal)::before{content:'';position:absolute;left:0;right:0;top:0;height:4px;
+    background:linear-gradient(90deg,var(--navy),var(--gold),var(--navy));}
+  .swal2-popup.app-swal-popup:not(.swal2-toast):not(.gd-swal)::after{content:'';position:absolute;left:50%;top:-70px;width:300px;height:190px;transform:translateX(-50%);
+    background:radial-gradient(closest-side,var(--gold-bg),transparent);pointer-events:none;}
+  .swal2-popup.app-swal-popup:not(.swal2-toast) > *{position:relative;z-index:1;}
+
+  /* ไอคอน: question/info = แท็บ navy ไล่เฉด (เหมือนโลโก้/หน้าล็อก) · warning/error = วงกลมสีอ่อน · success คงแอนิเมชันเดิม + วงเรือง */
+  .swal2-popup:not(.swal2-toast) .swal2-icon{box-sizing:border-box;width:76px !important;height:76px !important;margin:2px auto 20px !important;}
+  .swal2-popup:not(.swal2-toast) .swal2-icon.swal2-question,
+  .swal2-popup:not(.swal2-toast) .swal2-icon.swal2-info{border:0 !important;border-radius:24px !important;color:#fff !important;
+    background:linear-gradient(145deg,var(--navy-2),var(--navy)) !important;
+    box-shadow:0 16px 30px -14px rgba(10,18,30,.75),0 0 0 6px var(--gold-bg),inset 0 1px 0 rgba(255,255,255,.2) !important;}
+  .swal2-popup:not(.swal2-toast) .swal2-icon .swal2-icon-content{font-size:2.7rem;font-weight:600;}
+  .swal2-popup:not(.swal2-toast) .swal2-icon .swal2-icon-content svg{width:36px;height:36px;display:block;}
+  .swal2-popup:not(.swal2-toast) .swal2-icon .swal2-icon-content .acc{stroke:var(--gold);}
+  .swal2-popup:not(.swal2-toast) .swal2-icon.swal2-warning{background:var(--warning-bg) !important;box-shadow:0 0 0 7px rgba(189,122,30,.07) !important;}
+  .swal2-popup:not(.swal2-toast) .swal2-icon.swal2-error{background:var(--danger-bg) !important;box-shadow:0 0 0 7px rgba(171,59,39,.06) !important;}
+  .swal2-popup:not(.swal2-toast) .swal2-icon.swal2-success{box-shadow:0 0 0 7px var(--success-bg) !important;}
+
+  .swal2-popup.app-swal-popup:not(.swal2-toast) .swal2-title{font-size:1.38rem !important;font-weight:700 !important;letter-spacing:-.005em;color:var(--navy) !important;padding:0 0 4px !important;}
+  .swal2-popup.app-swal-popup:not(.swal2-toast) .swal2-html-container{margin:6px 0 0 !important;font-size:.93rem !important;line-height:1.7 !important;color:var(--ink-soft) !important;}
+  .swal2-popup.app-swal-popup:not(.swal2-toast) .swal2-actions{flex-wrap:nowrap !important;width:100% !important;gap:12px !important;margin:26px 0 0 !important;}
+  .swal2-popup.app-swal-popup:not(.swal2-toast) .swal2-styled{flex:1 1 0;min-width:0;height:48px;padding:0 18px !important;margin:0 !important;border-radius:14px !important;font-size:.96rem !important;font-weight:700 !important;}
+  .swal2-popup.app-swal-popup:not(.swal2-toast) .app-swal-confirm:not(.app-swal-confirm-danger){background:linear-gradient(135deg,var(--navy-2),var(--navy)) !important;color:#fff !important;border:0 !important;
+    box-shadow:0 12px 22px -12px rgba(10,18,30,.75),inset 0 1px 0 rgba(255,255,255,.16) !important;}
+  .swal2-popup.app-swal-popup:not(.swal2-toast) .app-swal-confirm-danger{background:linear-gradient(135deg,#C4503A,var(--danger)) !important;color:#fff !important;border:0 !important;
+    box-shadow:0 12px 22px -12px rgba(171,59,39,.8),inset 0 1px 0 rgba(255,255,255,.18) !important;}
+  .swal2-popup.app-swal-popup:not(.swal2-toast) .app-swal-confirm:hover{opacity:1 !important;transform:translateY(-1px);}
+  .swal2-popup.app-swal-popup:not(.swal2-toast) .app-swal-cancel{background:#fff !important;color:var(--ink) !important;border:1.5px solid var(--border-strong) !important;}
+  .swal2-popup.app-swal-popup:not(.swal2-toast) .app-swal-cancel:hover{background:var(--surface-2) !important;border-color:var(--navy) !important;}
+  .swal2-popup.app-swal-popup:not(.swal2-toast) .swal2-styled:focus-visible,
+  .swal2-popup.app-swal-popup:not(.swal2-toast) .swal2-styled:focus{outline:none !important;box-shadow:0 0 0 4px var(--gold-ring) !important;}
+  .swal2-popup.app-swal-popup:not(.swal2-toast) .swal2-timer-progress-bar{background:linear-gradient(90deg,var(--gold-deep),var(--gold)) !important;}
+  @media (max-width:420px){.swal2-popup.app-swal-popup:not(.swal2-toast):not(.gd-swal){padding:32px 20px 22px !important;}.swal2-popup.app-swal-popup:not(.swal2-toast) .swal2-title{font-size:1.25rem !important;}}
+  @media (prefers-reduced-motion:reduce){.swal2-popup.app-swal-popup.swal2-show:not(.swal2-toast){animation:none !important;}}
 </style>
 </head>
 <body>
@@ -3411,6 +3457,7 @@
     if (!HR_CODE) return;
     fireAlert({
       icon: 'question', title: 'ออกจากระบบฝ่ายบุคคล?',
+      iconHtml: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 4H6a1 1 0 0 0-1 1v14a1 1 0 0 0 1 1h3"/><path class="acc" d="M15 8l4 4-4 4M19 12H9"/></svg>',
       html: 'ระบบจะล้างรหัสผ่านที่จำไว้ในเครื่องนี้<br>ครั้งถัดไปต้องกรอกรหัสผ่านใหม่เพื่อดูรายการ',
       showCancelButton: true, confirmButtonText: 'ออกจากระบบ', cancelButtonText: 'ยกเลิก'
     }).then(r => {
