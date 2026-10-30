@@ -1421,6 +1421,24 @@
     .cert-sec-head .step-num::after,#view-employee .section-title .step-num::after{animation:none !important;display:none;}
     .cert-sec:hover .step-num{transform:none;}
   }
+
+  /* ---- นำเข้าพนักงานจาก Excel (scope เฉพาะ #empModal / .imp-*) ---- */
+  #empModal .modal-foot{display:flex;gap:8px;}
+  #empModal .modal-foot .btn{width:auto;flex:1;}
+  #empModal .modal-foot .btn.secondary{flex:0 0 auto;}
+  #empModal .emp-import-hint{margin:10px 0 4px;font-size:.76rem;line-height:1.55;color:var(--ink-soft);}
+  .imp-sum{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:14px 0 6px;text-align:left;}
+  .imp-k{padding:10px 12px;border:1px solid var(--border);border-radius:10px;background:var(--surface-2);}
+  .imp-k b{display:block;font-size:1.35rem;line-height:1.2;font-variant-numeric:tabular-nums;color:var(--navy);}
+  .imp-k span{font-size:.76rem;color:var(--ink-soft);}
+  .imp-k.ok b{color:var(--success);} .imp-k.up b{color:var(--info);} .imp-k.bad b{color:var(--danger);}
+  .imp-file{margin:0 0 4px;font-size:.8rem;color:var(--ink-soft);word-break:break-all;}
+  .imp-mode{margin:12px 0 0;text-align:left;font-size:.86rem;}
+  .imp-mode label{display:flex;align-items:flex-start;gap:8px;margin:6px 0;color:var(--ink);font-weight:500;cursor:pointer;}
+  .imp-mode input{margin-top:3px;}
+  .imp-err{margin:10px 0 0;max-height:130px;overflow:auto;padding:8px 12px;border-radius:8px;background:var(--danger-bg);color:var(--danger);font-size:.78rem;line-height:1.6;text-align:left;}
+  .imp-bar{height:8px;margin:16px 0 4px;border-radius:6px;background:var(--border);overflow:hidden;}
+  .imp-bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--gold-deep),var(--gold));transition:width .25s;}
 </style>
 </head>
 <body>
@@ -1962,8 +1980,9 @@
       <div class="emp-count" id="empCount"></div>
       <div id="empList"></div>
       <div class="pagination" id="empPager" hidden></div>
+      <div class="emp-import-hint">นำเข้าหลายรายการ: กด "นำเข้าจาก Excel" แล้วเลือกไฟล์ที่มีคอลัมน์ <b>รหัส พนง. | ชื่อ-สกุล | ตำแหน่ง | วันเริ่มงาน</b> (แถวแรกเป็นหัวตาราง) — ระบบจะแสดงสรุปให้ตรวจก่อนนำเข้าจริง</div>
     </div>
-    <div class="modal-foot"><button class="btn" id="empAdd"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>เพิ่มพนักงาน</button></div>
+    <div class="modal-foot"><button class="btn secondary" id="empImport" type="button"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 15V4M7.5 8.5L12 4l4.500 4.500"/><path d="M5 15v4h14v-4"/></svg>นำเข้าจาก Excel</button><input type="file" id="empFile" accept=".xlsx,.xls,.csv" hidden><button class="btn" id="empAdd"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>เพิ่มพนักงาน</button></div>
   </div>
 </div>
 
@@ -3696,6 +3715,193 @@
       .then(r => { if (r.isConfirmed) empSave('deleteEmployee', { id: e.id }, 'ลบพนักงานแล้ว'); });
   }
   document.getElementById('empAdd').addEventListener('click', empAddFn);
+
+  // ---------- นำเข้าพนักงานหลายรายการจากไฟล์ Excel ----------
+  const EMP_IMPORT_BATCH = 200;
+  let XLSX_LOADING = null;
+  function loadXlsxLib(){
+    if (window.XLSX) return Promise.resolve();
+    if (XLSX_LOADING) return XLSX_LOADING;
+    XLSX_LOADING = new Promise((resolve, reject) => {
+      const sc = document.createElement('script');
+      sc.src = 'https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js';
+      sc.onload = () => resolve();
+      sc.onerror = () => { XLSX_LOADING = null; reject(new Error('load')); };
+      document.head.appendChild(sc);
+    });
+    return XLSX_LOADING;
+  }
+  function impDateIso_(v){
+    if (v === null || v === undefined || v === '') return { iso: '' };
+    let y, m, d;
+    if (typeof v === 'number' && isFinite(v)) {
+      const dt = new Date(Date.UTC(1899, 11, 30) + Math.floor(v) * 86400000);
+      y = dt.getUTCFullYear(); m = dt.getUTCMonth() + 1; d = dt.getUTCDate();
+    } else if (Object.prototype.toString.call(v) === '[object Date]' && !isNaN(v.getTime())) {
+      y = v.getFullYear(); m = v.getMonth() + 1; d = v.getDate();
+    } else {
+      const t = String(v).trim();
+      let mt = t.match(/^(\d{1,2})[\/\-.](\d{1,2})[\/\-.](\d{4})/);
+      if (mt) { d = +mt[1]; m = +mt[2]; y = +mt[3]; }
+      else if ((mt = t.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/))) { y = +mt[1]; m = +mt[2]; d = +mt[3]; }
+      else return { error: 'รูปแบบวันที่เริ่มงานไม่ถูกต้อง (' + t.slice(0, 20) + ')' };
+    }
+    if (y > 2400) y -= 543;
+    if (y < 1950 || y > 2100 || m < 1 || m > 12 || d < 1 || d > 31) return { error: 'วันที่เริ่มงานไม่อยู่ในช่วงที่ถูกต้อง' };
+    return { iso: y + '-' + ('0' + m).slice(-2) + '-' + ('0' + d).slice(-2) };
+  }
+  /** อ่านชีทแรกที่มีข้อมูล → { valid:[{row,id,name,position,startDate}], invalid:[{row,id,error}], dupInFile } */
+  function parseEmpWorkbook(buf){
+    const wb = XLSX.read(buf, { type: 'array' });
+    let rows = null;
+    for (const nm of wb.SheetNames) {
+      const r = XLSX.utils.sheet_to_json(wb.Sheets[nm], { header: 1, raw: true, defval: '', blankrows: false });
+      if (r.length) { rows = r; break; }
+    }
+    if (!rows) throw new Error('ไฟล์ไม่มีข้อมูล');
+    // หาแถวหัวตารางใน 10 แถวแรก
+    let hRow = -1, c = { id: -1, name: -1, pos: -1, start: -1 };
+    for (let i = 0; i < Math.min(10, rows.length) && hRow < 0; i++) {
+      const cells = rows[i].map(x => String(x).replace(/\s+/g, ''));
+      const id = cells.findIndex(x => /รหัส/.test(x));
+      const nm = cells.findIndex(x => /ชื่อ/.test(x));
+      if (id !== -1 && nm !== -1) {
+        hRow = i; c.id = id; c.name = nm;
+        c.pos = cells.findIndex(x => /ตำแหน่ง/.test(x));
+        c.start = cells.findIndex(x => /เริ่มงาน|วันที่เริ่ม/.test(x));
+      }
+    }
+    if (hRow < 0) throw new Error('ไม่พบหัวตาราง "รหัส พนง." และ "ชื่อ-สกุล" ในไฟล์ (ต้องมีที่แถวบนๆ ของชีทแรก)');
+    const valid = [], invalid = [], seen = {};
+    let dupInFile = 0;
+    for (let i = hRow + 1; i < rows.length; i++) {
+      const r = rows[i], rowNo = i + 1;
+      const rawId = r[c.id];
+      const rawName = r[c.name];
+      if ((rawId === '' || rawId == null) && (rawName === '' || rawName == null)) continue; // แถวว่าง
+      const id = String(rawId == null ? '' : rawId).replace(/\s+/g, '');
+      const name = String(rawName == null ? '' : rawName).replace(/\s+/g, ' ').trim();
+      const position = c.pos === -1 ? '' : String(r[c.pos] == null ? '' : r[c.pos]).trim();
+      const bad = msg => invalid.push({ row: rowNo, id: id, error: msg });
+      if (!id) { bad('ไม่มีรหัสพนักงาน'); continue; }
+      if (id.length < 3 || id.length > 30) { bad('รหัสพนักงานต้องยาว 3-30 ตัวอักษร'); continue; }
+      if (!name) { bad('ไม่มีชื่อ-สกุล'); continue; }
+      if (name.length > 100) { bad('ชื่อ-สกุลยาวเกินไป'); continue; }
+      if (name.indexOf(' ') === -1) { bad('ไม่มีเว้นวรรคระหว่างชื่อกับนามสกุล'); continue; }
+      if (position.length > 100) { bad('ตำแหน่งยาวเกินไป'); continue; }
+      const dt = c.start === -1 ? { iso: '' } : impDateIso_(r[c.start]);
+      if (dt.error) { bad(dt.error); continue; }
+      const key = id.toUpperCase();
+      const item = { row: rowNo, id: id, name: name, position: position, startDate: dt.iso };
+      if (seen[key] !== undefined) { dupInFile++; valid[seen[key]] = item; } // รหัสซ้ำในไฟล์ → ใช้แถวหลังสุด
+      else { seen[key] = valid.length; valid.push(item); }
+    }
+    return { valid: valid, invalid: invalid, dupInFile: dupInFile };
+  }
+
+  function empImportPick(){
+    if (!HR_CODE) return;
+    const f = document.getElementById('empFile');
+    f.value = '';
+    f.click();
+  }
+  function empImportOnFile(){
+    const f = document.getElementById('empFile');
+    const file = f.files && f.files[0];
+    if (!file) return;
+    if (file.size > 8 * 1024 * 1024) return showToast('ไฟล์ใหญ่เกินไป (ไม่เกิน 8 MB)', 'err');
+    Swal.fire({ title: 'กำลังอ่านไฟล์...', allowOutsideClick: false, allowEscapeKey: false, showConfirmButton: false, didOpen: () => Swal.showLoading() });
+    Promise.all([
+      loadXlsxLib().then(() => file.arrayBuffer()).then(buf => parseEmpWorkbook(buf)),
+      callApi('listEmployees', { accessCode: HR_CODE })
+    ]).then(([parsed, cur]) => {
+      if (cur.error === 'WRONG_CODE') { Swal.close(); closeEmpModal(); lockHr(); return; }
+      if (!cur.success) { Swal.close(); return showToast(cur.error || 'โหลดรายชื่อพนักงานปัจจุบันไม่สำเร็จ', 'err'); }
+      empImportPreview(file.name, parsed, cur.items || []);
+    }).catch(err => {
+      Swal.close();
+      const m = err && err.message === 'load' ? 'โหลดตัวอ่านไฟล์ Excel ไม่สำเร็จ ตรวจสอบอินเทอร์เน็ตแล้วลองใหม่' : (err && err.message) || 'อ่านไฟล์ไม่สำเร็จ';
+      fireAlert({ icon: 'error', title: 'อ่านไฟล์ไม่สำเร็จ', text: m, confirmButtonText: 'ปิด' });
+    });
+  }
+  function empImportPreview(fileName, parsed, existing){
+    const have = {};
+    existing.forEach(e => { have[String(e.id).replace(/\s+/g, '').toUpperCase()] = 1; });
+    let nNew = 0, nOld = 0;
+    parsed.valid.forEach(r => { if (have[r.id.toUpperCase()]) nOld++; else nNew++; });
+    const nBad = parsed.invalid.length;
+    if (!parsed.valid.length) {
+      return fireAlert({ icon: 'warning', title: 'ไม่พบข้อมูลที่นำเข้าได้',
+        html: nBad ? '<div class="imp-err">' + parsed.invalid.slice(0, 20).map(x => 'แถว ' + x.row + ': ' + escapeHtml(x.error)).join('<br>') + '</div>' : 'ไฟล์ไม่มีแถวข้อมูล',
+        confirmButtonText: 'ปิด' });
+    }
+    const errHtml = nBad
+      ? '<div class="imp-err"><b>แถวที่ข้ามไป (นำเข้าไม่ได้):</b><br>' + parsed.invalid.slice(0, 30).map(x => 'แถว ' + x.row + (x.id ? ' (' + escapeHtml(x.id) + ')' : '') + ': ' + escapeHtml(x.error)).join('<br>') + (nBad > 30 ? '<br>…และอีก ' + (nBad - 30) + ' แถว' : '') + '</div>'
+      : '';
+    const modeHtml = nOld
+      ? '<div class="imp-mode"><b>รหัสที่มีในระบบแล้ว ' + nOld + ' คน ให้ทำอย่างไร?</b>' +
+        '<label><input type="radio" name="impMode" value="update" checked> อัปเดตข้อมูลตามไฟล์ (ตำแหน่ง/วันเริ่มงานที่เว้นว่างในไฟล์ จะไม่ลบค่าเดิม)</label>' +
+        '<label><input type="radio" name="impMode" value="skip"> ข้ามไป ไม่แก้ข้อมูลเดิม</label></div>'
+      : '';
+    fireAlert({
+      title: 'ตรวจสอบก่อนนำเข้า',
+      html: '<div class="imp-file">ไฟล์: ' + escapeHtml(fileName) + '</div>' +
+        '<div class="imp-sum">' +
+          '<div class="imp-k ok"><b>' + nNew + '</b><span>พนักงานใหม่ (เพิ่ม)</span></div>' +
+          '<div class="imp-k up"><b>' + nOld + '</b><span>มีรหัสอยู่แล้วในระบบ</span></div>' +
+          '<div class="imp-k"><b>' + parsed.valid.length + '</b><span>แถวที่พร้อมนำเข้า</span></div>' +
+          '<div class="imp-k bad"><b>' + nBad + '</b><span>แถวที่มีปัญหา (ข้าม)</span></div>' +
+        '</div>' +
+        (parsed.dupInFile ? '<div class="imp-file">พบรหัสซ้ำกันในไฟล์ ' + parsed.dupInFile + ' แถว — ใช้แถวล่างสุดของแต่ละรหัส</div>' : '') +
+        modeHtml + errHtml,
+      showCancelButton: true, confirmButtonText: 'นำเข้า ' + parsed.valid.length + ' รายการ', cancelButtonText: 'ยกเลิก',
+      preConfirm: () => { const m = document.querySelector('input[name="impMode"]:checked'); return m ? m.value : 'update'; }
+    }).then(r => { if (r.isConfirmed) empImportRun(parsed.valid, r.value || 'update', nBad); });
+  }
+  async function empImportRun(rows, mode, badFromFile){
+    const total = rows.length;
+    Swal.fire({
+      title: 'กำลังนำเข้าข้อมูล...', allowOutsideClick: false, allowEscapeKey: false, showConfirmButton: false,
+      html: '<div class="imp-bar"><i id="impBar"></i></div><div id="impTxt" style="font-size:.86rem;">0 / ' + total + '</div>'
+    });
+    const sum = { added: 0, updated: 0, unchanged: 0, skipped: 0, errorCount: 0 };
+    const errs = [];
+    let done = 0, failMsg = '';
+    const nBatches = Math.ceil(total / EMP_IMPORT_BATCH);
+    for (let b = 0; b < nBatches; b++) {
+      hrMarkActive();
+      const chunk = rows.slice(b * EMP_IMPORT_BATCH, (b + 1) * EMP_IMPORT_BATCH);
+      let res;
+      try {
+        res = await callApi('importEmployees', { accessCode: HR_CODE, rows: chunk, mode: mode, batchInfo: (b + 1) + '/' + nBatches });
+      } catch (e) { failMsg = 'เชื่อมต่อระบบไม่สำเร็จ'; break; }
+      if (res.error === 'WRONG_CODE') { Swal.close(); closeEmpModal(); lockHr(); return; }
+      if (!res.success) { failMsg = res.error || 'นำเข้าไม่สำเร็จ'; break; }
+      ['added', 'updated', 'unchanged', 'skipped', 'errorCount'].forEach(k => { sum[k] += res[k] || 0; });
+      (res.errors || []).forEach(x => errs.push(x));
+      done += chunk.length;
+      const bar = document.getElementById('impBar'), txt = document.getElementById('impTxt');
+      if (bar) bar.style.width = Math.round(done / total * 100) + '%';
+      if (txt) txt.textContent = done + ' / ' + total;
+    }
+    loadEmpList(); // รีเฟรชรายชื่อด้านหลัง
+    const lines =
+      '<div class="imp-sum">' +
+        '<div class="imp-k ok"><b>' + sum.added + '</b><span>เพิ่มใหม่</span></div>' +
+        '<div class="imp-k up"><b>' + sum.updated + '</b><span>อัปเดต</span></div>' +
+        '<div class="imp-k"><b>' + (sum.unchanged + sum.skipped) + '</b><span>ไม่เปลี่ยน / ข้าม</span></div>' +
+        '<div class="imp-k bad"><b>' + (sum.errorCount + badFromFile) + '</b><span>แถวที่มีปัญหา</span></div>' +
+      '</div>' +
+      (errs.length ? '<div class="imp-err">' + errs.slice(0, 20).map(x => 'แถว ' + escapeHtml(x.row) + ': ' + escapeHtml(x.error)).join('<br>') + '</div>' : '');
+    if (failMsg) {
+      fireAlert({ icon: 'error', title: 'นำเข้าไม่ครบ',
+        html: escapeHtml(failMsg) + '<br>นำเข้าสำเร็จแล้ว ' + done + ' จาก ' + total + ' แถว — กดนำเข้าไฟล์เดิมซ้ำได้อย่างปลอดภัย (รหัสที่นำเข้าแล้วจะไม่ซ้ำ)' + lines, confirmButtonText: 'ปิด' });
+    } else {
+      fireAlert({ icon: 'success', title: 'นำเข้าเรียบร้อย', html: lines, confirmButtonText: 'ปิด' });
+    }
+  }
+  document.getElementById('empImport').addEventListener('click', empImportPick);
+  document.getElementById('empFile').addEventListener('change', empImportOnFile);
   document.getElementById('empClose').addEventListener('click', closeEmpModal);
   document.getElementById('empBack').addEventListener('click', closeEmpModal);
   document.getElementById('empKeyword').addEventListener('input', () => { EMP_PAGE = 1; renderEmpList(); });
