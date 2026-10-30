@@ -1621,7 +1621,7 @@
         <div class="cert-sec-body">
           <div class="cf-grid">
             <div class="cf cf-6 cf-m6"><label for="c_date">วันที่ยื่นขอ<i class="rq" aria-hidden="true">*</i></label><input type="date" id="c_date" aria-required="true"></div>
-            <div class="cf cf-6 cf-m6"><label for="c_empid">รหัสประจำตัว<i class="rq" aria-hidden="true">*</i></label><input type="text" id="c_empid" placeholder="เช่น SA12345" autocomplete="off" aria-required="true"></div>
+            <div class="cf cf-6 cf-m6"><label for="c_empid">รหัสพนักงาน<i class="rq" aria-hidden="true">*</i></label><input type="text" id="c_empid" placeholder="เช่น SA12345" autocomplete="off" aria-required="true"></div>
 
             <div class="cf cf-3">
               <label for="c_prefix">คำนำหน้า<i class="rq" aria-hidden="true">*</i></label>
@@ -1729,7 +1729,7 @@
     <div class="gd-body" id="guideCertBody"><!-- เนื้อหาด้านล่างเป็นค่าสำรอง: เมื่อโหลดข้อมูลจากระบบสำเร็จ จะถูกแทนที่ด้วยคู่มือที่ HR แก้ไขได้ (จัดการคู่มือ > คู่มือขอหนังสือรับรอง) -->
       <section class="gd-card"><h3>เตรียมข้อมูลนี้ไว้ก่อนเริ่ม</h3>
         <ul>
-          <li>รหัสประจำตัว ตำแหน่ง แผนก และฝ่ายที่สังกัด</li>
+          <li>รหัสพนักงาน ตำแหน่ง แผนก และฝ่ายที่สังกัด</li>
           <li>วันที่เริ่มงาน และเบอร์โทรศัพท์ภายในแผนก</li>
           <li>ถ้าต้องใช้ทำบัตรผ่อนชำระหรือค้ำประกัน: ข้อมูลที่เกี่ยวข้อง เช่น ชื่อบริษัท ชื่อบุคคลค้ำประกัน ชื่อหมู่บ้าน ชื่อธนาคารและเจ้าหน้าที่ที่ติดต่อ</li>
         </ul>
@@ -1738,7 +1738,7 @@
 
       <section class="gd-card"><h3><span class="gd-num">1</span>ข้อมูลผู้ขอ</h3>
         <ul>
-          <li>เปิดเมนู <b>ขอหนังสือรับรอง</b> แล้วกรอก วันที่ยื่นขอ รหัสประจำตัว คำนำหน้า ชื่อ นามสกุล และตำแหน่ง</li>
+          <li>เปิดเมนู <b>ขอหนังสือรับรอง</b> แล้วกรอก วันที่ยื่นขอ รหัสพนักงาน คำนำหน้า ชื่อ นามสกุล และตำแหน่ง</li>
           <li><b>แผนก</b> และ <b>ฝ่าย</b>: คลิกช่อง พิมพ์ค้นหา แล้วกดเลือกจากรายการ</li>
           <li>กรอก <b>เริ่มงานวันที่</b> และ <b>เบอร์โทรศัพท์ภายในแผนก</b></li>
           <li>ช่องที่มีเครื่องหมาย <b>*</b> จำเป็นต้องกรอก</li>
@@ -1775,7 +1775,7 @@
       </section>
 
       <section class="gd-card"><h3>กรอกผิด หรือต้องการแก้ไข / ยกเลิกคำขอ</h3>
-        <p>ผู้ขอแก้ไขเองในระบบไม่ได้ ให้แจ้งฝ่ายบุคคลพร้อม<b>เลขที่คำขอ</b> (หรือชื่อและรหัสประจำตัว) ฝ่ายบุคคลจะแก้ไขหรือยกเลิกให้</p>
+        <p>ผู้ขอแก้ไขเองในระบบไม่ได้ ให้แจ้งฝ่ายบุคคลพร้อม<b>เลขที่คำขอ</b> (หรือชื่อและรหัสพนักงาน) ฝ่ายบุคคลจะแก้ไขหรือยกเลิกให้</p>
         <div class="gd-tip warn"><p>อย่าส่งคำขอซ้ำ เพราะจะมีคำขอซ้อนกันสองรายการ</p></div>
       </section>
 
@@ -2595,7 +2595,7 @@
     const v = id => document.getElementById(id).value.trim();
     const need = (id, msg) => { if (!v(id)) { document.getElementById(id).focus(); return msg; } return ''; };
     let err = need('c_prefix', 'กรุณาเลือกคำนำหน้า') || need('c_first', 'กรุณากรอกชื่อ') || need('c_last', 'กรุณากรอกนามสกุล') ||
-      need('c_empid', 'กรุณากรอกรหัสประจำตัว') || need('c_pos', 'กรุณากรอกตำแหน่ง') || need('c_dept', 'กรุณาเลือกแผนก');
+      need('c_empid', 'กรุณากรอกรหัสพนักงาน') || need('c_pos', 'กรุณากรอกตำแหน่ง') || need('c_dept', 'กรุณาเลือกแผนก');
     if (err) return { error: err };
     if (!inList_(DEPT_LIST, v('c_dept'))) return { error: 'กรุณาเลือกแผนกจากรายการที่มี' };
     err = need('c_division', 'กรุณาเลือกฝ่าย');
@@ -3025,7 +3025,7 @@
     document.getElementById('reqTitle').textContent = r.name;
     document.getElementById('reqSub').innerHTML = r.requestId + ' • ' + r.timestamp + ' • <span class="badge ' + cls + '">' + certStatusText(r.status) + '</span>';
     document.getElementById('reqBody').innerHTML = '<dl class="kv-grid" style="border-top:0;padding-top:4px;">' +
-      kv('รหัสประจำตัว', escapeHtml(r.employeeId)) +
+      kv('รหัสพนักงาน', escapeHtml(r.employeeId)) +
       kv('ตำแหน่ง', escapeHtml(r.position)) +
       kv('แผนก / ฝ่าย', escapeHtml(r.department) + (r.division ? ' / ' + escapeHtml(r.division) : '')) +
       kv('เริ่มงานวันที่', escapeHtml(r.startDateText)) +
