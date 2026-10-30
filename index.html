@@ -954,6 +954,56 @@
     .req-row .badge.pending::before,.dg-pill.p::before{animation:none;}
   }
 
+
+  /* =====================================================================
+     Header v2 — เต็มความกว้าง · ไอคอนไล่เฉด · นาฬิกา/วันที่ชิดขวา
+     ล้วน CSS + องค์ประกอบใหม่ (#headClock) ไม่แตะ logic เดิม · ตามธีมสีที่เลือก · เคารพ reduced-motion
+     ===================================================================== */
+  .app-header{
+    background:
+      radial-gradient(46% 260% at 100% 0%,var(--gold-bg),transparent 72%),
+      radial-gradient(34% 220% at 0% 100%,var(--navy-bg),transparent 70%),
+      linear-gradient(180deg,#fff,#FAFBFD);
+  }
+  .app-header::after{content:'';position:absolute;left:0;right:0;bottom:0;height:2px;pointer-events:none;
+    background:linear-gradient(90deg,var(--gold),transparent 55%);opacity:.45;}
+  .ah-inner{max-width:none;padding:0 22px 0 20px;gap:16px;}
+  .ah-icon{width:48px;height:48px;border-radius:14px;border:0;color:#fff;
+    background:linear-gradient(145deg,var(--navy-2),var(--navy));
+    box-shadow:0 8px 18px -8px rgba(10,18,30,.65),0 0 0 4px var(--gold-bg),inset 0 1px 0 rgba(255,255,255,.18);}
+  .ah-icon .acc{stroke:var(--gold);stroke-width:2.1;}
+  .ah-text h1{font-size:1.32rem;font-weight:700;letter-spacing:-.005em;}
+  .ah-text p{margin-top:3px;font-size:.82rem;}
+  .ah-progress{height:3px;}
+  .ah-progress i{border-radius:0 3px 3px 0;background:linear-gradient(90deg,var(--gold-deep),var(--gold));box-shadow:0 0 10px var(--gold-ring);}
+
+  /* chip โรงพยาบาลปลายทาง (หน้าพนักงาน) */
+  .ah-chip:not(.status){gap:9px;padding:8px 15px 8px 12px;font-weight:600;color:var(--navy);
+    background:linear-gradient(135deg,var(--navy-bg),rgba(255,255,255,.7));border-color:var(--gold-ring);}
+  .ah-chip:not(.status)::before{content:'';flex-shrink:0;width:7px;height:7px;border-radius:50%;background:var(--gold);box-shadow:0 0 0 3px var(--gold-bg);}
+
+  /* วัน-เวลา ชิดขวาสุดของ header */
+  .ah-clock{display:flex;flex-direction:column;align-items:flex-end;justify-content:center;flex-shrink:0;
+    min-width:0;padding:4px 0 4px 18px;border-left:1px solid var(--border);line-height:1.2;
+    font-variant-numeric:tabular-nums;white-space:nowrap;}
+  .ahc-time{display:inline-flex;align-items:center;gap:8px;font-size:1.22rem;font-weight:700;color:var(--navy);letter-spacing:.01em;}
+  .ahc-time::before{content:'';width:8px;height:8px;border-radius:50%;background:var(--gold);animation:ahcPulse 2s ease-in-out infinite;}
+  .ahc-time .s{font-size:.82rem;font-weight:600;color:var(--gold-deep);margin-left:-3px;min-width:1.3em;text-align:left;}
+  .ahc-time .u{font-size:.74rem;font-weight:500;color:var(--ink-soft);margin-left:-2px;}
+  .ahc-date{margin-top:2px;font-size:.76rem;font-weight:500;color:var(--ink-soft);}
+  @keyframes ahcPulse{0%,100%{box-shadow:0 0 0 0 var(--gold-ring)}60%{box-shadow:0 0 0 6px rgba(0,0,0,0)}}
+  @media (max-width:899px){
+    .ah-inner{padding:0 14px 0 14px;gap:12px;}
+    .ah-text h1{font-size:1.12rem;}
+    .ah-clock{padding-left:12px;}
+    .ahc-time{font-size:1.02rem;} .ahc-time .u{display:none;}
+  }
+  @media (max-width:479px){
+    .ahc-date{display:none;}
+    .ah-clock{padding-left:10px;}
+    .ahc-time{font-size:.95rem;gap:6px;} .ahc-time::before{width:6px;height:6px;}
+  }
+  @media (prefers-reduced-motion:reduce){.ahc-time::before{animation:none;}}
 </style>
 </head>
 <body>
@@ -1018,6 +1068,7 @@
     <div class="ah-icon" id="headIcon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21h16"/><path d="M6 21V9l6-5 6 5v12"/><path d="M10.5 21v-3.5h3V21"/><path class="acc" d="M12 10.5v4M10 12.5h4"/></svg></div>
     <div class="ah-text"><h1 id="pageTitle">ขอใบส่งตัว</h1><p id="pageDesc"></p></div>
     <div class="ah-chip" id="headChip" hidden></div>
+    <div class="ah-clock" id="headClock" aria-label="วันและเวลาปัจจุบัน"><span class="ahc-time" id="hcTime">--:--<span class="s">:--</span><span class="u"> น.</span></span><span class="ahc-date" id="hcDate"></span></div>
   </div>
   <div class="ah-progress" aria-hidden="true"><i id="headProgress"></i></div>
 </header>
@@ -1774,6 +1825,29 @@
   // เส้นทองใต้ header = ความคืบหน้าของฟอร์ม
   function setHeadProgress(pct){ document.getElementById('headProgress').style.width = pct + '%'; }
   setHeadProgress(Math.round(100 / TOTAL_STEPS));
+  // นาฬิกา + วันที่ (เวลาไทย) ที่ header ขวามือ — อัปเดตทุกวินาที ไม่ยุ่งกับ logic อื่น
+  (function headClock(){
+    const tEl = document.getElementById('hcTime'), dEl = document.getElementById('hcDate');
+    if (!tEl || !dEl) return;
+    const TZ = 'Asia/Bangkok';
+    let dateFmt = null, lastDate = '';
+    try { dateFmt = new Intl.DateTimeFormat('th-TH-u-ca-buddhist', { timeZone: TZ, weekday: 'long', day: 'numeric', month: 'short', year: 'numeric' }); } catch (e) {}
+    function tick(){
+      const now = new Date();
+      let hm, ss;
+      try {
+        const p = new Intl.DateTimeFormat('en-GB', { timeZone: TZ, hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false }).format(now).split(':');
+        hm = p[0] + ':' + p[1]; ss = p[2];
+      } catch (e) { hm = ('0' + now.getHours()).slice(-2) + ':' + ('0' + now.getMinutes()).slice(-2); ss = ('0' + now.getSeconds()).slice(-2); }
+      tEl.innerHTML = hm + '<span class="s">:' + ss + '</span><span class="u"> น.</span>';
+      if (dateFmt) {
+        const d = dateFmt.format(now);
+        if (d !== lastDate) { lastDate = d; dEl.textContent = d; }
+      }
+      setTimeout(tick, 1000 - (Date.now() % 1000) + 5);
+    }
+    tick();
+  })();
   syncHrNav(0);
   if (HR_CODE) callApi('listReferralRequests', { accessCode: HR_CODE, filters: {} }).then(res => {
     if (res.error === 'WRONG_CODE') return lockHr();
