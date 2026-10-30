@@ -1522,7 +1522,7 @@
         <input type="text" id="f_empid" placeholder="เช่น SA12345">
         <div class="emp-hint" id="f_empid_hint" role="status" aria-live="polite"></div>
         <label>ชื่อ-สกุล *</label>
-        <input type="text" id="f_name" placeholder="เช่น สมชาย ใจดี">
+        <input type="text" id="f_name" placeholder="เช่น นายสมชาย ใจดี">
         <div class="row2">
           <div>
             <label>อายุ *</label>
@@ -2780,7 +2780,7 @@
   // ฟอร์มขอใบส่งตัว: เติม ชื่อ-สกุล (ไม่มีคำนำหน้า)
   setupEmpLookup({
     inputId: 'f_empid', hintId: 'f_empid_hint',
-    fill: e => { if (e.plainName) empSetVal_('f_name', e.plainName); }
+    fill: e => { const nm = e.fullName || e.plainName; if (nm) empSetVal_('f_name', nm); }
   });
   // ฟอร์มขอหนังสือรับรอง: เติม คำนำหน้า ชื่อ นามสกุล ตำแหน่ง เริ่มงานวันที่
   setupEmpLookup({
