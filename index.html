@@ -239,6 +239,11 @@
   .opt-label{font-size:.93rem;padding-top:1px;}
 
   .hint{font-size:.78rem;color:var(--ink-soft);margin-top:6px;line-height:1.5;}
+  /* ข้อความสถานะใต้ช่องรหัสพนักงาน (ค้นหาข้อมูลพนักงานอัตโนมัติ) */
+  .emp-hint{font-size:.78rem;line-height:1.5;margin-top:6px;color:var(--ink-soft);}
+  .emp-hint:empty{display:none;}
+  .emp-hint.ok{color:var(--success);}
+  .emp-hint.warn{color:var(--warning);}
 
   /* ---- ปุ่ม: ตรงตาม design-system.css section 4 ---- */
   .btn{padding:10px 18px;border-radius:var(--radius-sm);border:1px solid var(--navy);background:var(--navy);color:#fff;
@@ -1486,16 +1491,15 @@
 
       <div class="form-step active" data-step="1">
         <div class="section-title"><span class="step-num">1</span><span class="txt">ข้อมูลผู้ขอส่งตัว</span></div>
+        <label>รหัสพนักงาน *</label>
+        <input type="text" id="f_empid" placeholder="เช่น SA12345">
+        <div class="emp-hint" id="f_empid_hint" role="status" aria-live="polite"></div>
         <label>ชื่อ-สกุล *</label>
         <input type="text" id="f_name" placeholder="เช่น สมชาย ใจดี">
         <div class="row2">
           <div>
             <label>อายุ *</label>
             <input type="number" id="f_age" min="15" max="80" placeholder="เช่น 32">
-          </div>
-          <div>
-            <label>รหัสพนักงาน *</label>
-            <input type="text" id="f_empid" placeholder="เช่น SA12345">
           </div>
         </div>
         <div class="row2">
@@ -1621,7 +1625,7 @@
         <div class="cert-sec-body">
           <div class="cf-grid">
             <div class="cf cf-6 cf-m6"><label for="c_date">วันที่ยื่นขอ<i class="rq" aria-hidden="true">*</i></label><input type="date" id="c_date" aria-required="true"></div>
-            <div class="cf cf-6 cf-m6"><label for="c_empid">รหัสพนักงาน<i class="rq" aria-hidden="true">*</i></label><input type="text" id="c_empid" placeholder="เช่น SA12345" autocomplete="off" aria-required="true"></div>
+            <div class="cf cf-6 cf-m6"><label for="c_empid">รหัสพนักงาน<i class="rq" aria-hidden="true">*</i></label><input type="text" id="c_empid" placeholder="เช่น SA12345" autocomplete="off" aria-required="true"><div class="emp-hint" id="c_empid_hint" role="status" aria-live="polite"></div></div>
 
             <div class="cf cf-3">
               <label for="c_prefix">คำนำหน้า<i class="rq" aria-hidden="true">*</i></label>
@@ -2096,9 +2100,9 @@
 
   function validateStep(n){
     if (n === 1) {
+      if (!document.getElementById('f_empid').value.trim()) return 'กรุณากรอกรหัสพนักงาน';
       if (!document.getElementById('f_name').value.trim()) return 'กรุณากรอกชื่อ-สกุล';
       if (!document.getElementById('f_age').value.trim()) return 'กรุณากรอกอายุ';
-      if (!document.getElementById('f_empid').value.trim()) return 'กรุณากรอกรหัสพนักงาน';
       if (!document.getElementById('f_dept').value.trim()) return 'กรุณาเลือกแผนก';
       if (!isValidDept()) return 'กรุณาเลือกแผนกจากรายการที่มี';
       if (!document.getElementById('f_division').value.trim()) return 'กรุณาเลือกฝ่าย';
@@ -2498,6 +2502,7 @@
     document.getElementById('stepperBar').style.display = 'flex';
     document.getElementById('successCard').style.display = 'none';
     ['f_name','f_age','f_empid','f_dept','f_division','f_phone','f_symptoms','f_date'].forEach(id => document.getElementById(id).value = '');
+    resetEmpLookups();
     document.querySelectorAll('input[type=radio]').forEach(r => r.checked = false);
     document.querySelectorAll('#view-employee .opt').forEach(o => { o.classList.remove('checked'); const d=o.querySelector('.opt-detail'); if(d){d.classList.remove('show'); d.value='';} });
     currentStep = 1;
@@ -2655,12 +2660,95 @@
     document.getElementById('certSuccessCard').style.display = 'none';
     ['c_prefix', 'c_empid', 'c_first', 'c_last', 'c_pos', 'c_dept', 'c_division', 'c_start', 'c_phone', 'c_bank', 'c_contact', 'c_contact_phone']
       .forEach(id => document.getElementById(id).value = '');
+    resetEmpLookups();
     document.getElementById('c_date').value = todayIso_();
     document.querySelectorAll('#view-cert input[type=checkbox]').forEach(c => { c.checked = false; });
     document.querySelectorAll('#view-cert .opt').forEach(o => { o.classList.remove('checked'); o.querySelectorAll('.opt-detail').forEach(d => { d.classList.remove('show'); d.value = ''; }); });
     updateCertProgress();
     window.scrollTo(0, 0);
   }
+
+  // ================= ค้นหาข้อมูลพนักงานจากรหัส (เติมฟอร์มอัตโนมัติ) =================
+  // พิมพ์รหัสพนักงานเสร็จ → ระบบค้นในชีท Employees แล้วเติมช่องให้ (ผู้กรอกแก้ไขต่อได้) ถ้าไม่พบจะไม่แตะช่องอื่นเลย
+  const EMP_LOOKUPS = [];
+  const EMP_MIN_LEN = 4;
+
+  function empSetVal_(id, val){
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.value = val;
+    el.dispatchEvent(new Event(el.tagName === 'SELECT' ? 'change' : 'input', { bubbles: true }));
+  }
+
+  function setupEmpLookup(cfg){
+    const input = document.getElementById(cfg.inputId), hint = document.getElementById(cfg.hintId);
+    if (!input || !hint) return;
+    const st = { lastId: '', seq: 0, timer: null, missed: false, blurred: false };
+    const MISS = 'ไม่พบรหัสพนักงานนี้ในระบบ ตรวจสอบรหัสอีกครั้ง หรือกรอกข้อมูลเองได้';
+    const setHint = (cls, msg) => { hint.className = 'emp-hint' + (cls ? ' ' + cls : ''); hint.textContent = msg || ''; };
+    const norm = () => input.value.replace(/\s+/g, '').toUpperCase();
+    EMP_LOOKUPS.push({ st, hint });
+
+    function run(){
+      const id = norm();
+      if (id.length < EMP_MIN_LEN || id === st.lastId) return;
+      st.lastId = id; st.missed = false;
+      const my = ++st.seq;
+      setHint('', 'กำลังค้นหาข้อมูลพนักงาน...');
+      callApi('lookupEmployee', { employeeId: id }).then(res => {
+        if (my !== st.seq) return;
+        if (!res || res.error) { st.lastId = ''; setHint('warn', 'ค้นหาข้อมูลอัตโนมัติไม่สำเร็จ กรอกข้อมูลเองได้'); return; }
+        if (!res.found) { st.missed = true; setHint(st.blurred ? 'warn' : '', st.blurred ? MISS : ''); return; }
+        const extra = cfg.fill(res) || '';
+        if (norm() === String(res.employeeId).replace(/\s+/g, '').toUpperCase() && input.value.trim() !== res.employeeId) input.value = res.employeeId;
+        setHint('ok', '✓ พบข้อมูลพนักงาน เติมข้อมูลให้แล้ว (แก้ไขได้)' + extra);
+      }).catch(() => {
+        if (my !== st.seq) return;
+        st.lastId = '';
+        setHint('warn', 'ค้นหาข้อมูลอัตโนมัติไม่สำเร็จ กรอกข้อมูลเองได้');
+      });
+    }
+
+    input.addEventListener('input', () => {
+      clearTimeout(st.timer);
+      st.seq++; st.lastId = ''; st.missed = false; st.blurred = false;
+      setHint('', '');
+      if (norm().length >= EMP_MIN_LEN) st.timer = setTimeout(run, 800);
+    });
+    input.addEventListener('blur', () => {
+      clearTimeout(st.timer);
+      st.blurred = true;
+      if (norm().length < EMP_MIN_LEN) return;
+      if (norm() === st.lastId) { if (st.missed) setHint('warn', MISS); return; }
+      run();
+    });
+  }
+
+  function resetEmpLookups(){
+    EMP_LOOKUPS.forEach(x => {
+      clearTimeout(x.st.timer);
+      x.st.seq++; x.st.lastId = ''; x.st.missed = false; x.st.blurred = false;
+      x.hint.className = 'emp-hint'; x.hint.textContent = '';
+    });
+  }
+
+  // ฟอร์มขอใบส่งตัว: เติม ชื่อ-สกุล (ไม่มีคำนำหน้า)
+  setupEmpLookup({
+    inputId: 'f_empid', hintId: 'f_empid_hint',
+    fill: e => { if (e.plainName) empSetVal_('f_name', e.plainName); }
+  });
+  // ฟอร์มขอหนังสือรับรอง: เติม คำนำหน้า ชื่อ นามสกุล ตำแหน่ง เริ่มงานวันที่
+  setupEmpLookup({
+    inputId: 'c_empid', hintId: 'c_empid_hint',
+    fill: e => {
+      empSetVal_('c_prefix', e.prefix || '');
+      if (e.firstName) empSetVal_('c_first', e.firstName);
+      if (e.lastName) empSetVal_('c_last', e.lastName);
+      if (e.position) empSetVal_('c_pos', e.position);
+      if (e.startDate) empSetVal_('c_start', e.startDate);
+      return e.prefix ? '' : ' — กรุณาเลือกคำนำหน้าเอง';
+    }
+  });
 
   // ================= HR SIDE =================
 
