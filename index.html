@@ -1009,6 +1009,67 @@
   /* Logo: โลโก้แบรนด์ใหม่ (เอกสาร + เส้น connect สีทอง) ตามธีมสีที่เลือก */
   .seal{background:none;border-radius:11px;box-shadow:0 0 0 3px var(--gold-ring),0 8px 18px -8px rgba(0,0,0,.55);overflow:visible;}
   .seal .logo-mark{display:block;width:38px;height:38px;}
+
+  /* =====================================================================
+     HR gate (หน้าใส่รหัสผ่านฝ่ายบุคคล) — ดีไซน์ใหม่
+     คง id/ฟังก์ชันเดิมทั้งหมด (hrGate, hrCodeInput, unlockHr, ปุ่มตา) · ตามธีมสี · เคารพ reduced-motion
+     ===================================================================== */
+  .gate{position:relative;overflow:hidden;max-width:460px;margin:28px auto 16px;padding:40px 34px 26px;text-align:center;
+    border-radius:var(--radius-xl,22px);border:1px solid var(--border);
+    background:
+      radial-gradient(70% 55% at 50% 0%,var(--gold-bg),transparent 75%),
+      radial-gradient(55% 40% at 100% 100%,var(--navy-bg),transparent 70%),
+      linear-gradient(180deg,#fff,#FAFBFD);
+    box-shadow:0 1px 2px rgba(20,30,45,.05),0 24px 48px -26px rgba(20,30,45,.30);}
+  .gate::before{content:'';position:absolute;left:0;right:0;top:0;height:4px;background:linear-gradient(90deg,var(--navy),var(--gold),var(--navy));}
+  .g-badge{position:relative;width:84px;height:84px;margin:0 auto 18px;display:flex;align-items:center;justify-content:center;}
+  .g-tile{position:relative;z-index:1;width:68px;height:68px;border-radius:21px;display:flex;align-items:center;justify-content:center;color:#fff;
+    background:linear-gradient(145deg,var(--navy-2),var(--navy));
+    box-shadow:0 14px 28px -12px rgba(10,18,30,.7),0 0 0 4px var(--gold-bg),inset 0 1px 0 rgba(255,255,255,.2);}
+  .g-tile svg{width:34px;height:34px;}
+  .g-tile .acc{fill:var(--gold);stroke:none;}
+  .g-ring{position:absolute;inset:6px;border-radius:26px;border:1.5px solid var(--gold);opacity:0;animation:gRing 3.2s ease-out infinite;}
+  .g-ring.r2{animation-delay:1.6s;}
+  @keyframes gRing{0%{transform:scale(.86);opacity:.55}100%{transform:scale(1.42);opacity:0}}
+  .gate .title{margin:0;font-size:1.4rem;font-weight:700;letter-spacing:-.005em;color:var(--navy);}
+  .gate .hint{margin:8px auto 24px;max-width:380px;text-wrap:balance;font-size:.9rem;line-height:1.6;color:var(--ink-soft);}
+  .g-label{display:block;margin:0 0 7px;text-align:left;font-size:.82rem;font-weight:600;color:var(--ink);}
+  .gate-pw{position:relative;max-width:none;margin:0 0 10px;text-align:left;}
+  .gate .gate-pw input{display:block;width:100%;max-width:none;height:52px;margin:0;padding:0 50px 0 48px;text-align:left;letter-spacing:.14em;
+    font-size:1rem;color:var(--ink);background:#fff;border:1.5px solid var(--border-strong);border-radius:14px;
+    box-shadow:inset 0 1px 2px rgba(20,30,45,.04);transition:border-color .15s,box-shadow .15s;}
+  .gate .gate-pw input::placeholder{letter-spacing:0;color:#93A1B0;}
+  .gate .gate-pw input:focus{outline:none;border-color:var(--navy);box-shadow:0 0 0 4px var(--gold-ring);}
+  .gate .gate-pw input.bad{border-color:var(--danger);box-shadow:0 0 0 4px var(--danger-bg);}
+  .g-key{position:absolute;left:15px;top:50%;transform:translateY(-50%);display:flex;color:var(--ink-soft);pointer-events:none;transition:color .15s;}
+  .g-key svg{width:20px;height:20px;}
+  .gate-pw:focus-within .g-key{color:var(--gold-deep);}
+  .gate .pw-eye{right:8px;}
+  .g-caps{display:flex;align-items:center;gap:7px;margin:0 0 10px;padding:8px 12px;border-radius:10px;text-align:left;
+    background:var(--warning-bg);border:1px solid rgba(189,122,30,.28);color:#8A5612;font-size:.8rem;font-weight:600;}
+  .g-caps[hidden]{display:none;}
+  .g-caps svg{width:16px;height:16px;flex-shrink:0;}
+  .gate .gate-btn{position:relative;display:flex;align-items:center;justify-content:center;gap:10px;width:100%;height:52px;margin-top:6px;padding:0 20px;
+    border:0;border-radius:14px;font-family:inherit;font-size:1rem;font-weight:700;color:#fff;cursor:pointer;
+    background:linear-gradient(135deg,var(--navy-2),var(--navy));
+    box-shadow:0 12px 24px -12px rgba(10,18,30,.75),inset 0 1px 0 rgba(255,255,255,.16);
+    transition:transform .15s,box-shadow .2s,opacity .15s;}
+  .gate .gate-btn:hover{opacity:1;transform:translateY(-1px);box-shadow:0 16px 28px -12px rgba(10,18,30,.8),0 0 0 4px var(--gold-bg),inset 0 1px 0 rgba(255,255,255,.2);}
+  .gate .gate-btn:active{transform:translateY(0);}
+  .gate .gate-btn:focus-visible{outline:3px solid var(--gold-ring);outline-offset:3px;}
+  .gate-btn .gb-arrow{width:20px;height:20px;color:var(--gold);transition:transform .2s;}
+  .gate-btn:hover .gb-arrow{transform:translateX(4px);}
+  .gate-btn .gb-spin{display:none;width:18px;height:18px;border-radius:50%;border:2.5px solid rgba(255,255,255,.35);border-top-color:#fff;animation:gSpin .7s linear infinite;}
+  .gate-btn.busy{cursor:progress;opacity:.92;pointer-events:none;}
+  .gate-btn.busy .gb-arrow{display:none;} .gate-btn.busy .gb-spin{display:inline-block;}
+  @keyframes gSpin{to{transform:rotate(360deg)}}
+  .g-foot{display:flex;align-items:center;justify-content:center;gap:7px;margin-top:20px;padding-top:16px;border-top:1px dashed var(--border);
+    font-size:.78rem;line-height:1.5;color:var(--ink-soft);text-align:left;}
+  .g-foot svg{width:16px;height:16px;flex-shrink:0;color:var(--success);}
+  .gate.shake{animation:gShake .45s cubic-bezier(.36,.07,.19,.97);}
+  @keyframes gShake{10%,90%{transform:translateX(-2px)}20%,80%{transform:translateX(4px)}30%,50%,70%{transform:translateX(-7px)}40%,60%{transform:translateX(7px)}}
+  @media (max-width:559px){.gate{margin-top:12px;padding:32px 20px 22px;}.gate .title{font-size:1.25rem;}}
+  @media (prefers-reduced-motion:reduce){.g-ring,.gate.shake,.gate-btn .gb-spin{animation:none !important;}.g-ring{display:none;}.gate-btn .gb-spin{border-top-color:#fff;}}
 </style>
 </head>
 <body>
@@ -1392,11 +1453,20 @@
   <!-- ================= HR VIEW ================= -->
   <div class="view" id="view-hr">
     <div class="card gate" id="hrGate">
-      <div class="lock">🔒</div>
+      <div class="g-badge" aria-hidden="true"><i class="g-ring r1"></i><i class="g-ring r2"></i>
+        <div class="g-tile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.8l7.2 2.9v5.6c0 4.5-3 8.3-7.2 9.9-4.2-1.600-7.200-5.400-7.200-9.900V5.700z"/><rect x="8.800" y="10.600" width="6.400" height="5" rx="1.200"/><path d="M10.200 10.600V9.300a1.800 1.800 0 0 1 3.600 0v1.300"/><circle class="acc" cx="12" cy="13.100" r=".7"/></svg></div>
+      </div>
       <div class="title">สำหรับฝ่ายบุคคลเท่านั้น</div>
       <div class="hint">กรอกรหัสผ่านเพื่อดูรายการคำขอใบส่งตัวและหนังสือรับรอง</div>
-      <div class="gate-pw"><input type="password" id="hrCodeInput" placeholder="รหัสผ่าน" inputmode="text" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" onkeydown="if(event.key==='Enter')unlockHr()"><button type="button" class="pw-eye" id="hrCodeEye" onclick="toggleHrCodeVisible()" aria-label="แสดงรหัสผ่าน" aria-pressed="false"><svg id="hrEyeOn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg><svg id="hrEyeOff" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:none"><path d="M17.9 17.9A10.4 10.4 0 0112 19C5.6 19 2 12 2 12a18 18 0 015-5.9M9.9 5.2A9.7 9.7 0 0112 5c6.4 0 10 7 10 7a18 18 0 01-2.2 3.2M1 1l22 22"/><path d="M14.1 14.1a3 3 0 11-4.2-4.2"/></svg></button></div>
-      <div><button class="btn" style="padding:11px 30px;" onclick="unlockHr()">เข้าสู่หน้ารายการ</button></div>
+      <label class="g-label" for="hrCodeInput">รหัสผ่านฝ่ายบุคคล</label>
+      <div class="gate-pw">
+        <span class="g-key" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="15" r="3.800"/><path d="M10.700 12.300L20 3M16 7l3 3M13.500 9.500l2 2"/></svg></span>
+        <input type="password" id="hrCodeInput" placeholder="รหัสผ่าน" inputmode="text" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" onkeydown="if(event.key==='Enter')unlockHr()">
+        <button type="button" class="pw-eye" id="hrCodeEye" onclick="toggleHrCodeVisible()" aria-label="แสดงรหัสผ่าน" aria-pressed="false"><svg id="hrEyeOn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg><svg id="hrEyeOff" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:none"><path d="M17.9 17.9A10.4 10.4 0 0112 19C5.6 19 2 12 2 12a18 18 0 015-5.9M9.9 5.2A9.7 9.7 0 0112 5c6.4 0 10 7 10 7a18 18 0 01-2.2 3.2M1 1l22 22"/><path d="M14.1 14.1a3 3 0 11-4.2-4.2"/></svg></button>
+      </div>
+      <div class="g-caps" id="hrCaps" hidden role="status"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l-8 9h5v4h6v-4h5z"/><path d="M9 20h6"/></svg>Caps Lock เปิดอยู่</div>
+      <button type="button" class="btn gate-btn" id="hrUnlockBtn" onclick="unlockHr()"><span class="gb-label">เข้าสู่หน้ารายการ</span><svg class="gb-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg><i class="gb-spin" aria-hidden="true"></i></button>
+      <div class="g-foot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l7 3v5c0 4.500-3 8-7 9.500C8 19 5 15.500 5 11V6z"/><path d="M9 11.800l2.200 2.200 3.800-4"/></svg><span>ข้อมูลคำขอเป็นความลับ · ระบบล็อกอัตโนมัติเมื่อไม่มีการใช้งาน</span></div>
     </div>
 
     <div id="hrPanel" style="display:none;">
@@ -2272,13 +2342,34 @@
     i.focus();
   }
 
+  function gateBusy_(on){
+    const b = document.getElementById('hrUnlockBtn'); if (!b) return;
+    b.classList.toggle('busy', !!on); b.disabled = !!on;
+    b.querySelector('.gb-label').textContent = on ? 'กำลังตรวจสอบ…' : 'เข้าสู่หน้ารายการ';
+  }
+  function gateShake_(){
+    try {
+      const g = document.getElementById('hrGate'), i = document.getElementById('hrCodeInput');
+      g.classList.remove('shake'); void g.offsetWidth; g.classList.add('shake');
+      i.classList.add('bad'); i.focus(); i.select();
+    } catch (e) {}
+  }
+  (function gateCaps(){
+    const i = document.getElementById('hrCodeInput'), c = document.getElementById('hrCaps'); if (!i || !c) return;
+    const chk = e => { try { c.hidden = !(e.getModifierState && e.getModifierState('CapsLock')); } catch (x) {} };
+    i.addEventListener('keydown', chk); i.addEventListener('keyup', chk); i.addEventListener('blur', () => { c.hidden = true; });
+    i.addEventListener('input', () => i.classList.remove('bad'));
+  })();
+
   function unlockHr(silent){
     const code = document.getElementById('hrCodeInput').value.trim();
     if (!code) return showToast('กรุณากรอกรหัสผ่าน', 'err');
+    gateBusy_(true);
     const seq = ++HR_LOAD_SEQ;
     callApi('listReferralRequests', { accessCode: code, filters: {} }).then(res => {
+      gateBusy_(false);
       if (seq !== HR_LOAD_SEQ && HR_CODE) return; // มีการโหลดรายการใหม่แทรกแล้ว
-      if (res.error === 'WRONG_CODE') { if (!silent) showToast('รหัสผ่านไม่ถูกต้อง', 'err'); return; }
+      if (res.error === 'WRONG_CODE') { if (!silent) { showToast('รหัสผ่านไม่ถูกต้อง', 'err'); gateShake_(); } return; }
       HR_CODE = code;
       hrCodeStore.set(code); HR_LAST_ACTIVE = Date.now(); loadIdleSetting();
       document.getElementById('hrGate').style.display = 'none';
@@ -2289,7 +2380,7 @@
       } else renderHrList(res);
       applyHrHeader();
       registerAppUrl_();
-    }).catch(() => showToast('เชื่อมต่อระบบไม่สำเร็จ', 'err'));
+    }).catch(() => { gateBusy_(false); showToast('เชื่อมต่อระบบไม่สำเร็จ', 'err'); });
   }
 
   function lockHr(){
