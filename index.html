@@ -1656,7 +1656,7 @@
 
             <div class="cf cf-3">
               <label for="c_prefix">คำนำหน้า<i class="rq" aria-hidden="true">*</i></label>
-              <select id="c_prefix" aria-required="true"><option value="">เลือก</option><option value="นาย">นาย</option><option value="นาง">นาง</option><option value="นางสาว">นางสาว</option></select>
+              <select id="c_prefix" aria-required="true"><option value="">เลือก</option><option value="นาย">นาย</option><option value="นาง">นาง</option><option value="นางสาว">นางสาว</option><option value="ว่าที่ ร.ต.">ว่าที่ ร.ต.</option></select>
             </div>
             <div class="cf cf-4"><label for="c_first">ชื่อ<i class="rq" aria-hidden="true">*</i></label><input type="text" id="c_first" maxlength="60" placeholder="เช่น สมชาย" autocomplete="off" aria-required="true"></div>
             <div class="cf cf-5"><label for="c_last">นามสกุล<i class="rq" aria-hidden="true">*</i></label><input type="text" id="c_last" maxlength="60" placeholder="เช่น ใจดี" autocomplete="off" aria-required="true"></div>
@@ -3120,7 +3120,7 @@
       const wait = pending && r.waitDays >= 1 ? '<span class="wait' + (r.waitDays >= 3 ? ' late' : '') + '">รอมา ' + r.waitDays + ' วัน</span>' : '';
       const meta = [escapeHtml(r.department) + (r.division ? '/' + escapeHtml(r.division) : ''), escapeHtml(r.certTypes)].filter(Boolean).join(' • ');
       return '<div class="req-row ' + cls + '" onclick="openCertDetail(\'' + r.requestId + '\')">' +
-        '<div class="avatar">' + escapeHtml(String(r.name || '?').replace(/^(นางสาว|นาย|นาง)/, '').trim().charAt(0) || '?') + '</div>' +
+        '<div class="avatar">' + escapeHtml(String(r.name || '?').replace(/^(นางสาว|นาย|นาง|ว่าที่ ร\.ต\.)/, '').trim().charAt(0) || '?') + '</div>' +
         '<div class="rr-main"><div class="rr-line1"><span class="rr-name">' + escapeHtml(r.name) + '</span><span class="req-id-sm">' + r.requestId + '</span></div>' +
         '<div class="rr-sub">' + escapeHtml(r.timestamp) + '</div></div>' +
         '<div class="rr-meta">' + meta + '</div>' +
